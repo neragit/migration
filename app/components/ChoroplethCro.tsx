@@ -224,7 +224,6 @@ useEffect(() => {
                 z: zValues,
                 colorscale: "Greens",
                 reversescale: true,
-                autocolorscale: false,
                 zmin,
                 zmax,
                 marker: { line: { color: "white", width: 0.5 }, color: markerColors },
