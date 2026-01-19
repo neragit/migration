@@ -35,24 +35,27 @@ export default function ChoroplethCro() {
     d3.csv("/data/hrv_choropleth.csv").then(setCsvData);
   }, []);
 
-  // Tooltip
-  useEffect(() => {
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "choropleth-tooltip")
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("background", "white")
-      .style("padding", "8px")
-      .style("border", "1px solid #aaa")
-      .style("border-radius", "4px")
-      .style("opacity", 0)
-      .style("font-size", "12px")
-      .style("z-index", "9999");
+useEffect(() => {
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "choropleth-tooltip")
+    .style("position", "absolute")
+    .style("pointer-events", "none")
+    .style("background", "white")
+    .style("padding", "8px")
+    .style("border", "1px solid #aaa")
+    .style("border-radius", "4px")
+    .style("opacity", 0)
+    .style("font-size", "12px")
+    .style("z-index", "9999");
 
-    return () => tooltip.remove();
-  }, []);
+  return () => {
+    tooltip.remove();
+    // 👆 explicitly no return value
+  };
+}, []);
+
 
   // Tooltip follow
   useEffect(() => {
