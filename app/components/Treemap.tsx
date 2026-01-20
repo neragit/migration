@@ -98,155 +98,166 @@ const Treemap: React.FC<TreemapProps> = ({ data }) => {
     return stats;
   }, [data, years]);
 
-useEffect(() => {
-  if (!svgRef.current) return;
+  useEffect(() => {
+    if (!svgRef.current) return;
 
-  const svg = d3.select(svgRef.current);
+    const svg = d3.select(svgRef.current);
 
-  // Helper to ensure the person icon exists
-  const ensurePersonIcon = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) => {
-    let defs = svg.select<SVGDefsElement>("defs");
-    if (defs.empty()) defs = svg.append("defs");
+    // Helper to ensure the person icon exists
+    const ensurePersonIcon = (svg: d3.Selection<SVGSVGElement, unknown, null, undefined>) => {
+      let defs = svg.select<SVGDefsElement>("defs");
+      if (defs.empty()) defs = svg.append("defs");
 
-    if (!defs.select("#person-icon").node()) {
-      const symbol = defs.append("symbol")
-        .attr("id", "person-icon")
-        .attr("viewBox", "0 0 98 284")
-        .attr("overflow", "visible");
+      if (!defs.select("#person-icon").node()) {
+        const symbol = defs.append("symbol")
+          .attr("id", "person-icon")
+          .attr("viewBox", "0 0 98 284")
+          .attr("overflow", "visible");
 
-      // Body
-      symbol.append("path")
-        .attr(
-          "d",
-          "M17.877,187.566c-9.675,-3.049 -16.698,-12.099 -16.698,-22.775l0,-79.586c0,-13.176 10.697,-23.874 23.874,-23.874l47.748,0c13.176,0 23.874,10.697 23.874,23.874l0,79.586c0,10.19 -6.398,18.898 -15.394,22.321l0,79.215c0,8.748 -7.102,15.851 -15.851,15.851l-31.702,0c-8.748,0 -15.851,-7.102 -15.851,-15.851l0,-78.762Z"
-        )
-        .attr("stroke", "white")
-        .attr("stroke-width", 2.36)
-        .attr("color", "currentColor");
+        // Body
+        symbol.append("path")
+          .attr(
+            "d",
+            "M17.877,187.566c-9.675,-3.049 -16.698,-12.099 -16.698,-22.775l0,-79.586c0,-13.176 10.697,-23.874 23.874,-23.874l47.748,0c13.176,0 23.874,10.697 23.874,23.874l0,79.586c0,10.19 -6.398,18.898 -15.394,22.321l0,79.215c0,8.748 -7.102,15.851 -15.851,15.851l-31.702,0c-8.748,0 -15.851,-7.102 -15.851,-15.851l0,-78.762Z"
+          )
+          .attr("stroke", "white")
+          .attr("stroke-width", 2.36)
+          .attr("color", "currentColor");
 
-      // Head
-      symbol.append("circle")
-        .attr("cx", 48.927)
-        .attr("cy", 25.12)
-        .attr("r", 23.941)
-        .attr("stroke", "white")
-        .attr("stroke-width", 2.36)
-        .attr("color", "currentColor");
-    }
-  };
+        // Head
+        symbol.append("circle")
+          .attr("cx", 48.927)
+          .attr("cy", 25.12)
+          .attr("r", 23.941)
+          .attr("stroke", "white")
+          .attr("stroke-width", 2.36)
+          .attr("color", "currentColor");
+      }
+    };
 
-  // Ensure the symbol exists **before rendering icons**
-  ensurePersonIcon(svg);
+    // Ensure the symbol exists **before rendering icons**
+    ensurePersonIcon(svg);
 
-  // -------------------------------
-  // Now render treemap nodes and icons
-  // -------------------------------
-  if (!filteredData.length || !dimensions.width) return;
+    // -------------------------------
+    // Now render treemap nodes and icons
+    // -------------------------------
+    if (!filteredData.length || !dimensions.width) return;
 
-  const { width, height } = dimensions;
+    const { width, height } = dimensions;
 
-  const root = d3
-    .hierarchy({ children: filteredData } as any)
-    .sum(d => d.broj)
-    .sort((a, b) => b.value! - a.value!);
+    const root = d3
+      .hierarchy({ children: filteredData } as any)
+      .sum(d => d.broj)
+      .sort((a, b) => b.value! - a.value!);
 
-  const treemapRoot = d3.treemap<TreemapData>()
-    .size([width, height])
-    .padding(1)(root) as d3.HierarchyRectangularNode<TreemapData>;
+    const treemapRoot = d3.treemap<TreemapData>()
+      .size([width, height])
+      .padding(1)(root) as d3.HierarchyRectangularNode<TreemapData>;
 
-  const leaves = treemapRoot.leaves().map(d => ({
-    x0: d.x0,
-    x1: d.x1,
-    y0: d.y0,
-    y1: d.y1,
-    data: d.data,
-  }));
+    const leaves = treemapRoot.leaves().map(d => ({
+      x0: d.x0,
+      x1: d.x1,
+      y0: d.y0,
+      y1: d.y1,
+      data: d.data,
+    }));
 
-  setRects(leaves);
+    setRects(leaves);
 
-  const placaAll = d3.extent(data, d => d.placa) as [number, number];
-  const color = d3.scaleSequential()
-    .interpolator(d3.interpolateHcl("#9fd9ff", "#000"))
-    .domain(placaAll);
+    const placaAll = d3.extent(data, d => d.placa) as [number, number];
+    const color = d3.scaleSequential()
+      .interpolator(d3.interpolateHcl("#9fd9ff", "#000"))
+      .domain(placaAll);
 
-  const nodes = svg.selectAll<SVGGElement, typeof leaves[0]>('g.node')
-    .data(leaves, d => d.data.zanimanje);
+    const nodes = svg.selectAll<SVGGElement, typeof leaves[0]>('g.node')
+      .data(leaves, d => d.data.zanimanje);
 
-  // ENTER
-  const nodesEnter = nodes.enter()
-    .append('g')
-    .attr('class', 'node')
-    .attr('transform', d => `translate(${d.x0},${d.y0})`)
-    .style('opacity', 0)
-    .style('overflow', 'visible');
+            // Determine if this is initial render
+      const isInitialRender = svg.selectAll<SVGGElement, typeof leaves[0]>('g.node').empty();
 
-    
-
-  nodesEnter.append('rect').attr('fill', 'none');
-  nodesEnter.append('g').attr('class', 'icons');
-
-  nodesEnter.transition().duration(400).style('opacity', 1);
-  nodes.transition().duration(1000).attr('transform', d => `translate(${d.x0},${d.y0})`);
-  nodes.exit().transition().duration(400).style('opacity', 0).remove();
-
-  // Icons
-  
-nodesEnter.merge(nodes as any).each(function (d) {
-  // Select the 'g' element with class 'icons' inside the current node
-  const g = d3.select(this).select<SVGGElement>('g.icons');
-
-  // Calculate the width of the current cell
-  const cellWidth = d.x1 - d.x0;
-  // Calculate the height of the current cell
-  const cellHeight = d.y1 - d.y0;
-  // Calculate how many icons can fit horizontally in the cell (at least 1)
-  const cols = Math.max(1, Math.floor(cellWidth / (iconSize + padding)));
-  // Calculate how many icons can fit vertically in the cell
-  const rows = Math.floor(cellHeight / (iconSize + padding));
-  // If either dimension cannot fit any icons, skip this cell
-  if (cols <= 0 || rows <= 0) return;
-
-  // Maximum number of icons that can fit in the cell
-  const maxIcons = cols * rows;
-  // Desired number of icons based on data and workersPerIcon ratio
-  const desiredIcons = Math.round(d.data.broj / workersPerIcon);
-  // Actual number of icons to display (cannot exceed maxIcons)
-  const iconCount = Math.min(maxIcons, desiredIcons);
-
-  // Bind the icon data to 'use' elements (one per icon)
-  const icons = g.selectAll<SVGUseElement, number>('use')
-    .data(d3.range(iconCount));
-
-  // For new icons, append a 'use' element referencing the person icon
-  const iconsEnter = icons.enter()
-    .append('use')
-    .attr('href', '#person-icon') // Reference the SVG symbol with id 'person-icon'
-    .style('fill', color(d.data.placa))
-    .style('opacity', 1); // Set initial fill color based on data
-
-  // Merge entering and existing icons to update transform for all
-iconsEnter.merge(icons)
-  .attr('transform', (i) => {
-    const row = Math.floor(i / cols);
-    const col = i % cols;
-    const jx = (Math.random() - 0.5) * 20;
-    const jy = (Math.random() - 0.5) * 20;
-    return `translate(${col * (iconSize + padding) + jx}, ${row * (iconSize + padding) + jy}) scale(${iconSize / 200})`;
-  });
-
-// Transition only existing icons to the new fill color
-icons.transition()                    // Only existing icons, not iconsEnter
-  .duration(600)                      // Smooth transition duration
-  .style('fill', color(d.data.placa)); // Gradually update color
-
-  // Animate the entering icons to fade in to 0.9 opacity
-  iconsEnter.transition().duration(600).style('opacity', 0.9);
-  // Animate exiting icons to fade out, then remove them
-  icons.exit().transition().duration(600).style('opacity', 0).remove();
-});
+    // ENTER
+    const nodesEnter = nodes.enter()
+      .append('g')
+      .attr('class', 'node')
+      .attr('transform', d => `translate(${d.x0},${d.y0})`)
+      .style('opacity', 1)
+      .style('overflow', 'visible');
 
 
-}, [filteredData, dimensions]);
+
+    nodesEnter.append('rect').attr('fill', 'none');
+    nodesEnter.append('g').attr('class', 'icons');
+
+    nodesEnter.transition().duration(400).style('opacity', 1);
+    nodes.transition().duration(1000).attr('transform', d => `translate(${d.x0},${d.y0})`);
+    nodes.exit().transition().duration(400).style('opacity', 0).remove();
+
+    // Icons
+
+    nodesEnter.merge(nodes as any).each(function (d) {
+      // Select the 'g' element with class 'icons' inside the current node
+      const g = d3.select(this).select<SVGGElement>('g.icons');
+
+
+
+
+      // Calculate the width of the current cell
+      const cellWidth = d.x1 - d.x0;
+      // Calculate the height of the current cell
+      const cellHeight = d.y1 - d.y0;
+      // Calculate how many icons can fit horizontally in the cell (at least 1)
+      const cols = Math.max(1, Math.floor(cellWidth / (iconSize + padding)));
+      // Calculate how many icons can fit vertically in the cell
+      const rows = Math.floor(cellHeight / (iconSize + padding));
+      // If either dimension cannot fit any icons, skip this cell
+      if (cols <= 0 || rows <= 0) return;
+
+      // Maximum number of icons that can fit in the cell
+      const maxIcons = cols * rows;
+      // Desired number of icons based on data and workersPerIcon ratio
+      const desiredIcons = Math.round(d.data.broj / workersPerIcon);
+      // Actual number of icons to display (cannot exceed maxIcons)
+      const iconCount = Math.min(maxIcons, desiredIcons);
+
+      // Bind the icon data to 'use' elements (one per icon)
+      const icons = g.selectAll<SVGUseElement, number>('use')
+        .data(d3.range(iconCount));
+
+const iconsEnter = icons.enter()
+  .append('use')
+  .attr('href', '#person-icon')
+  .style('fill', color(d.data.placa))
+  .style('opacity', 1); 
+
+
+
+
+        
+      // Merge entering and existing icons to update transform for all
+      iconsEnter.merge(icons)
+        .attr('transform', (i) => {
+          const row = Math.floor(i / cols);
+          const col = i % cols;
+          const jx = (Math.random() - 0.5) * 20;
+          const jy = (Math.random() - 0.5) * 20;
+          return `translate(${col * (iconSize + padding) + jx}, ${row * (iconSize + padding) + jy}) scale(${iconSize / 200})`;
+        });
+
+      // Transition only existing icons to the new fill color
+      icons.transition()                    // Only existing icons, not iconsEnter
+        .duration(600)                      // Smooth transition duration
+        .style('fill', color(d.data.placa)); // Gradually update color
+
+
+
+
+
+      // Animate exiting icons to fade out, then remove them
+      icons.exit().transition().duration(600).style('opacity', 0).remove();
+    });
+
+
+  }, [filteredData, dimensions]);
 
 
 
