@@ -294,7 +294,7 @@ const iconsEnter = icons.enter()
       onMouseLeave={() => setTooltip(null)}
     >
       {/* Year buttons and stats */}
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "30px" }}>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "50px" }}>
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
           {years.map(y => (
             <button

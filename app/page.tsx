@@ -31,7 +31,7 @@ export default function Home() {
   const [data, setData] = useState<any[]>([]);
   const [treemapData, setTreemapData] = useState<any[]>([]);
   const [activeSection, setActiveSection] = useState("migration");
-  
+
 
   useEffect(() => {
     d3.csv("/data/zahtjevi.csv").then((raw) => {
@@ -116,18 +116,47 @@ export default function Home() {
               </li>
             ))}
         </ul>
-
       </nav>
 
 
       <section className="content">
 
-        <section className="section mb-40" id="migration">
+        <section className="section mb-10" id="intro">
           <div className="chart-wrapper">
-            <h2></h2>
+            <h1>
+              Hrvatska u brojkama: <span className="text-green-800">migracije</span>
+            </h1>
+
+            <p className="lede mb-5">
+              Ova je stranica nastala iz jednostavne znatiželje:
+              <b> što nam govore podaci?</b>
+            </p>
+
+            <p className="lede mb-5">
+              Projekt je rezultat želje da pregledam podatke vezano uz migracije na jednom mjestu, bez
+              dramatičnih naslova, subjektivnih interpretacija i reklama.
+
+              Kao što kažu, slika govori tisuću riječi.
+
+              Podaci su prikupljeni iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ).
+              Ponekad nema dostupnih podataka za posljednje godine, ali <b>možemo promatrati trendove</b>.
+            </p>
 
             <p className="lede">
-              Od 2021. godine Hrvatska bilježi više useljenika nego iseljenika.
+              Cilj je jednostavan: informiranje.
+            </p>
+          </div>
+        </section>
+
+
+        <section className="section mb-40" id="migration">
+          <div className="chart-wrapper">
+            <h2>
+              Tko odlazi, a tko dolazi?
+            </h2>
+
+            <p className="lede">
+              Od 2022. godine Hrvatska bilježi više useljenika nego iseljenika.
             </p>
 
             <div className="chart-row">
@@ -144,11 +173,11 @@ export default function Home() {
               Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
             </p>
             <a href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti" target="_blank" rel="noopener noreferrer">
-              Iznimke za koje test nije potreban
+              Iznimke za koje test <b className="text-green-800">nije potreban</b>
             </a>
 
-
             <ListaZanimanja />
+
           </div>
         </section>
 
@@ -180,7 +209,8 @@ export default function Home() {
             <p className="lede ">
               2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije. Izvor:{" "}
               <a
-                href="https://ec.europa.eu/eurostat/web/migration-asylum/international-migration-citizenship/database" target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', lineHeight: 1.6 }}
+                href="https://ec.europa.eu/eurostat/web/migration-asylum/international-migration-citizenship/database" 
+                target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', lineHeight: 1.6 }}
               >
                 Eurostat
               </a>
@@ -215,15 +245,14 @@ export default function Home() {
 
             <p className="lede">
               Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. radilo i boravilo podjednako osoba iz BiH i Nepala.
-              Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. mnogo je manji. U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina. Izvor:{" "}
+              Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji. U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina. Izvor:{" "}
 
               <a
-                href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019" target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', lineHeight: 1.6 }}
+                href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019" 
+                target="_blank" rel="noopener noreferrer" style={{ fontSize: '14px', lineHeight: 1.6 }}
               >
                 MUP
               </a>
-
-              
 
             </p>
 
@@ -246,11 +275,11 @@ export default function Home() {
             </p>
 
             <span style={{ fontSize: "14px", color: "#555" }}>
-                Veći kvadrat znači <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
-              </span>
+              Veći kvadrat znači <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
+            </span>
 
             <div className="chart-row">
-              <DorlingWorld  />
+              <DorlingWorld />
             </div>
 
             <ToggleDetails buttonText="Detalji">
@@ -279,10 +308,14 @@ export default function Home() {
             </ToggleDetails>
 
           </div>
+
+          
         </section>
 
 
       </section>
+
+      
 
 
 
@@ -317,9 +350,18 @@ export default function Home() {
           margin-left: 300px;
           width: 100%;
           overflow-x: visible; /* <--- allow children to overflow horizontally */
+          color: #444;
         }
 
 
+
+
+.section h1 {
+        margin-bottom: 2rem;
+        font-size: 3rem; 
+        font-weight: 700;
+        line-height: 1.2; 
+        }
 
         .section h2 {
         margin-bottom: 2rem;
@@ -330,11 +372,10 @@ export default function Home() {
 
         .section a {
         display: inline-block;
-
         margin-bottom: 2rem;
         font-size: 1.5rem; 
-        font-weight: 700;
-        color: #006400; 
+        font-weight: 600;
+
         }
 
         .chart-wrapper {
@@ -347,7 +388,7 @@ export default function Home() {
           max-width: 640px;
           font-size: 16px;
           line-height: 1.6;
-          color: #444;
+ 
         }
 
 
@@ -397,6 +438,12 @@ export default function Home() {
           }
         }
       `}</style>
+
+      <div className="mb-0 flex gap-4 text-xs text-slate-400">
+        <a href="https://github.com/tvoje-github" className="hover:text-slate-600">GitHub</a>
+        <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600">LinkedIn</a>
+      </div>
+      
     </main >
   );
 }
