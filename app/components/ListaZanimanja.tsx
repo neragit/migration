@@ -139,29 +139,30 @@ export default function OccupationCountyMap() {
             .attr("stroke", "#fff")
             .attr("stroke-width", 0.6)
             .attr("fill", d => {
-                const name = d.properties.name?.toUpperCase()
+    const name = d.properties?.name?.toUpperCase() || "" // <-- safe fallback
 
-                if (ALL_COUNTIES_OCCUPATIONS.includes(activeOccupation || "")) {
-                    return "green"
-                }
+    if (ALL_COUNTIES_OCCUPATIONS.includes(activeOccupation || "")) {
+        return "green"
+    }
 
-                if (
-                    activeOccupation &&
-                    OCCUPATIONS_BY_COUNTY[activeOccupation]?.includes(name)
-                ) {
-                    return "green"
-                }
+    if (
+        activeOccupation &&
+        OCCUPATIONS_BY_COUNTY[activeOccupation]?.includes(name)
+    ) {
+        return "green"
+    }
 
-                if (activeCounty === name) {
-                    return "green"
-                }
+    if (activeCounty === name) {
+        return "green"
+    }
 
-                return "#eee"
-            })
-            .on("mouseenter", (_, d: any) => {
-                setActiveCounty(d.properties.name?.toUpperCase())
-                setActiveOccupation(null)
-            })
+    return "#eee"
+})
+.on("mouseenter", (_, d: any) => {
+    setActiveCounty(d.properties?.name?.toUpperCase() || null) // <-- safe
+    setActiveOccupation(null)
+})
+
     }
 
     return (

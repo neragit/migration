@@ -147,20 +147,24 @@ if (!defs.select("#person-icon").node()) {
     const { width, height } = dimensions;
 
     // Build hierarchy
-    const root = d3
-      .hierarchy({ children: filteredData } as any)
-      .sum(d => d.broj)
-      .sort((a, b) => b.value! - a.value!);
+const root = d3
+  .hierarchy({ children: filteredData } as any)
+  .sum(d => d.broj)
+  .sort((a, b) => b.value! - a.value!);
 
-    d3.treemap<TreemapData>().size([width, height]).padding(1)(root);
+// Apply treemap layout
+const treemapRoot = d3.treemap<TreemapData>()
+  .size([width, height])
+  .padding(1)(root) as d3.HierarchyRectangularNode<TreemapData>; // ✅ Cast here
 
-    const leaves = root.leaves().map(d => ({
-      x0: d.x0,
-      x1: d.x1,
-      y0: d.y0,
-      y1: d.y1,
-      data: d.data,
-    }));
+const leaves = treemapRoot.leaves().map(d => ({
+  x0: d.x0,
+  x1: d.x1,
+  y0: d.y0,
+  y1: d.y1,
+  data: d.data,
+}));
+
 
     setRects(leaves);
 

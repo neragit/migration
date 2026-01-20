@@ -1,10 +1,15 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, ReactNode } from "react";
 import { ChevronDown } from "lucide-react";
 
-export default function Details({ buttonText, children }) {
+interface DetailsProps {
+  buttonText: string;
+  children: ReactNode;
+}
+
+export default function Details({ buttonText, children }: DetailsProps) {
   const [open, setOpen] = useState(false);
   const [height, setHeight] = useState(0);
-  const contentRef = useRef(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   // Update height for animation
   useEffect(() => {
@@ -56,6 +61,3 @@ export default function Details({ buttonText, children }) {
     </div>
   );
 }
-
-          
-      

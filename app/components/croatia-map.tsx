@@ -15,7 +15,7 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
   const topoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [year, setYear] = useState<number>(2021 || data[0]?.godina);
+  const [year, setYear] = useState<number>(data[0]?.godina ?? 2021);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
 
   const countyMap: Record<string, string> = {
@@ -59,9 +59,9 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
 
   const totalYear = dataByYear[year]
     ? Object.values(dataByYear[year]).reduce(
-        (sum, v) => sum + v.pos + v.neg,
-        0
-      )
+      (sum, v) => sum + v.pos + v.neg,
+      0
+    )
     : 0;
 
   const formatNumber = (num: number) => num.toLocaleString("fr-FR");
@@ -128,21 +128,25 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
       .merge(paths as any)
       .attr("d", path)
       .attr("fill", d => {
-        const name = d.properties.name?.toUpperCase();
+        const name = d.properties?.name?.toUpperCase();
+        if (!name) return "#eee";                        // return default color if name is missing
         const v = selectedData[name];
         return v ? color(v.pos) : "#eee";
       })
+
       .on("mousemove", (event, d) => {
-        const name = d.properties.name;
-        const v = selectedData[name?.toUpperCase()];
-        if (v) {
-          setTooltip({
-            x: event.clientX + 10,
-            y: event.clientY + 10,
-            content: `${name}\nOdobreno: ${formatNumber(v.pos)}\nNeodobreno: ${formatNumber(v.neg)}`,
-          });
-        }
+        const name = d.properties?.name;      // optional chaining
+        if (!name) return;                    // do nothing if name missing
+        const v = selectedData[name.toUpperCase()];
+        if (!v) return;
+
+        setTooltip({
+          x: event.clientX + 10,
+          y: event.clientY + 10,
+          content: `${name}\nOdobreno: ${formatNumber(v.pos)}\nNeodobreno: ${formatNumber(v.neg)}`,
+        });
       })
+
       .on("mouseleave", () => setTooltip(null));
 
     paths.exit().remove();
@@ -221,7 +225,7 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
           ))}
         </div>
         <div style={{ marginRight: 300, fontSize: "1.5rem", color: "#333" }}>
-          {formatNumber(totalYear)} <b> radnika</b> 
+          {formatNumber(totalYear)} <b> radnika</b>
         </div>
       </div>
 

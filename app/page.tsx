@@ -250,7 +250,7 @@ export default function Home() {
               </span>
 
             <div className="chart-row">
-              <DorlingWorld width={1000} height={600} />
+              <DorlingWorld  />
             </div>
 
             <ToggleDetails buttonText="Detalji">

@@ -13,6 +13,17 @@ interface Props {
   height: number;
 }
 
+interface NodeDatum extends d3.SimulationNodeDatum {
+  x: number;
+  y: number;
+  r: number;
+  data: {
+    country: string;
+    value: number;
+  };
+}
+
+
 export default function Mup({ width, height }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
@@ -147,16 +158,19 @@ export default function Mup({ width, height }: Props) {
     });
 
     // ───────────── Weak collision once ─────────────
-    const sim = d3.forceSimulation(nodes)
-      .force("x", d3.forceX(d => d.x).strength(0.05))
-      .force("y", d3.forceY(d => d.y).strength(0.05))
-      .force("collide", d3.forceCollide(d => {
-        const region = countryRegion[d.data.country] || "Europe";
-        const baseRadius = d.r * 3;
-        return region === "Asia" ? baseRadius * 1.5 : baseRadius; // stronger collision for Asia
-      }))
+    const sim = d3.forceSimulation<NodeDatum>(nodes)
+  .force("x", d3.forceX(d => d.x!).strength(0.05))
+  .force("y", d3.forceY(d => d.y!).strength(0.05))
+  .force(
+    "collide",
+    d3.forceCollide(d => {
+      const region = countryRegion[d.data.country] || "Europe";
+      const baseRadius = d.r * 3;
+      return region === "Asia" ? baseRadius * 1.5 : baseRadius;
+    })
+  )
+  .stop();
 
-      .stop();
 
     for (let i = 0; i < 80; i++) sim.tick();
 
@@ -222,19 +236,23 @@ export default function Mup({ width, height }: Props) {
         )
         .style("opacity", 0)
         .on("mousemove", function (event) {
-          const parentData = d3.select(this.parentNode).datum();
-          const value = parentData.data.value;
+  const parent = this.parentNode as SVGElement; // cast to SVGElement
+  const parentData = d3.select(parent).datum() as {
+    data: { country: string; value: number };
+  };
+  
+  const value = parentData.data.value;
 
-          setTooltip({
-            x: event.clientX + 10,
-            y: event.clientY + 10,
-            content:
-              value === 0
-                ? `${parentData.data.country}\nNije u top 10 u navedenoj godini `
-                : `${parentData.data.country}\n${value.toLocaleString("fr-FR")}`
-          });
+  setTooltip({
+    x: event.clientX + 10,
+    y: event.clientY + 10,
+    content:
+      value === 0
+        ? `${parentData.data.country}\nNije u top 10 u navedenoj godini`
+        : `${parentData.data.country}\n${value.toLocaleString("fr-FR")}`,
+  });
+})
 
-        })
         .on("mouseleave", () => setTooltip(null))
 
 

@@ -4,13 +4,83 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import countries from "i18n-iso-countries";
 import hrLocale from "i18n-iso-countries/langs/hr.json";
+import { FeatureCollection } from "geojson";
 
 
+interface DorlingRow {
+  origin: string;
+  origin_code: string;
+  destination: string;
+  destination_code: string;
+  total_pop: string;
+  total_mig: string;
+  life?: string;
+  gni?: string;
+  major1?: string;
+  major1_perc?: string;
+  major2?: string;
+  major2_perc?: string;
+  remit?: string;
+}
+
+interface ParsedDorlingRow {
+  origin: string;
+  origin_code: string;
+  destination: string;
+  destination_code: string;
+  total_pop: number;
+  total_mig: number;
+  life?: number;
+  gni?: number;
+  major1?: string;
+  major1_perc?: number;
+  major2?: string;
+  major2_perc?: number;
+  remit?: number;
+}
+
+
+interface Node extends AggregatedCountry {
+  country_hr: string;
+  r: number;
+  x: number;
+  y: number;
+  fxTarget: number;
+  fyTarget: number;
+}
+
+interface CountryFeatureProperties {
+  ISO_N3_EH?: string;
+  NAME?: string;
+  [key: string]: any;
+}
+
+
+interface CountryFeature extends GeoJSON.Feature<GeoJSON.Geometry, CountryFeatureProperties> { }
+
+interface AggregatedCountry {
+  country: string;
+  country_code: string;
+  total_pop: number;
+  total_mig: number;
+  life?: number;
+  gni?: number;
+  major1?: string;
+  major1_perc?: number;
+  major2?: string;
+  major2_perc?: number;
+  remit?: number | null;
+}
 
 export default function DorlingWorld() {
-  const svgRef = useRef(null);
-  const [data, setData] = useState([]);
-  const [worldData, setWorldData] = useState(null); // <-- load GeoJSON dynamically
+
+  type CountryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, CountryFeatureProperties>;
+
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
+  const [data, setData] = useState<ParsedDorlingRow[]>([]);
+
+  const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
 
@@ -21,29 +91,43 @@ export default function DorlingWorld() {
 
   // Load CSV
   useEffect(() => {
-    d3.csv("/data/dorling.csv", d => ({
-      ...d,
+    d3.csv("/data/dorling.csv", (d: DorlingRow): ParsedDorlingRow => ({
+      origin: d.origin,
+      origin_code: d.origin_code,
+      destination: d.destination,
+      destination_code: d.destination_code,
       total_pop: +d.total_pop,
       total_mig: +d.total_mig,
-      life: d.life ? +d.life : null,
-      gni: d.gni ? +d.gni : null,
-      major1_perc: d.major1_perc ? +d.major1_perc : null,
-      major2_perc: d.major2_perc ? +d.major2_perc : null,
-      remit: d.remit ? +d.remit : null,
-    })).then(setData);
+      life: d.life ? +d.life : undefined,
+      gni: d.gni ? +d.gni : undefined,
+      major1: d.major1 ?? "",
+      major1_perc: d.major1_perc ? +d.major1_perc : undefined,
+      major2: d.major2 ?? "",
+      major2_perc: d.major2_perc ? +d.major2_perc : undefined,
+      remit: d.remit ? +d.remit : undefined
+    }))
+      .then((rows: ParsedDorlingRow[]) => setData(rows))
+      .catch(error => console.error("Error loading CSV:", error));
   }, []);
+
+
 
   // Load GeoJSON dynamically from public folder
   useEffect(() => {
-    d3.json("/maps/countries.json").then(setWorldData);
+    d3.json("/maps/countries.json")
+      .then((json) => setWorldData(json as CountryFeatureCollection))
+      .catch(error => console.error("Error loading GeoJSON:", error));
   }, []);
+
 
   useEffect(() => {
     if (!data.length || !worldData) return;
 
     const width = 1000;
     const height = 500;
-    const svg = d3.select(svgRef.current)
+    if (!svgRef.current) return; // ← remove null
+
+    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
       .attr("width", width)
       .attr("height", height)
       .style("overflow", "visible");
@@ -51,16 +135,19 @@ export default function DorlingWorld() {
     svg.selectAll("*").remove(); // Clear previous drawing
 
     // Scale for square sizes
+    const maxPop = d3.max(data, d => d.total_pop) ?? 0;
     const sizeScale = d3.scaleSqrt()
-      .domain([0, d3.max(data, d => d.total_pop)])
+      .domain([0, maxPop])
       .range([5, 70]);
 
+
     // Filter out "World" and aggregate by country
-    const countryData = Object.values(
+    const countryData: AggregatedCountry[] = Object.values(
       data
         .filter(d => mode === "destination" ? d.destination !== "World" : d.origin !== "World")
-        .reduce((acc, d) => {
+        .reduce<Record<string, AggregatedCountry>>((acc, d) => {
           const key = mode === "destination" ? d.destination_code : d.origin_code;
+
           if (!acc[key]) {
             acc[key] = {
               country: mode === "destination" ? d.destination : d.origin,
@@ -73,7 +160,7 @@ export default function DorlingWorld() {
               major1_perc: d.major1_perc,
               major2: d.major2,
               major2_perc: d.major2_perc,
-              remit: d.remit ? +d.remit : null
+              remit: d.remit ?? null
             };
           } else {
             acc[key].total_mig += d.total_mig;
@@ -86,12 +173,13 @@ export default function DorlingWorld() {
     const totalMigration = countryData.reduce((sum, d) => sum + d.total_mig, 0);
     setTotalMig(totalMigration);
 
+    const maxMig = d3.max(countryData, d => d.total_mig) ?? 1;
 
-
-    // Color scale based on total_mig
-    const colorScale = d3.scaleLinear()
-      .domain([0, d3.max(countryData, d => d.total_mig)])
+    const colorScale = d3.scaleLinear<string>()
+      .domain([0, maxMig])
       .range(["#fff0f5", "#c51b8a"]);
+
+
 
     // Tooltip
     const tooltip = d3.select("body")
@@ -115,28 +203,34 @@ export default function DorlingWorld() {
       .rotate([-60, 0])
       .translate([width / 2, height / 2]); // no rotation
 
-    const centroids = {};
-    const isPointFeature = {};
+    const centroids: Record<string, { x: number; y: number }> = {};
+    const isPointFeature: Record<string, boolean> = {};
 
-    worldData.features.forEach(f => {
+    worldData.features.forEach((f: CountryFeature) => {
       const code = f.properties.ISO_N3_EH?.trim();
       if (!code) return;
 
       if (f.geometry.type === "Point") {
-        // Use point projection (no rotation)
-        const [x, y] = pointProjection(f.geometry.coordinates);
+        const coords = f.geometry.coordinates as [number, number];
+        const projected = pointProjection(coords);
+        if (!projected) return;
+
+        const [x, y] = projected;
         centroids[code] = { x, y };
         isPointFeature[code] = true;
       } else {
-        // Polygon centroid with rotation
-        const [x, y] = polyProjection(d3.geoCentroid(f));
+        const projected = polyProjection(d3.geoCentroid(f));
+        if (!projected) return;
+
+        const [x, y] = projected;
         centroids[code] = { x, y };
         isPointFeature[code] = false;
       }
     });
 
 
-    const nodes = countryData.map(d => {
+    const nodes: Node[] = countryData.map(d => {
+
       const csvCode = String(d.country_code).padStart(3, "0");
       const centroid = centroids[csvCode];
       const pointFeature = isPointFeature[csvCode];
@@ -156,15 +250,17 @@ export default function DorlingWorld() {
 
 
 
+
     //zoomable
     const g = svg.append("g").attr("class", "nodes-group");
 
     // --- After nodes array is created ---
-    const simulation = d3.forceSimulation(nodes)
-      .force("x", d3.forceX(d => d.fxTarget).strength(0.05)) // pull toward centroid x
-      .force("y", d3.forceY(d => d.fyTarget).strength(0.05)) // pull toward centroid y
-      .force("collide", d3.forceCollide(d => d.r * 0.5)) // small padding to avoid collision
+    const simulation = d3.forceSimulation<Node>(nodes)
+      .force("x", d3.forceX<Node>(d => d.fxTarget).strength(0.05))
+      .force("y", d3.forceY<Node>(d => d.fyTarget).strength(0.05))
+      .force("collide", d3.forceCollide<Node>(d => d.r * 0.5))
       .stop();
+
 
     // Run the simulation for a few ticks
     for (let i = 0; i < 50; i++) simulation.tick();
@@ -194,31 +290,55 @@ export default function DorlingWorld() {
           "Other_religions": "Ostali"
         };
 
-        let religionHtml = `${religionMap[d.major1] ?? d.major1} ${d.major1_perc != null ? Math.round(d.major1_perc * 100) + "%" : ""}`;
+        const major1Label =
+          d.major1 && religionMap[d.major1 as keyof typeof religionMap]
+            ? religionMap[d.major1 as keyof typeof religionMap]
+            : d.major1 ?? "";
+
+        let religionHtml = `${major1Label} ${d.major1_perc != null ? Math.round(d.major1_perc * 100) + "%" : ""
+          }`;
+
         if (d.major2 && d.major2.trim() !== "") {
-          religionHtml += ` ${religionMap[d.major2] ?? d.major2} ${d.major2_perc != null ? Math.round(d.major2_perc * 100) + "%" : ""}`;
+          const major2Label =
+            religionMap[d.major2 as keyof typeof religionMap] ?? d.major2;
+
+          religionHtml += ` ${major2Label} ${d.major2_perc != null ? Math.round(d.major2_perc * 100) + "%" : ""
+            }`;
         }
 
 
         const migLabel =
           mode === "destination" ? "Broj imigranata" : "Broj emigranata";
 
-        function formatMoney(value) {
-          if (!Number.isFinite(value)) return ""; // skip invalid numbers
-          if (value >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(1)} mlrd.`;
-          if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(1)} mil.`;
+        function formatMoney(value?: number | null): string {
+          if (typeof value !== "number" || !Number.isFinite(value)) return "";
+
+          if (value >= 1_000_000_000)
+            return `${(value / 1_000_000_000).toFixed(1)} mlrd.`;
+
+          if (value >= 1_000_000)
+            return `${(value / 1_000_000).toFixed(1)} mil.`;
+
           return value.toString();
         }
 
+
         tooltip.html(`
-  <strong>${d.country_hr}</strong><br/>
-  Ukupno stanovnika: ${formatMoney(d.total_pop)} (2024)<br/>
-  ${migLabel}: ${formatMoney(d.total_mig)}<br/>
-  ${d.gni !== null ? `GNI per capita: ${new Intl.NumberFormat('fr-FR').format(Math.round(d.gni))} USD<br/>` : ""}
-  ${d.remit !== null ? `Doznake: ${formatMoney(d.remit)} USD<br/>` : ""}
-  ${d.life !== null ? `Očekivana dob: ${Math.round(d.life)} godina<br/>` : ""}
-  ${d.major1_perc !== null ? `Glavna religija: ${religionHtml}` : ""}
-`)
+            <strong>${d.country_hr}</strong><br/>
+            Ukupno stanovnika: ${formatMoney(d.total_pop)} (2024)<br/>
+            ${migLabel}: ${formatMoney(d.total_mig)}<br/>
+            ${typeof d.gni === "number"
+            ? `GNI per capita: ${new Intl.NumberFormat("fr-FR").format(
+              Math.round(d.gni)
+            )} USD<br/>`
+            : ""}
+
+            ${d.remit !== null ? `Doznake: ${formatMoney(d.remit)} USD<br/>` : ""}
+            ${typeof d.life === "number"
+            ? `Očekivana dob: ${Math.round(d.life)} godina<br/>`
+            : ""}
+            ${d.major1_perc !== null ? `Glavna religija: ${religionHtml}` : ""}
+          `)
 
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY + 10) + "px");
@@ -228,13 +348,14 @@ export default function DorlingWorld() {
       });
 
     // --- D3 Zoom ---
-    const zoom = d3.zoom()
-      .scaleExtent([0.5, 10]) // min/max zoom
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([0.5, 10])
       .on("zoom", (event) => {
         g.attr("transform", event.transform);
       });
 
-    svg.call(zoom);
+    svg.call(zoom); // now TS is happy
+
 
   }, [data, worldData, mode]);
 
