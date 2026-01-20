@@ -50,11 +50,13 @@ useEffect(() => {
     .style("font-size", "12px")
     .style("z-index", "9999");
 
-  return () => {
+  const cleanup = (): void => {
     tooltip.remove();
-    // 👆 explicitly no return value
   };
+
+  return cleanup;
 }, []);
+
 
 
   // Tooltip follow
