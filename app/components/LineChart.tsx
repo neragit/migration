@@ -209,7 +209,7 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
 
           tooltip
             .style("display", "block")
-            .html(`${label}: ${value}`)
+            .html(`${label}: ${new Intl.NumberFormat('fr-FR').format(value)}`)
             .style("left", `${event.pageX + 10}px`)
             .style("top", `${event.pageY - 20}px`);
         })

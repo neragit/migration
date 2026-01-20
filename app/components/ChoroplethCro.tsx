@@ -103,7 +103,7 @@ useEffect(() => {
     const dataEntry = dataMap.get(code);
     if (!dataEntry) return;
     tooltip
-      .html(`<b>${dataEntry.country_name}</b><br>${new Intl.NumberFormat('hr-HR').format(dataEntry.value)}`)
+      .html(`<b>${dataEntry.country_name}</b><br>${new Intl.NumberFormat('fr-FR').format(dataEntry.value)}`)
       .transition()
       .duration(50)
       .style("opacity", 0.95);
@@ -204,7 +204,7 @@ useEffect(() => {
         </div>
 
         <div style={{ fontSize: "1.5rem", color: "#333" }}>
-          {currentTotal?.toFixed(0) ?? "-"}<b> imigranata</b>
+          {new Intl.NumberFormat('fr-FR').format(currentTotal)} <b> imigranata</b>
         </div>
 
       </div>

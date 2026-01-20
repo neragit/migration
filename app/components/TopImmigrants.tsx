@@ -189,7 +189,7 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
         .style("opacity", 0)
         .on("mouseenter", (event, d) => {
           tooltip.style("display", "block")
-            .html(`<strong>${countryData.country}</strong><br/>Godina: ${d.year}<br/>Broj imigranata: ${d.value}`)
+            .html(`<strong>${countryData.country}</strong><br/>Godina: ${d.year}<br/>Broj imigranata: ${new Intl.NumberFormat('fr-FR').format(d.value)}`)
             .style("left", `${event.pageX + 10}px`)
             .style("top", `${event.pageY - 30}px`);
         })
