@@ -83,6 +83,10 @@ export default function DorlingWorld() {
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const firstRenderRef = useRef(true);
+
+
 
 
   // Register Croatian locale
@@ -123,7 +127,7 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData) return;
 
-    const width = 1000;
+    const width = 1100;
     const height = 500;
     if (!svgRef.current) return; // ← remove null
 
@@ -182,18 +186,20 @@ export default function DorlingWorld() {
 
 
     // Tooltip
-    const tooltip = d3.select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("position", "absolute")
+
+    const tooltip = d3.select(tooltipRef.current);
+    // NO append
+    tooltip.style("position", "absolute"); // only if not in CSS
+
+
 
     const polyProjection = d3.geoNaturalEarth1()
-      .scale(200)
+      .scale(250)
       .rotate([120, 0]) // rotation applied only to polygons
       .translate([width / 2, height / 2]);
 
     const pointProjection = d3.geoNaturalEarth1()
-      .scale(200)
+      .scale(250)
       .rotate([-60, 0])
       .translate([width / 2, height / 2]); // no rotation
 
@@ -245,7 +251,7 @@ export default function DorlingWorld() {
 
 
 
-    //zoomable
+
     const g = svg.append("g").attr("class", "nodes-group");
 
     // --- After nodes array is created ---
@@ -260,18 +266,19 @@ export default function DorlingWorld() {
     for (let i = 0; i < 50; i++) simulation.tick();
 
     // Update the squares positions after simulation
-    g.selectAll("rect")
+    const rects = g.selectAll("rect")
       .data(nodes)
       .join("rect")
-      .attr("x", d => d.x - d.r / 2)
-      .attr("y", d => d.y - d.r / 2)
-      .attr("rx", 2)   // horizontal corner radius
-      .attr("ry", 2)  // vertical corner radius
-      .attr("width", d => d.r)
-      .attr("height", d => d.r)
+      .attr("x", d => d.x)   // start at center
+      .attr("y", d => d.y)
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .attr("width", 0)
+      .attr("height", 0)
       .attr("fill", d => colorScale(d.total_mig))
-      .attr("fill-opacity", 0.5)
+      .attr("fill-opacity", 0)
       .attr("stroke", "#fde0dd")
+
       .on("mouseover", (event, d) => {
         tooltip.transition().duration(200).style("opacity", 0.90);
         const religionMap = {
@@ -336,34 +343,53 @@ export default function DorlingWorld() {
 
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY + 10) + "px");
+
       })
 
       .on("mousemove", (event) => {
-        // Update tooltip position every mouse move
+        const [x, y] = d3.pointer(event); // relative to the SVG
         tooltip
-          .style("left", event.pageX + 10 + "px")
-          .style("top", event.pageY + 10 + "px");
+
+          .style("left", x + 10 + "px")
+          .style("top", y + 10 + "px");
       })
+
 
       .on("mouseout", () => {
         tooltip.transition().duration(200).style("opacity", 0);
       });
 
-    // --- D3 Zoom ---
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([0.5, 10])
-      .on("zoom", (event) => {
-        g.attr("transform", event.transform);
-      });
+    if (firstRenderRef.current) {
+      rects.transition()
+        .duration(300)
+        .delay((d, i) => i * 20)
+        .attr("x", d => d.x - d.r / 2)
+        .attr("y", d => d.y - d.r / 2)
+        .attr("width", d => d.r)
+        .attr("height", d => d.r)
+        .attr("fill-opacity", 0.5);
 
-    svg.call(zoom); // now TS is happy
+      firstRenderRef.current = false; // mark first render done
+    } else {
+      // for subsequent updates (mode switch), just update positions & colors instantly
+      rects
+        .attr("x", d => d.x - d.r / 2)
+        .attr("y", d => d.y - d.r / 2)
+        .attr("width", d => d.r)
+        .attr("height", d => d.r)
+        .attr("fill", d => colorScale(d.total_mig))
+        .attr("fill-opacity", 0.5);
+    }
+
+
+
 
 
   }, [data, worldData, mode]);
 
   return (
     <div >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "0px" }}>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px" }}>
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
@@ -399,8 +425,15 @@ export default function DorlingWorld() {
 
       </div>
 
+
+
       <svg ref={svgRef}></svg>
+      <div ref={tooltipRef} className="tooltip"></div>
+
+
 
     </div>
+
+
   );
 }

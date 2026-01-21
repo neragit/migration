@@ -152,7 +152,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
           if (entry.isIntersecting) {
             line
               .transition()
-              .duration(5000)
+              .duration(3000)
               .delay(idx * 1000)
               .attr("opacity", 0.2);
 
@@ -160,7 +160,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
               tspan
                 .transition()
                 .duration(3000)
-                .delay(idx * 1000 + 7000)
+                .delay(idx * 1000 + 4000)
                 .style("opacity", 1);
             });
 
@@ -238,9 +238,9 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
-            path.transition().duration(8000).ease(d3.easeCubic).attr("stroke-dashoffset", 0);
+            path.transition().duration(5000).ease(d3.easeCubic).attr("stroke-dashoffset", 0);
 
-            circles.transition().delay(7000).duration(1000).style("opacity", 1);
+            circles.transition().delay(4000).duration(1000).style("opacity", 1);
 
             // Animate x-axis tick labels sequentially
             xTicks.each((d, i, nodes) => {

@@ -218,8 +218,10 @@ export default function Mup({ width, height }: Props) {
         return [Math.cos(a) * rr, Math.sin(a) * rr];
       });
 
-      const icons = g.selectAll("use")
-        .data(positions);
+      const icons = g.selectAll("use").data(positions);
+      
+      icons.style("opacity", 1)
+
 
       icons.exit()
         .transition().duration(500)
@@ -260,135 +262,135 @@ export default function Mup({ width, height }: Props) {
                 </div>
               ),
           });
-          })
+        })
 
 
         .on("mouseleave", () => setTooltip(null))
 
-            .transition()
-            .duration(500)
-            .style("opacity", 1);
+        .transition()
+        .duration(500)
+        .style("opacity", 1);
 
 
-          icons.transition().duration(500)
-            .attr("transform", ([dx, dy]) =>
-              `translate(${dx},${dy}) scale(${iconSize / 250})`
-            );
-        });
+      icons.transition().duration(500)
+        .attr("transform", ([dx, dy]) =>
+          `translate(${dx},${dy}) scale(${iconSize / 250})`
+        );
+    });
 
-      // ───────────── LABELS LAYER (ALWAYS ON TOP) ─────────────
-      let labelsLayer = svg.select<SVGGElement>(".labels-layer");
-      if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
+    // ───────────── LABELS LAYER (ALWAYS ON TOP) ─────────────
+    let labelsLayer = svg.select<SVGGElement>(".labels-layer");
+    if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
 
-      const labels = labelsLayer.selectAll<SVGTextElement, any>("text")
-        .data(nodes, d => d.data.country);
+    const labels = labelsLayer.selectAll<SVGTextElement, any>("text")
+      .data(nodes, d => d.data.country);
 
-      // remove old labels
-      labels.exit().remove();
+    // remove old labels
+    labels.exit().remove();
 
-      // append new labels
-      labels.enter()
-        .append("text")
-        .text(d => d.data.country)
-        .attr("x", d => d.x)   // set x only on enter
-        .attr("y", d => d.y)   // set y only on enter
-        .attr("text-anchor", "middle")
-        .attr("font-size", 16)
-        .attr("font-weight", 700)
-        .attr("fill", "#333")
-        .attr("stroke", "#fff")
-        .attr("stroke-width", 2)
-        .attr("paint-order", "stroke")
-        .style("pointer-events", "none");
-
-
-
-    }, [filteredData, width, height]);
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const years = [2021, 2022, 2023, 2024, 2025];
-
-    // ─────────────────────────────────────────────────────
-    // Scroll to change year
-    // ─────────────────────────────────────────────────────
-    useEffect(() => {
-      let lastScrollTime = 0;
-      const cooldown = 500; // ms
-
-      const handleWheel = (e: WheelEvent) => {
-        if (!containerRef.current) return;
-        const rect = containerRef.current.getBoundingClientRect();
-        const lockScroll = rect.bottom < window.innerHeight && rect.top > 0;
-        if (!lockScroll) return;
-
-        const now = Date.now();
-        if (now - lastScrollTime < cooldown) return;
-
-        const currentIndex = years.indexOf(selectedYear);
-
-        if (e.deltaY > 0 && currentIndex < years.length - 1) {
-          e.preventDefault();
-          setSelectedYear(years[currentIndex + 1]);
-          lastScrollTime = now;
-        } else if (e.deltaY < 0 && currentIndex > 0) {
-          e.preventDefault();
-          setSelectedYear(years[currentIndex - 1]);
-          lastScrollTime = now;
-        }
-      };
-
-      window.addEventListener("wheel", handleWheel, { passive: false });
-      return () => window.removeEventListener("wheel", handleWheel);
-    }, [selectedYear, years]);
+    // append new labels
+    labels.enter()
+      .append("text")
+      .text(d => d.data.country)
+      .attr("x", d => d.x)   // set x only on enter
+      .attr("y", d => d.y)   // set y only on enter
+      .attr("text-anchor", "middle")
+      .attr("font-size", 16)
+      .attr("font-weight", 700)
+      .attr("fill", "#333")
+      .attr("stroke", "#fff")
+      .attr("stroke-width", 2)
+      .attr("paint-order", "stroke")
+      .style("pointer-events", "none");
 
 
-    // ─────────────────────────────────────────────────────
-    // Render
-    // ─────────────────────────────────────────────────────
-    return (
-      <div ref={containerRef} style={{ width, height }}>
-        <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
-          {years.map(y => (
-            <button
-              key={y}
-              onClick={() => setSelectedYear(y)}
-              style={{
-                padding: "4px 10px",
-                background: selectedYear === y ? "#4e79a7" : "#eee",
-                color: selectedYear === y ? "#fff" : "#000",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer"
-              }}
-            >
-              {y}
-            </button>
-          ))}
-        </div>
 
-        <svg
-          ref={svgRef}
-          width={width}
-          height={height}
-          viewBox={`0 0 ${width} ${height}`}
-          style={{ display: "block", overflow: "visible" }}
-        />
+  }, [filteredData, width, height]);
 
-        {tooltip && (
-          <div
-            className="tooltip"
+  const containerRef = useRef<HTMLDivElement>(null);
+  const years = [2021, 2022, 2023, 2024, 2025];
+
+  // ─────────────────────────────────────────────────────
+  // Scroll to change year
+  // ─────────────────────────────────────────────────────
+  useEffect(() => {
+    let lastScrollTime = 0;
+    const cooldown = 500; // ms
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const lockScroll = rect.bottom < window.innerHeight && rect.top > 0;
+      if (!lockScroll) return;
+
+      const now = Date.now();
+      if (now - lastScrollTime < cooldown) return;
+
+      const currentIndex = years.indexOf(selectedYear);
+
+      if (e.deltaY > 0 && currentIndex < years.length - 1) {
+        e.preventDefault();
+        setSelectedYear(years[currentIndex + 1]);
+        lastScrollTime = now;
+      } else if (e.deltaY < 0 && currentIndex > 0) {
+        e.preventDefault();
+        setSelectedYear(years[currentIndex - 1]);
+        lastScrollTime = now;
+      }
+    };
+
+    window.addEventListener("wheel", handleWheel, { passive: false });
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [selectedYear, years]);
+
+
+  // ─────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────
+  return (
+    <div ref={containerRef} style={{ width, height }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
+        {years.map(y => (
+          <button
+            key={y}
+            onClick={() => setSelectedYear(y)}
             style={{
-              position: "fixed",
-              top: tooltip.y,
-              left: tooltip.x,
-              opacity: "0.90"
+              padding: "4px 10px",
+              background: selectedYear === y ? "#4e79a7" : "#eee",
+              color: selectedYear === y ? "#fff" : "#000",
+              border: "none",
+              borderRadius: 4,
+              cursor: "pointer"
             }}
           >
-            {tooltip.content}
-          </div>
-        )}
-
+            {y}
+          </button>
+        ))}
       </div>
-    );
 
-  }
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        viewBox={`0 0 ${width} ${height}`}
+        style={{ display: "block", overflow: "visible" }}
+      />
+
+      {tooltip && (
+        <div
+          className="tooltip"
+          style={{
+            position: "fixed",
+            top: tooltip.y,
+            left: tooltip.x,
+            opacity: "0.90"
+          }}
+        >
+          {tooltip.content}
+        </div>
+      )}
+
+    </div>
+  );
+
+}

@@ -20,14 +20,15 @@ export default function Home() {
 
   const sections = [
     { id: "start", label: "Početak" },
+    { id: "dorling", label: "Migranti u svijetu" },
     { id: "migration", label: "Migracije" },
     { id: "hzz", label: "Radne dozvole" },
     { id: "treemap", label: "Tražena zanimanja" },
     { id: "map", label: "Županije" },
     { id: "choropleth-cro", label: "Godišnji dolasci" },
     { id: "top5", label: "Najčešći imigranti" },
-    { id: "mup", label: "Godišnje stanje" },
-    { id: "dorling", label: "Migranti u svijetu" }
+    { id: "mup", label: "Godišnje stanje" }
+    
   ];
 
   useEffect(() => {
@@ -83,12 +84,12 @@ export default function Home() {
         </nav>
 
 
-        <main className="ml-[300px] w-full overflow-x-visible text-gray-700" >
+        <main className="ml-[350px] w-full overflow-x-visible text-gray-700" >
 
           <section className="section !pt-6 " id="start">
 
             <h1 className="mb-8 text-5xl font-bold leading-tight">
-              Hrvatska u brojkama: <span className="text-green-800">migracije</span>
+              Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
             </h1>
 
             <p className="paragraph mb-5">
@@ -96,7 +97,7 @@ export default function Home() {
               <b> što nam govore podaci?</b>
             </p>
 
-            <p className="paragraph mb-5">
+            <p className="paragraph">
               Cilj je pružiti uvid u podatke vezano uz migracije na jednom mjestu, bez
               dramatičnih naslova, subjektivnih interpretacija i reklama.
 
@@ -108,7 +109,7 @@ export default function Home() {
 
           <section className="section " id="dorling">
 
-            <h2>Migranti u svijetu</h2>
+            <h2>Tko odlazi i kamo ide?</h2>
 
             <p className="paragraph ">
               Velike zemlje poput Indije i Kine, imaju i velik broj emigranata.
@@ -150,10 +151,10 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="migration">
+          <section className="section pb-20" id="migration">
 
             <h2>
-              Tko odlazi, a tko dolazi?
+              U Hrvatskoj se mijenjaju trendovi
             </h2>
 
             <p className="paragraph">
@@ -164,14 +165,14 @@ export default function Home() {
 
           </section>
 
-          <section className="section " id="hzz">
+          <section className="section pb-20" id="hzz">
 
             <h2>HZZ – Radne dozvole i test tržišta rada</h2>
             <p className="paragraph mb-10">
               2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
               Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
             </p>
-            <a className="inline-block mb-8 text-2xl "
+            <a className="inline-block mb-8 !text-2xl "
               href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
               target="_blank"
               rel="noopener noreferrer"
@@ -184,9 +185,9 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="treemap">
+          <section className="section pb-20" id="treemap">
 
-            <h2>Tražena zanimanja</h2>
+            <h2>Koje poslove obavljaju strani radnici?</h2>
 
             <p className="paragraph">
               Svaka prikazana osoba predstavlja <b>650 radnika</b>, a tamnija boja pokazuje <b>višu prosječnu plaću</b> po zanimanju.
@@ -211,7 +212,7 @@ export default function Home() {
 
           <section className="section " id="choropleth-cro">
 
-            <h2>Godišnji dolasci</h2>
+            <h2>Odakle dolazi najviše migranata?</h2>
 
             <p className="paragraph">
               2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
@@ -235,9 +236,9 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="top5">
+          <section className="section pb-20" id="top5">
 
-            <h2>Najčešći imigranti u Hrvatskoj</h2>
+            <h2>Kako se mijenjaju trendovi?</h2>
 
             <p className="paragraph">
               Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
@@ -251,10 +252,10 @@ export default function Home() {
 
           <section className="section " id="mup">
 
-            <h2>MUP - Dozvole za rad i boravak</h2>
+            <h2>Tko radi i boravi u Hrvatskoj?</h2>
 
             <p className="paragraph">
-              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. radilo i boravilo podjednako osoba iz BiH i Nepala.
+              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. bilo podjednako osoba iz BiH i Nepala.
               Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
               U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina.
 
