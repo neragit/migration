@@ -1,20 +1,33 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 
 interface LineChartProps {
-  data: { year: number; immigrants: number; emigrants: number }[];
   width?: number;
   height?: number;
 }
 
-export default function LineChart({ data, width = 700, height = 400 }: LineChartProps) {
+export default function LineChart({ width = 700, height = 400 }: LineChartProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
+
+  const migrationData = [
+    { year: 2015, immigrants: 11706, emigrants: 29651 },
+    { year: 2016, immigrants: 13985, emigrants: 36436 },
+    { year: 2017, immigrants: 15553, emigrants: 47352 },
+    { year: 2018, immigrants: 26029, emigrants: 39515 },
+    { year: 2019, immigrants: 37726, emigrants: 40148 },
+    { year: 2020, immigrants: 33414, emigrants: 34046 },
+    { year: 2021, immigrants: 35912, emigrants: 40424 },
+    { year: 2022, immigrants: 57972, emigrants: 46287 },
+    { year: 2023, immigrants: 69396, emigrants: 39218 },
+    { year: 2024, immigrants: 70391, emigrants: 38997 },
+  ];
+
   useEffect(() => {
-    if (!data || data.length === 0) return;
+    if (!migrationData || migrationData.length === 0) return;
 
     const margin = { top: 40, right: 40, bottom: 50, left: 60 };
     const innerWidth = width - margin.left - margin.right;
@@ -26,12 +39,12 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
     // Scales
     const xScale = d3
       .scaleLinear()
-      .domain(d3.extent(data, (d) => d.year) as [number, number])
+      .domain(d3.extent(migrationData, (d) => d.year) as [number, number])
       .range([0, innerWidth]);
 
     const yScale = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
+      .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
       .range([innerHeight, 0]);
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -183,7 +196,7 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
     lines.forEach(({ line, color, class: cls }) => {
       const path = g
         .append("path")
-        .datum(data)
+        .datum(migrationData)
         .attr("fill", "none")
         .attr("stroke", color)
         .attr("stroke-width", 3)
@@ -194,7 +207,7 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
 
       const circles = g
         .selectAll(`.${cls}`)
-        .data(data)
+        .data(migrationData)
         .enter()
         .append("circle")
         .attr("class", cls)
@@ -209,9 +222,10 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
 
           tooltip
             .style("display", "block")
-            .html(`${label}: ${new Intl.NumberFormat('fr-FR').format(value)}`)
+            .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
             .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY - 20}px`);
+            .style("top", `${event.pageY - 20}px`)
+            .style("opacity", 0.90);
         })
         .on("mousemove", (event) => {
           tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
@@ -275,23 +289,16 @@ export default function LineChart({ data, width = 700, height = 400 }: LineChart
       .text("Emigranti")
       .attr("font-size", "13px")
       .attr("fill", "#555");
-  }, [data, width, height]);
+  }, [width, height]);
 
   return (
     <>
       <svg ref={svgRef} width={width} height={height} style={{ overflow: "visible" }}></svg>
       <div
         ref={tooltipRef}
+        className = "tooltip"
         style={{
           position: "absolute",
-          pointerEvents: "none",
-          background: "#333",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: "4px",
-          fontSize: "12px",
-          display: "none",
-          zIndex: 10,
         }}
       />
     </>

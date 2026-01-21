@@ -34,9 +34,8 @@ export default function Mup({ width, height }: Props) {
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
-    content: string;
+    content: React.ReactNode;
   } | null>(null);
-
 
   // ─────────────────────────────────────────────────────
   // Fixed positions per region
@@ -159,17 +158,17 @@ export default function Mup({ width, height }: Props) {
 
     // ───────────── Weak collision once ─────────────
     const sim = d3.forceSimulation<NodeDatum>(nodes)
-  .force("x", d3.forceX(d => d.x!).strength(0.05))
-  .force("y", d3.forceY(d => d.y!).strength(0.05))
-  .force(
-    "collide",
-    d3.forceCollide(d => {
-      const region = countryRegion[d.data.country] || "Europe";
-      const baseRadius = d.r * 3;
-      return region === "Asia" ? baseRadius * 1.5 : baseRadius;
-    })
-  )
-  .stop();
+      .force("x", d3.forceX(d => d.x!).strength(0.05))
+      .force("y", d3.forceY(d => d.y!).strength(0.05))
+      .force(
+        "collide",
+        d3.forceCollide(d => {
+          const region = countryRegion[d.data.country] || "Europe";
+          const baseRadius = d.r * 3;
+          return region === "Asia" ? baseRadius * 1.5 : baseRadius;
+        })
+      )
+      .stop();
 
 
     for (let i = 0; i < 80; i++) sim.tick();
@@ -236,156 +235,160 @@ export default function Mup({ width, height }: Props) {
         )
         .style("opacity", 0)
         .on("mousemove", function (event) {
-  const parent = this.parentNode as SVGElement; // cast to SVGElement
-  const parentData = d3.select(parent).datum() as {
-    data: { country: string; value: number };
-  };
-  
-  const value = parentData.data.value;
+          const parent = this.parentNode as SVGElement; // cast to SVGElement
+          const parentData = d3.select(parent).datum() as {
+            data: { country: string; value: number };
+          };
 
-  setTooltip({
-    x: event.clientX + 10,
-    y: event.clientY + 10,
-    content:
-      value === 0
-        ? `${parentData.data.country}\nNije u top 10 u navedenoj godini`
-        : `${parentData.data.country}\n${value.toLocaleString("fr-FR")}`,
-  });
-})
+          const value = parentData.data.value;
+
+          setTooltip({
+            x: event.clientX + 10,
+            y: event.clientY + 10,
+            content:
+              value === 0 ? (
+                <div>
+                  <strong>{parentData.data.country}</strong>
+                  <br />
+                  Nije u top 10 u navedenoj godini
+                </div>
+              ) : (
+                <div>
+                  <strong>{parentData.data.country}</strong>
+                  <br />
+                  {value.toLocaleString("fr-FR")}
+                </div>
+              ),
+          });
+          })
+
 
         .on("mouseleave", () => setTooltip(null))
 
-
-        .transition()
-        .duration(500)
-        .style("opacity", 1);
-
-
-      icons.transition().duration(500)
-        .attr("transform", ([dx, dy]) =>
-          `translate(${dx},${dy}) scale(${iconSize / 250})`
-        );
-    });
-
-    // ───────────── LABELS LAYER (ALWAYS ON TOP) ─────────────
-    let labelsLayer = svg.select<SVGGElement>(".labels-layer");
-    if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
-
-    const labels = labelsLayer.selectAll<SVGTextElement, any>("text")
-      .data(nodes, d => d.data.country);
-
-    // remove old labels
-    labels.exit().remove();
-
-    // append new labels
-    labels.enter()
-      .append("text")
-      .text(d => d.data.country)
-      .attr("x", d => d.x)   // set x only on enter
-      .attr("y", d => d.y)   // set y only on enter
-      .attr("text-anchor", "middle")
-      .attr("font-size", 16)
-      .attr("font-weight", 700)
-      .attr("fill", "#333")
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 2)
-      .attr("paint-order", "stroke")
-      .style("pointer-events", "none");
+            .transition()
+            .duration(500)
+            .style("opacity", 1);
 
 
+          icons.transition().duration(500)
+            .attr("transform", ([dx, dy]) =>
+              `translate(${dx},${dy}) scale(${iconSize / 250})`
+            );
+        });
 
-  }, [filteredData, width, height]);
+      // ───────────── LABELS LAYER (ALWAYS ON TOP) ─────────────
+      let labelsLayer = svg.select<SVGGElement>(".labels-layer");
+      if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const years = [2021, 2022, 2023, 2024, 2025];
+      const labels = labelsLayer.selectAll<SVGTextElement, any>("text")
+        .data(nodes, d => d.data.country);
 
-  // ─────────────────────────────────────────────────────
-  // Scroll to change year
-  // ─────────────────────────────────────────────────────
-  useEffect(() => {
-    let lastScrollTime = 0;
-    const cooldown = 500; // ms
+      // remove old labels
+      labels.exit().remove();
 
-    const handleWheel = (e: WheelEvent) => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const lockScroll = rect.bottom < window.innerHeight && rect.top > 0;
-      if (!lockScroll) return;
-
-      const now = Date.now();
-      if (now - lastScrollTime < cooldown) return;
-
-      const currentIndex = years.indexOf(selectedYear);
-
-      if (e.deltaY > 0 && currentIndex < years.length - 1) {
-        e.preventDefault();
-        setSelectedYear(years[currentIndex + 1]);
-        lastScrollTime = now;
-      } else if (e.deltaY < 0 && currentIndex > 0) {
-        e.preventDefault();
-        setSelectedYear(years[currentIndex - 1]);
-        lastScrollTime = now;
-      }
-    };
-
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    return () => window.removeEventListener("wheel", handleWheel);
-  }, [selectedYear, years]);
+      // append new labels
+      labels.enter()
+        .append("text")
+        .text(d => d.data.country)
+        .attr("x", d => d.x)   // set x only on enter
+        .attr("y", d => d.y)   // set y only on enter
+        .attr("text-anchor", "middle")
+        .attr("font-size", 16)
+        .attr("font-weight", 700)
+        .attr("fill", "#333")
+        .attr("stroke", "#fff")
+        .attr("stroke-width", 2)
+        .attr("paint-order", "stroke")
+        .style("pointer-events", "none");
 
 
-  // ─────────────────────────────────────────────────────
-  // Render
-  // ─────────────────────────────────────────────────────
-  return (
-    <div ref={containerRef} style={{ width, height }}>
-      <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
-        {years.map(y => (
-          <button
-            key={y}
-            onClick={() => setSelectedYear(y)}
+
+    }, [filteredData, width, height]);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const years = [2021, 2022, 2023, 2024, 2025];
+
+    // ─────────────────────────────────────────────────────
+    // Scroll to change year
+    // ─────────────────────────────────────────────────────
+    useEffect(() => {
+      let lastScrollTime = 0;
+      const cooldown = 500; // ms
+
+      const handleWheel = (e: WheelEvent) => {
+        if (!containerRef.current) return;
+        const rect = containerRef.current.getBoundingClientRect();
+        const lockScroll = rect.bottom < window.innerHeight && rect.top > 0;
+        if (!lockScroll) return;
+
+        const now = Date.now();
+        if (now - lastScrollTime < cooldown) return;
+
+        const currentIndex = years.indexOf(selectedYear);
+
+        if (e.deltaY > 0 && currentIndex < years.length - 1) {
+          e.preventDefault();
+          setSelectedYear(years[currentIndex + 1]);
+          lastScrollTime = now;
+        } else if (e.deltaY < 0 && currentIndex > 0) {
+          e.preventDefault();
+          setSelectedYear(years[currentIndex - 1]);
+          lastScrollTime = now;
+        }
+      };
+
+      window.addEventListener("wheel", handleWheel, { passive: false });
+      return () => window.removeEventListener("wheel", handleWheel);
+    }, [selectedYear, years]);
+
+
+    // ─────────────────────────────────────────────────────
+    // Render
+    // ─────────────────────────────────────────────────────
+    return (
+      <div ref={containerRef} style={{ width, height }}>
+        <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
+          {years.map(y => (
+            <button
+              key={y}
+              onClick={() => setSelectedYear(y)}
+              style={{
+                padding: "4px 10px",
+                background: selectedYear === y ? "#4e79a7" : "#eee",
+                color: selectedYear === y ? "#fff" : "#000",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer"
+              }}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+
+        <svg
+          ref={svgRef}
+          width={width}
+          height={height}
+          viewBox={`0 0 ${width} ${height}`}
+          style={{ display: "block", overflow: "visible" }}
+        />
+
+        {tooltip && (
+          <div
+            className="tooltip"
             style={{
-              padding: "4px 10px",
-              background: selectedYear === y ? "#4e79a7" : "#eee",
-              color: selectedYear === y ? "#fff" : "#000",
-              border: "none",
-              borderRadius: 4,
-              cursor: "pointer"
+              position: "fixed",
+              top: tooltip.y,
+              left: tooltip.x,
+              opacity: "0.90"
             }}
           >
-            {y}
-          </button>
-        ))}
+            {tooltip.content}
+          </div>
+        )}
+
       </div>
+    );
 
-      <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        style={{ display: "block", overflow: "visible" }}
-      />
-
-      {tooltip && (
-        <div
-          style={{
-            position: "fixed",
-            top: tooltip.y,
-            left: tooltip.x,
-            backgroundColor: "rgba(0,0,0,0.8)",
-            color: "#fff",
-            padding: "6px 10px",
-            borderRadius: "4px",
-            pointerEvents: "none",
-            whiteSpace: "pre-line",
-            fontSize: "12px",
-            zIndex: 9999
-          }}
-        >
-          {tooltip.content}
-        </div>
-      )}
-
-    </div>
-  );
-
-}
+  }

@@ -39,16 +39,10 @@ useEffect(() => {
   const tooltip = d3
     .select("body")
     .append("div")
-    .attr("class", "choropleth-tooltip")
+    .attr("class", "tooltip")
     .style("position", "absolute")
     .style("pointer-events", "none")
-    .style("background", "white")
-    .style("padding", "8px")
-    .style("border", "1px solid #aaa")
-    .style("border-radius", "4px")
     .style("opacity", 0)
-    .style("font-size", "12px")
-    .style("z-index", "9999");
 
   const cleanup = (): void => {
     tooltip.remove();
@@ -61,7 +55,7 @@ useEffect(() => {
 
   // Tooltip follow
   useEffect(() => {
-    const tooltip = d3.select(".choropleth-tooltip");
+    const tooltip = d3.select(".tooltip");
     const moveHandler = (e: MouseEvent) => {
       tooltip.style("left", e.pageX + 10 + "px").style("top", e.pageY + 10 + "px");
     };
@@ -96,7 +90,7 @@ useEffect(() => {
 
   // Hover handlers
   const handleHover = (event: any) => {
-    const tooltip = d3.select(".choropleth-tooltip");
+    const tooltip = d3.select(".tooltip");
     if (!event.points || event.points.length === 0) return;
     const pt = event.points[0];
     const code = pt.location;
@@ -104,13 +98,11 @@ useEffect(() => {
     if (!dataEntry) return;
     tooltip
       .html(`<b>${dataEntry.country_name}</b><br>${new Intl.NumberFormat('fr-FR').format(dataEntry.value)}`)
-      .transition()
-      .duration(50)
-      .style("opacity", 0.95);
+      .style("opacity", 0.90);
   };
 
   const handleUnhover = () => {
-    d3.select(".choropleth-tooltip").transition().duration(200).style("opacity", 0);
+    d3.select(".tooltip").style("opacity", 0);
   };
 
   // Observe when map is fully visible
@@ -194,7 +186,6 @@ useEffect(() => {
                   backgroundColor: selectedYear === year ? "#4CAF50" : "#eee",
                   color: selectedYear === year ? "#fff" : "#000",
                   userSelect: "none",
-                  transition: "all 0.2s ease",
                 }}
               >
                 {year}
@@ -257,11 +248,6 @@ useEffect(() => {
         )}
       </div>
 
-      <style>{`
-        .choropleth-tooltip {
-          transition: transform 0.1s ease-out, opacity 0.1s ease-in-out;
-        }
-      `}</style>
     </div>
   );
 }

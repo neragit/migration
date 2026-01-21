@@ -32,6 +32,7 @@ export default function Details({ buttonText, children }: DetailsProps) {
           gap: "6px",
           fontSize: "14px",
           fontWeight: "700",
+          marginTop: "0px",
           marginBottom: "10px",
           color: "#555",
         }}

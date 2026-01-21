@@ -6,17 +6,35 @@ import * as topojson from "topojson-client";
 
 type Zahtjev = { zupanija: string; neg: number; poz: number; godina: number };
 
-interface CroatiaMapProps {
-  data: Zahtjev[];
-}
-
-export default function CroatiaMap({ data }: CroatiaMapProps) {
+export default function CroatiaMap() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const topoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [year, setYear] = useState<number>(data[0]?.godina ?? 2021);
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; content: string } | null>(null);
+  const [data, setData] = useState<Zahtjev[]>([]);
+  const [year, setYear] = useState<number>(2021);
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    content: React.ReactNode; // allow JSX
+  } | null>(null);
+
+
+  // ──────────────────────────────────────────────
+  // Load CSV data
+  // ──────────────────────────────────────────────
+  useEffect(() => {
+    d3.csv("/data/zahtjevi.csv").then((raw) => {
+      const parsed = raw.map((d: any) => ({
+        zupanija: d.zupanija,
+        neg: +d.neg,
+        poz: +d.poz,
+        godina: +d.godina,
+      }));
+      setData(parsed);
+      if (parsed.length) setYear(parsed[0].godina);
+    });
+  }, []);
 
   const countyMap: Record<string, string> = {
     "GRAD ZAGREB": "ZAGREB",
@@ -65,6 +83,19 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
     : 0;
 
   const formatNumber = (num: number) => num.toLocaleString("fr-FR");
+
+  useEffect(() => {
+    d3.csv("/data/zahtjevi.csv").then((raw) => {
+      setData(
+        raw.map((d: any) => ({
+          zupanija: d.zupanija,
+          neg: +d.neg,
+          poz: +d.poz,
+          godina: +d.godina,
+        }))
+      );
+    });
+  }, []);
 
   // ──────────────────────────────────────────────
   // Load TopoJSON
@@ -126,6 +157,7 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
       .attr("stroke", "#fff")
       .attr("stroke-width", 0.6)
       .merge(paths as any)
+
       .attr("d", path)
       .attr("fill", d => {
         const name = d.properties?.name?.toUpperCase();
@@ -135,19 +167,28 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
       })
 
       .on("mousemove", (event, d) => {
-        const name = d.properties?.name;      // optional chaining
-        if (!name) return;                    // do nothing if name missing
+        const name = d.properties?.name;
+        if (!name) return;
+
         const v = selectedData[name.toUpperCase()];
         if (!v) return;
 
         setTooltip({
           x: event.clientX + 10,
           y: event.clientY + 10,
-          content: `${name}\nOdobreno: ${formatNumber(v.pos)}\nNeodobreno: ${formatNumber(v.neg)}`,
+          content: (
+            <div>
+              <b>{name}</b>
+              <br />
+              Odobreno: {formatNumber(v.pos)}
+              <br />
+              Neodobreno: {formatNumber(v.neg)}
+            </div>
+          ),
         });
       })
-
       .on("mouseleave", () => setTooltip(null));
+
 
     paths.exit().remove();
   };
@@ -236,18 +277,13 @@ export default function CroatiaMap({ data }: CroatiaMapProps) {
 
       {tooltip && (
         <div
+          className="tooltip"
           style={{
             position: "fixed",
             top: tooltip.y,
             left: tooltip.x,
-            backgroundColor: "rgba(0,0,0,0.8)",
-            color: "#fff",
-            padding: "6px 10px",
-            borderRadius: "4px",
-            pointerEvents: "none",
-            whiteSpace: "pre-line",
-            fontSize: "12px",
-            zIndex: 9999,
+            opacity: 0.90,                 // <-- visible opacity
+            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out", // <-- smooth fade
           }}
         >
           {tooltip.content}

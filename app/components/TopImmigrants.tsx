@@ -222,16 +222,10 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
       <svg ref={svgRef} width={width} height={height} style={{ overflow: "visible" }}></svg>
       <div
         ref={tooltipRef}
+        className="tooltip"
         style={{
           position: "absolute",
-          pointerEvents: "none",
-          background: "#333",
-          color: "#fff",
-          padding: "4px 8px",
-          borderRadius: 4,
-          fontSize: 12,
-          display: "none",
-          zIndex: 10,
+          opacity: "0.90",
         }}
       />
     </>

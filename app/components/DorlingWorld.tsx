@@ -138,7 +138,7 @@ export default function DorlingWorld() {
     const maxPop = d3.max(data, d => d.total_pop) ?? 0;
     const sizeScale = d3.scaleSqrt()
       .domain([0, maxPop])
-      .range([5, 70]);
+      .range([5, 65]);
 
 
     // Filter out "World" and aggregate by country
@@ -184,22 +184,16 @@ export default function DorlingWorld() {
     // Tooltip
     const tooltip = d3.select("body")
       .append("div")
-      .attr("class", "dorling-tooltip")
+      .attr("class", "tooltip")
       .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("background", "white")
-      .style("padding", "8px")
-      .style("border", "1px solid #aaa")
-      .style("border-radius", "4px")
-      .style("opacity", 0);
 
     const polyProjection = d3.geoNaturalEarth1()
-      .scale(160)
+      .scale(200)
       .rotate([120, 0]) // rotation applied only to polygons
       .translate([width / 2, height / 2]);
 
     const pointProjection = d3.geoNaturalEarth1()
-      .scale(160)
+      .scale(200)
       .rotate([-60, 0])
       .translate([width / 2, height / 2]); // no rotation
 
@@ -279,7 +273,7 @@ export default function DorlingWorld() {
       .attr("fill-opacity", 0.5)
       .attr("stroke", "#fde0dd")
       .on("mouseover", (event, d) => {
-        tooltip.transition().duration(200).style("opacity", 0.95);
+        tooltip.transition().duration(200).style("opacity", 0.90);
         const religionMap = {
           "Christians": "Kršćanstvo",
           "Muslims": "Islam",
@@ -337,12 +331,20 @@ export default function DorlingWorld() {
             ${typeof d.life === "number"
             ? `Očekivana dob: ${Math.round(d.life)} godina<br/>`
             : ""}
-            ${d.major1_perc !== null ? `Glavna religija: ${religionHtml}` : ""}
+            ${typeof d.major1_perc === "number" ? `Glavna religija: ${religionHtml}` : ""}
           `)
 
           .style("left", (event.pageX + 10) + "px")
           .style("top", (event.pageY + 10) + "px");
       })
+
+      .on("mousemove", (event) => {
+        // Update tooltip position every mouse move
+        tooltip
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px");
+      })
+
       .on("mouseout", () => {
         tooltip.transition().duration(200).style("opacity", 0);
       });
@@ -360,8 +362,8 @@ export default function DorlingWorld() {
   }, [data, worldData, mode]);
 
   return (
-    <div>
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "10px" }}>
+    <div >
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "0px" }}>
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
@@ -389,8 +391,6 @@ export default function DorlingWorld() {
           ))}
         </div>
 
-
-
         <div style={{ fontSize: "1.5rem", color: "#333" }}>
           <span style={{ animation: "fadeMoveIn 1s forwards" }}>
             {new Intl.NumberFormat('fr-FR').format(totalMig)}
@@ -400,11 +400,7 @@ export default function DorlingWorld() {
       </div>
 
       <svg ref={svgRef}></svg>
-      <style>{`
-        .dorling-tooltip {
-          font-size: 12px;
-        }
-      `}</style>
+
     </div>
   );
 }
