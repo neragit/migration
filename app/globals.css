@@ -54,7 +54,6 @@ a {
   font-size: 15px;
 }
 
-
 .tooltip {
   pointer-events: none;
   background: white;
@@ -63,15 +62,18 @@ a {
   font-size: 12px;
   z-index: 9999;
   opacity: 0;
-
 }
-
 
 
 @media (max-width: 900px) {
   .sidebar {
     display: none;
   }
+
+  .tooltip {
+    width: 50px;
+}
+
 
 
 }

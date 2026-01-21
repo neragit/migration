@@ -61,7 +61,7 @@ export default function Home() {
   return (
     <>
       <div className="flex">
-        <nav className="fixed top-0 left-6 w-52 z-50 pt-10">
+        <nav className="sidebar fixed top-0 left-6 w-52 z-50 pt-10">
 
           <ul>
             {sections.map((s) => (
