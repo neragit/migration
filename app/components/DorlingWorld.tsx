@@ -83,7 +83,7 @@ export default function DorlingWorld() {
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
-  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
+
 
   countries.registerLocale(hrLocale);
 
@@ -377,20 +377,9 @@ export default function DorlingWorld() {
     <div >
 
 
-<div
-  style={{
-    display: "flex",
-    gap: "20px",
-    justifyContent: "space-between",
-    alignItems: "center",
-    flexWrap: "wrap",
-    marginTop: "20px",
-    marginBottom: "70px",
-    paddingRight: "70px",
-    paddingBottom: isMobile ? "50px" : undefined, // 50px only on mobile
-    paddingLeft: isMobile ? "50px" : undefined, // 50px only on mobile
-  }}
->
+<div className="flex flex-wrap gap-5 justify-between items-center mt-5 mb-[70px] pr-[70px] pb-[50px] md:pb-0">
+
+
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
