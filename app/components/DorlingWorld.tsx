@@ -410,7 +410,7 @@ export default function DorlingWorld() {
 
       </div>
 
-      <div ref={containerRef} className="w-full max-w-[400px] mx-auto md:max-w-full">
+      <div ref={containerRef} className="w-full max-w-[200px] mx-auto md:max-w-full">
 
         <svg ref={svgRef} />
         <div ref={tooltipRef} className="tooltip"></div>
