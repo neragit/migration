@@ -119,7 +119,7 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData || !size) return;
 
-    const isPhone = size.width < 640; // small screen detection
+    const isPhone = size.width < 900; 
 
     let width = isPhone ? 350 : size.width;
     let height = isPhone ? 200 : Math.min(500, width * 0.45);
