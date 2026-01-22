@@ -1,5 +1,7 @@
 "use client";
 
+import Lottie from "lottie-react";
+
 import { useEffect, useState } from "react";
 import CroatiaMap from "./components/CroatiaMap";
 import Treemap from "./components/Treemap";
@@ -59,42 +61,30 @@ export default function Home() {
 
 
   return (
-    <>
-      <div
-        id="landscape-warning"
-        className="hidden portrait:flex fixed inset-0 bg-white/90 backdrop-blur-sm text-gray-800 text-center justify-center items-center z-50 flex-col gap-6 px-4"
-      >
-        {/* Rotating phone icon */}
-        <svg
-          className="w-16 h-16 text-gray-600 animate-spin-slow"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z"
-          />
-        </svg>
-
-        {/* Instruction text */}
-        <p className="text-lg font-semibold">
-          📱 Please rotate your device to landscape to view this site.
-        </p>
-
-        {/* Optional: continue anyway button */}
-        <button
-          className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          onClick={() => {
-            document.getElementById("landscape-warning")!.style.display = "none";
-          }}
-        >
-          Continue anyway
-        </button>
+    <><div
+      id="landscape-warning"
+      className="portrait:flex hidden fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-50 flex-col"
+    >
+      <div className="w-24 h-24 mb-4">
+        <Lottie
+          animationData={require("../public/rotate.json")}
+          loop={true}
+        />
       </div>
+      <p className="mt-4 text-gray-800 text-center">
+        Rotirajte mobitel
+      </p>
+
+      {/* Optional: continue anyway button */}
+      <button
+        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        onClick={() => {
+          document.getElementById("landscape-warning")!.style.display = "none";
+        }}
+      >
+        Nastavi
+      </button>
+    </div >
 
 
       <div className="flex">
