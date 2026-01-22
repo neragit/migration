@@ -83,6 +83,7 @@ export default function DorlingWorld() {
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
+  const isMobile = typeof window !== "undefined" && window.innerWidth <= 768;
 
   countries.registerLocale(hrLocale);
 
@@ -374,9 +375,24 @@ export default function DorlingWorld() {
 
   return (
     <div >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px", paddingRight: "70px" }}>
 
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "15px" }}>
+
+<div
+  style={{
+    display: "flex",
+    gap: "20px",
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexWrap: "wrap",
+    marginTop: "20px",
+    marginBottom: "70px",
+    paddingRight: "70px",
+    paddingBottom: isMobile ? "50px" : undefined, // 50px only on mobile
+    paddingLeft: isMobile ? "50px" : undefined, // 50px only on mobile
+  }}
+>
+
+        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
             <label
               key={m}
@@ -410,15 +426,10 @@ export default function DorlingWorld() {
 
       </div>
 
-      <div
-  ref={containerRef}
-  className="w-full max-w-[350px] h-[700px] mx-auto md:max-w-full md:h-auto"
->
-  <svg ref={svgRef} className="w-full h-full" />
-  <div ref={tooltipRef} className="tooltip"></div>
-</div>
-
-
+      <div ref={containerRef} style={{ width: "100%" }}>
+        <svg ref={svgRef} />
+        <div ref={tooltipRef} className="tooltip"></div>
+      </div>
 
 
 
