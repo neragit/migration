@@ -16,7 +16,18 @@ import ToggleDetails from "./components/Details";
 export default function Home() {
 
   const [activeSection, setActiveSection] = useState("start");
-  const [showLandscapeWarning, setShowLandscapeWarning] = useState(true);
+  const [showLandscapeWarning, setShowLandscapeWarning] = useState(false);
+
+useEffect(() => {
+  const mediaQuery = window.matchMedia("(orientation: landscape)");
+  const handler = (e: MediaQueryListEvent) => setShowLandscapeWarning(e.matches);
+
+  setShowLandscapeWarning(mediaQuery.matches);
+  mediaQuery.addEventListener("change", handler);
+
+  return () => mediaQuery.removeEventListener("change", handler);
+}, []);
+
 
 
   const scrollTo = (id: string) =>
@@ -34,6 +45,7 @@ export default function Home() {
     { id: "mup", label: "Godišnje stanje" }
 
   ];
+  
 
   useEffect(() => {
 
@@ -92,27 +104,27 @@ export default function Home() {
 
 
       <div className="flex">
-        <nav className="sidebar fixed top-0 left-6 w-52 z-50 pt-10">
+        {!showLandscapeWarning && (
+          <nav className="sidebar fixed top-0 left-6 w-52 z-50 pt-10">
+            <ul>
+              {sections.map((s) => (
+                <li
+                  key={s.id}
+                  className={`mb-3 cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
+                  onClick={() => scrollTo(s.id)}
+                >
+                  {s.label}
+                </li>
+              ))}
+            </ul>
 
-          <ul>
-            {sections.map((s) => (
-              <li
-                key={s.id}
-                className={`mb-3 cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"
-                  }`}
-                onClick={() => scrollTo(s.id)}
-              >
-                {s.label}
-              </li>
-            ))}
-          </ul>
+            <div className="fixed bottom-4 left-6 flex gap-4 text-xs text-slate-400 z-50 ">
+              <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
+              <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
+            </div>
+          </nav>
+        )}
 
-          <div className="fixed bottom-4 left-6 flex gap-4 text-xs text-slate-400 z-50 ">
-            <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
-            <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
-          </div>
-
-        </nav>
 
 
         <main className="ml-[300px] md:ml-[350px] w-full overflow-x-visible text-gray-700">
