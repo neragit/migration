@@ -374,9 +374,9 @@ export default function DorlingWorld() {
 
   return (
     <div >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px", paddingRight: "100px" }}>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px", paddingRight: "70px" }}>
 
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
+        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "15px" }}>
           {["origin", "destination"].map(m => (
             <label
               key={m}

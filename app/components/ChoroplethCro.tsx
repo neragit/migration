@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import * as d3 from "d3";
 import allCountries from "world-countries";
+import useResizeObserver from "../hooks/useResizeObs";
 
 
 
@@ -18,6 +19,11 @@ export default function ChoroplethCro() {
   const lockScrollRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+  const mapSize = useResizeObserver(mapRef);
+
+// Decide whether to apply the desktop hack
+const isDesktop = mapSize ? mapSize.width > 768 : true; // fallback to desktop if size unknown
+
 
   useEffect(() => {
     const updateSize = () => setWindowSize({
@@ -200,53 +206,57 @@ useEffect(() => {
 
       </div>
 
-      <div ref={mapRef} style={{
-        width: "90vw",     // full viewport width
-        height: "90vh",    // full viewport height
-        position: "relative",
-        left: -310,
-        top: 0,
-        zIndex: 1,
-      }}>
-        {isClient && (
-          <Plot
-            data={[
-              {
-                type: "choropleth",
-                locations,
-                z: zValues,
-                colorscale: "Greens",
-                reversescale: true,
-                zmin,
-                zmax,
-                marker: { line: { color: "white", width: 0.5 }, color: markerColors },
-                showscale: false,
-                hoverinfo: "none",
-                hovertemplate: "",
-              },
-            ]}
-            layout={{
-              geo: {
-                projection: { type: "natural earth" },
-                showcoastlines: false,
-                showframe: false,
-              },
-              margin: { t: 0, b: 0, l: 0, r: 0 },
-              width: mapRef.current?.clientWidth,
-              height: mapRef.current?.clientHeight,
-              autosize: true,
-            }}
-            config={{
-              responsive: true,
-              displaylogo: false,
-              scrollZoom: false,
-              modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
-            }}
-            onHover={handleHover}
-            onUnhover={handleUnhover}
-          />
-        )}
-      </div>
+      <div
+  ref={mapRef}
+  style={{
+    width: "90vw",
+    height: "90vh",
+    position: "relative",
+    left: isDesktop ? -310 : 0, // only offset on desktop
+    top: 0,
+    zIndex: 1,
+  }}
+>
+  {isClient && (
+    <Plot
+      data={[
+        {
+          type: "choropleth",
+          locations,
+          z: zValues,
+          colorscale: "Greens",
+          reversescale: true,
+          zmin,
+          zmax,
+          marker: { line: { color: "white", width: 0.5 }, color: markerColors },
+          showscale: false,
+          hoverinfo: "none",
+          hovertemplate: "",
+        },
+      ]}
+      layout={{
+        geo: {
+          projection: { type: "natural earth" },
+          showcoastlines: false,
+          showframe: false,
+        },
+        margin: { t: 0, b: 0, l: 0, r: 0 },
+        width: mapSize?.width,
+        height: mapSize?.height,
+        autosize: true,
+      }}
+      config={{
+        responsive: true,
+        displaylogo: false,
+        scrollZoom: false,
+        modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
+      }}
+      onHover={handleHover}
+      onUnhover={handleUnhover}
+    />
+  )}
+</div>
+
 
     </div>
   );
