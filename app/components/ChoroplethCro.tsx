@@ -18,23 +18,10 @@ export default function ChoroplethCro() {
   const mapRef = useRef<HTMLDivElement>(null);
   const lockScrollRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
-  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const mapSize = useResizeObserver(mapRef);
 
 // Decide whether to apply the desktop hack
 const isDesktop = mapSize ? mapSize.width > 768 : true; // fallback to desktop if size unknown
-
-
-  useEffect(() => {
-    const updateSize = () => setWindowSize({
-      width: windowSize.width,
-      height: windowSize.height,
-    });
-    updateSize();
-    window.addEventListener("resize", updateSize);
-    return () => window.removeEventListener("resize", updateSize);
-  }, []);
-
 
   useEffect(() => {
     setIsClient(true);
@@ -209,8 +196,8 @@ useEffect(() => {
       <div
   ref={mapRef}
   style={{
-    width: "90vw",
-    height: "90vh",
+    width: "93vw",
+    height: "93vh",
     position: "relative",
     left: isDesktop ? -310 : 0, // only offset on desktop
     top: 0,
