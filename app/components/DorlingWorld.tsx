@@ -420,10 +420,17 @@ const pointProjection = d3.geoNaturalEarth1()
 
       </div>
 
-      <div ref={containerRef} style={{ width: "100%" }}>
-        <svg ref={svgRef} />
-        <div ref={tooltipRef} className="tooltip"></div>
-      </div>
+      <div
+  ref={containerRef}
+  className="w-full flex justify-center"
+>
+  <svg
+    ref={svgRef}
+    className="w-full max-w-none sm:max-w-none max-w-[500px]"
+  />
+  <div ref={tooltipRef} className="tooltip"></div>
+</div>
+
 
 
 
