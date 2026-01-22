@@ -70,9 +70,18 @@ a {
     display: none;
   }
 
+  .main {
+    padding: 5px;
+    text-align: justify;
+  }
+
+  h1 {
+    font-size: text-4xl; 
+  }
+
   .tooltip {
-    min-width: 180px;
-}
+      min-width: 180px;
+  }
 
 }
 

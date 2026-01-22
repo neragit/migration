@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import countries from "i18n-iso-countries";
 import hrLocale from "i18n-iso-countries/langs/hr.json";
-import { FeatureCollection } from "geojson";
-
+import useResizeObserver from "../hooks/useResizeObs";
 
 interface DorlingRow {
   origin: string;
@@ -39,7 +38,6 @@ interface ParsedDorlingRow {
   remit?: number;
 }
 
-
 interface Node extends AggregatedCountry {
   country_hr: string;
   r: number;
@@ -54,7 +52,6 @@ interface CountryFeatureProperties {
   NAME?: string;
   [key: string]: any;
 }
-
 
 interface CountryFeature extends GeoJSON.Feature<GeoJSON.Geometry, CountryFeatureProperties> { }
 
@@ -77,13 +74,15 @@ export default function DorlingWorld() {
   type CountryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, CountryFeatureProperties>;
 
   const svgRef = useRef<SVGSVGElement | null>(null);
+    const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const firstRenderRef = useRef(true);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const size = useResizeObserver(containerRef);
 
   const [data, setData] = useState<ParsedDorlingRow[]>([]);
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
-  const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const firstRenderRef = useRef(true);
 
   countries.registerLocale(hrLocale);
 
@@ -115,17 +114,18 @@ export default function DorlingWorld() {
   }, []);
 
 
+
+
   useEffect(() => {
-    if (!data.length || !worldData) return;
+    if (!data.length || !worldData || !size) return;
 
-    const container = svgRef.current.parentElement!;
-    const width = container.clientWidth;
-    const height = Math.min(500, width * 0.55); // good phone ratio
+    const width = size.width;
+    const height = Math.min(500, width * 0.55);
 
+    if (!svgRef.current) return;
 
-    if (!svgRef.current) return; // remove null
-
-    const svg = d3.select(svgRef.current)
+    const svg = d3
+      .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
       .attr("preserveAspectRatio", "xMidYMid meet")
       .style("width", "100%")
@@ -133,6 +133,9 @@ export default function DorlingWorld() {
       .style("overflow", "visible");
 
     svg.selectAll("*").remove();
+
+
+
 
     const maxPop = d3.max(data, d => d.total_pop) ?? 0;
     const sizeScale = d3.scaleSqrt()
@@ -367,11 +370,11 @@ export default function DorlingWorld() {
         .attr("fill-opacity", 0.5);
     }
 
-  }, [data, worldData, mode]);
+  }, [data, worldData, size, mode]);
 
   return (
     <div >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px" }}>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "70px", paddingRight: "100px" }}>
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
@@ -407,8 +410,13 @@ export default function DorlingWorld() {
 
       </div>
 
-      <svg ref={svgRef}></svg>
-      <div ref={tooltipRef} className="tooltip"></div>
+      <div ref={containerRef} style={{ width: "100%" }}>
+        <svg ref={svgRef} />
+        <div ref={tooltipRef} className="tooltip"></div>
+      </div>
+
+
+
 
     </div>
 
