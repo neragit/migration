@@ -233,18 +233,20 @@ export default function OccupationCountyMap() {
                         ))}
                     </ul>
 
-
-
                 </div>
-
 
             </div>
 
-            {/* MAP */}
             <svg
-                ref={svgRef}
-                style={{ width: 800, height: 600, display: "block" }}
-            />
+  ref={svgRef}
+  style={{
+    flex: 1, // take remaining width
+    height: "auto", // maintain aspect ratio
+    maxHeight: "80vh", // optional limit on mobile
+    display: "block",
+  }}
+/>
+
         </div>
     )
 }

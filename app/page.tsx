@@ -16,6 +16,8 @@ import ToggleDetails from "./components/Details";
 export default function Home() {
 
   const [activeSection, setActiveSection] = useState("start");
+  const [showLandscapeWarning, setShowLandscapeWarning] = useState(true);
+
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
@@ -61,30 +63,32 @@ export default function Home() {
 
 
   return (
-    <><div
-      id="landscape-warning"
-      className="portrait:flex hidden fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-50 flex-col"
-    >
-      <div className="w-24 h-24 mb-4">
-        <Lottie
-          animationData={require("../public/rotate.json")}
-          loop={true}
-        />
-      </div>
-      <p className="mt-4 text-gray-800 text-center">
-        Rotirajte mobitel
-      </p>
+    <>
 
-      {/* Optional: continue anyway button */}
-      <button
-        className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        onClick={() => {
-          document.getElementById("landscape-warning")!.style.display = "none";
-        }}
-      >
-        Zanemari
-      </button>
-    </div >
+      {showLandscapeWarning && (
+        <div
+          id="landscape-warning"
+          className="portrait:flex fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-50 flex-col"
+        >
+          <div className="w-24 h-24 mb-4">
+            <Lottie
+              animationData={require("../public/rotate.json")}
+              loop={true}
+            />
+          </div>
+          <p className="mt-4 text-gray-800 text-center">
+            Rotirajte mobitel
+          </p>
+
+          <button
+            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={() => setShowLandscapeWarning(false)}
+          >
+            Ne mogu
+          </button>
+        </div>
+      )}
+
 
 
       <div className="flex">
@@ -111,7 +115,7 @@ export default function Home() {
         </nav>
 
 
-        <main className="ml-[350px] w-full overflow-x-visible text-gray-700" >
+        <main className="ml-[300px] md:ml-[350px] w-full overflow-x-visible text-gray-700">
 
           <section className="section !pt-6 " id="start">
 
