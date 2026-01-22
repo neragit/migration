@@ -293,7 +293,17 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
 
   return (
     <>
-      <svg ref={svgRef} width={width} height={height} style={{ overflow: "visible" }}></svg>
+      <div style={{ width: "100%", maxWidth: `${width}px`, height: "auto" }}>
+  <svg
+    ref={svgRef}
+    width="100%"
+    height="100%"
+    viewBox={`0 0 ${width} ${height}`}
+    preserveAspectRatio="xMidYMid meet"
+    style={{ display: "block", overflow: "visible" }}
+  ></svg>
+</div>
+
       <div
         ref={tooltipRef}
         className = "tooltip"
