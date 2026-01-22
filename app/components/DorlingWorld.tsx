@@ -84,7 +84,6 @@ export default function DorlingWorld() {
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
 
-
   countries.registerLocale(hrLocale);
 
   useEffect(() => {
@@ -375,11 +374,7 @@ export default function DorlingWorld() {
 
   return (
     <div >
-
-
-<div className="flex flex-wrap gap-5 justify-between items-center mt-5 mb-[70px] pr-[70px] pb-[50px] md:pb-0">
-
-
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "100px", paddingRight: "70px" }}>
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
@@ -415,7 +410,8 @@ export default function DorlingWorld() {
 
       </div>
 
-      <div ref={containerRef} style={{ width: "100%" }}>
+      <div ref={containerRef} className="w-full max-w-[600px] mx-auto md:max-w-full">
+
         <svg ref={svgRef} />
         <div ref={tooltipRef} className="tooltip"></div>
       </div>
