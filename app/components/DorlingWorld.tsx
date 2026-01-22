@@ -120,7 +120,7 @@ export default function DorlingWorld() {
     if (!data.length || !worldData || !size) return;
 
     const width = size.width;
-    const height = Math.min(500, width * 0.55);
+    const height = Math.min(400, width * 0.55);
 
     if (!svgRef.current) return;
 
@@ -410,8 +410,7 @@ export default function DorlingWorld() {
 
       </div>
 
-      <div ref={containerRef} className="w-full max-w-[200px] mx-auto md:max-w-full">
-
+      <div ref={containerRef} style={{ width: "100%" }}>
         <svg ref={svgRef} />
         <div ref={tooltipRef} className="tooltip"></div>
       </div>
