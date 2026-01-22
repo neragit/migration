@@ -128,7 +128,7 @@ useEffect(() => {
 
 
 
-        <main className="ml-[350px] w-full overflow-x-visible text-gray-700">
+        <main className="ml-200px lg:ml-[350px] w-full overflow-x-visible text-gray-700">
 
           <section className="section !pt-6 " id="start">
 
