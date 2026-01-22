@@ -122,7 +122,7 @@ export default function DorlingWorld() {
     const isPhone = size.width < 900;
 
     let width = isPhone ? 450 : size.width;
-    let height = isPhone ? 400 : Math.min(500, width * 0.45);
+    let height = isPhone ? 350 : Math.min(500, width * 0.45);
 
     if (!svgRef.current) return;
 
