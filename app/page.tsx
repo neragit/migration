@@ -106,7 +106,7 @@ useEffect(() => {
 
       <div className="flex">
         {!showLandscapeWarning && (
-          <nav className="sidebar fixed top-0 left-6 w-44 md:w-52 z-50 pt-10">
+          <nav className="sidebar fixed top-0 left-6 w-44 lg:w-52 z-50 pt-10">
             <ul>
               {sections.map((s) => (
                 <li
