@@ -79,21 +79,14 @@ export default function DorlingWorld() {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   const [data, setData] = useState<ParsedDorlingRow[]>([]);
-
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const firstRenderRef = useRef(true);
 
-
-
-
-  // Register Croatian locale
   countries.registerLocale(hrLocale);
 
-
-  // Load CSV
   useEffect(() => {
     d3.csv("/data/dorling.csv", (d: DorlingRow): ParsedDorlingRow => ({
       origin: d.origin,
@@ -115,8 +108,6 @@ export default function DorlingWorld() {
   }, []);
 
 
-
-  // Load GeoJSON dynamically from public folder
   useEffect(() => {
     d3.json("/maps/countries.json")
       .then((json) => setWorldData(json as CountryFeatureCollection))
@@ -127,25 +118,28 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData) return;
 
-    const width = 1100;
-    const height = 500;
-    if (!svgRef.current) return; // ← remove null
+    const container = svgRef.current.parentElement!;
+    const width = container.clientWidth;
+    const height = Math.min(500, width * 0.55); // good phone ratio
 
-    const svg = d3.select<SVGSVGElement, unknown>(svgRef.current)
-      .attr("width", width)
-      .attr("height", height)
+
+    if (!svgRef.current) return; // remove null
+
+    const svg = d3.select(svgRef.current)
+      .attr("viewBox", `0 0 ${width} ${height}`)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("width", "100%")
+      .style("height", "auto")
       .style("overflow", "visible");
 
-    svg.selectAll("*").remove(); // Clear previous drawing
+    svg.selectAll("*").remove();
 
-    // Scale for square sizes
     const maxPop = d3.max(data, d => d.total_pop) ?? 0;
     const sizeScale = d3.scaleSqrt()
       .domain([0, maxPop])
       .range([5, 65]);
 
 
-    // Filter out "World" and aggregate by country
     const countryData: AggregatedCountry[] = Object.values(
       data
         .filter(d => mode === "destination" ? d.destination !== "World" : d.origin !== "World")
@@ -173,7 +167,7 @@ export default function DorlingWorld() {
         }, {})
     );
 
-    // Sum of total migration (immigrants or emigrants depending on mode)
+    // sum
     const totalMigration = countryData.reduce((sum, d) => sum + d.total_mig, 0);
     setTotalMig(totalMigration);
 
@@ -185,23 +179,20 @@ export default function DorlingWorld() {
 
 
 
-    // Tooltip
-
     const tooltip = d3.select(tooltipRef.current);
-    // NO append
-    tooltip.style("position", "absolute"); // only if not in CSS
 
+    tooltip.style("position", "absolute");
 
 
     const polyProjection = d3.geoNaturalEarth1()
       .scale(250)
-      .rotate([120, 0]) // rotation applied only to polygons
+      .rotate([120, 0])
       .translate([width / 2, height / 2]);
 
     const pointProjection = d3.geoNaturalEarth1()
       .scale(250)
       .rotate([-60, 0])
-      .translate([width / 2, height / 2]); // no rotation
+      .translate([width / 2, height / 2]);
 
     const centroids: Record<string, { x: number; y: number }> = {};
     const isPointFeature: Record<string, boolean> = {};
@@ -248,13 +239,9 @@ export default function DorlingWorld() {
     });
 
 
-
-
-
-
     const g = svg.append("g").attr("class", "nodes-group");
 
-    // --- After nodes array is created ---
+    // after array
     const simulation = d3.forceSimulation<Node>(nodes)
       .force("x", d3.forceX<Node>(d => d.fxTarget).strength(0.05))
       .force("y", d3.forceY<Node>(d => d.fyTarget).strength(0.05))
@@ -369,9 +356,8 @@ export default function DorlingWorld() {
         .attr("height", d => d.r)
         .attr("fill-opacity", 0.5);
 
-      firstRenderRef.current = false; // mark first render done
+      firstRenderRef.current = false; // first render flag
     } else {
-      // for subsequent updates (mode switch), just update positions & colors instantly
       rects
         .attr("x", d => d.x - d.r / 2)
         .attr("y", d => d.y - d.r / 2)
@@ -380,10 +366,6 @@ export default function DorlingWorld() {
         .attr("fill", d => colorScale(d.total_mig))
         .attr("fill-opacity", 0.5);
     }
-
-
-
-
 
   }, [data, worldData, mode]);
 
@@ -425,12 +407,8 @@ export default function DorlingWorld() {
 
       </div>
 
-
-
       <svg ref={svgRef}></svg>
       <div ref={tooltipRef} className="tooltip"></div>
-
-
 
     </div>
 
