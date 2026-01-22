@@ -82,7 +82,7 @@ export default function Home() {
           document.getElementById("landscape-warning")!.style.display = "none";
         }}
       >
-        Nastavi
+        Zanemari
       </button>
     </div >
 
