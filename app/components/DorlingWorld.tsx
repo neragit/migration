@@ -74,7 +74,7 @@ export default function DorlingWorld() {
   type CountryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, CountryFeatureProperties>;
 
   const svgRef = useRef<SVGSVGElement | null>(null);
-    const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const tooltipRef = useRef<HTMLDivElement | null>(null);
   const firstRenderRef = useRef(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(containerRef);
@@ -119,8 +119,13 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData || !size) return;
 
-    const width = size.width;
-    const height = Math.min(400, width * 0.55);
+    const isPhone = size.width < 640; // small screen detection
+
+    let width = isPhone ? 350 : size.width;
+    let height = isPhone ? 200 : Math.min(500, width * 0.45);
+
+
+
 
     if (!svgRef.current) return;
 
