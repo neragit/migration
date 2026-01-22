@@ -20,13 +20,14 @@ export default function Home() {
 
 useEffect(() => {
   const mediaQuery = window.matchMedia("(orientation: landscape)");
-  const handler = (e: MediaQueryListEvent) => setShowLandscapeWarning(e.matches);
+  const handler = (e: MediaQueryListEvent) => setShowLandscapeWarning(!e.matches);
 
-  setShowLandscapeWarning(mediaQuery.matches);
+  setShowLandscapeWarning(!mediaQuery.matches);
   mediaQuery.addEventListener("change", handler);
 
   return () => mediaQuery.removeEventListener("change", handler);
 }, []);
+
 
 
 
