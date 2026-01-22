@@ -118,7 +118,7 @@ export default function Home() {
             </p>
 
             <span className="paragraph">
-              Veći kvadrat znači <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
+              Veći kvadrat predstavlja <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
             </span>
 
             <div>
