@@ -119,27 +119,23 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData || !size) return;
 
-    const isPhone = size.width < 900; 
+    const isPhone = size.width < 900;
 
     let width = isPhone ? 350 : size.width;
     let height = isPhone ? 200 : Math.min(500, width * 0.45);
-
-
-
 
     if (!svgRef.current) return;
 
     const svg = d3
       .select(svgRef.current)
       .attr("viewBox", `0 0 ${width} ${height}`)
-      .attr("preserveAspectRatio", "xMidYMid meet")
-      .style("width", "100%")
-      .style("height", "auto")
+      .style("width", `${width}px`)
+      .style("height", `${height}px`)
+      .style("max-width", "100%")
       .style("overflow", "visible");
 
+
     svg.selectAll("*").remove();
-
-
 
 
     const maxPop = d3.max(data, d => d.total_pop) ?? 0;
@@ -194,18 +190,18 @@ export default function DorlingWorld() {
 
     const baseScale = isPhone ? 180 : 250;
 
-const polyProjection = d3.geoNaturalEarth1()
-  .scale(baseScale)
-  .rotate([120, 0])
-  .translate([width / 2, height / 2]);
+    const polyProjection = d3.geoNaturalEarth1()
+      .scale(baseScale)
+      .rotate([120, 0])
+      .translate([width / 2, height / 2]);
 
-const pointProjection = d3.geoNaturalEarth1()
-  .scale(baseScale)
-  .rotate([-60, 0])
-  .translate([width / 2, height / 2]);
+    const pointProjection = d3.geoNaturalEarth1()
+      .scale(baseScale)
+      .rotate([-60, 0])
+      .translate([width / 2, height / 2]);
 
 
- 
+
 
     const centroids: Record<string, { x: number; y: number }> = {};
     const isPointFeature: Record<string, boolean> = {};
@@ -421,15 +417,13 @@ const pointProjection = d3.geoNaturalEarth1()
       </div>
 
       <div
-  ref={containerRef}
-  className="w-full flex justify-center"
->
-  <svg
-    ref={svgRef}
-    className="w-full max-w-none sm:max-w-none max-w-[500px]"
-  />
-  <div ref={tooltipRef} className="tooltip"></div>
-</div>
+        ref={containerRef}
+        className="w-full flex justify-center"
+      >
+        <svg ref={svgRef} />
+
+        <div ref={tooltipRef} className="tooltip"></div>
+      </div>
 
 
 
