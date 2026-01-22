@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObs";
 
 interface CountryData {
   country: string;
@@ -28,6 +29,12 @@ export default function Mup({ width, height }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(2021);
+  const containerRef = useRef<HTMLDivElement>(null);
+const size = useResizeObserver(containerRef);
+const svgWidth = size?.width ?? 400;
+const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
+
+
 
   const iconSize = 8;
 
@@ -307,7 +314,7 @@ export default function Mup({ width, height }: Props) {
 
   }, [filteredData, width, height]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
+
   const years = [2021, 2022, 2023, 2024, 2025];
 
   // ─────────────────────────────────────────────────────
@@ -348,8 +355,9 @@ export default function Mup({ width, height }: Props) {
   // Render
   // ─────────────────────────────────────────────────────
   return (
-    <div ref={containerRef} style={{ width, height }}>
-      <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
+    <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
+
+      <div style={{ display: "flex", gap: 6, marginBottom: 5 }}>
         {years.map(y => (
           <button
             key={y}
@@ -369,12 +377,17 @@ export default function Mup({ width, height }: Props) {
       </div>
 
       <svg
-        ref={svgRef}
-        width={width}
-        height={height}
-        viewBox={`0 0 ${width} ${height}`}
-        style={{ display: "block", overflow: "visible" }}
-      />
+  ref={svgRef}
+  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+  preserveAspectRatio="xMidYMid meet"
+  style={{
+    width: "100%", // fills container width
+    height: "auto", // keeps aspect ratio
+    display: "block",
+    overflow: "visible"
+  }}
+/>
+
 
       {tooltip && (
         <div
