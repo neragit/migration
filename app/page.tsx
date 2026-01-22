@@ -106,7 +106,7 @@ useEffect(() => {
 
       <div className="flex">
         {!showLandscapeWarning && (
-          <nav className="sidebar fixed top-0 left-6 w-44 xl:w-52 z-50 pt-10">
+          <nav className="sidebar fixed top-0 left-6 w-36 xl:w-52 z-50 pt-5 xl:pt-10">
             <ul>
               {sections.map((s) => (
                 <li
@@ -171,7 +171,7 @@ useEffect(() => {
 
 
             <ToggleDetails buttonText="Detalji">
-              <p className=" max-w-[950px] text-sm text-[#555]">
+              <p className=" max-w-2xl xl:max-w-[950px] text-sm text-[#555]">
                 Detaljniji pregled migracija u svijetu:{" "}
                 <a href="https://worldmigrationreport.iom.int/msite/wmr-2024-interactive/" target="_blank" rel="noopener noreferrer" > IOM World Migration Report 2024 </a>
 
