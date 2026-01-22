@@ -192,15 +192,20 @@ export default function DorlingWorld() {
     tooltip.style("position", "absolute");
 
 
-    const polyProjection = d3.geoNaturalEarth1()
-      .scale(250)
-      .rotate([120, 0])
-      .translate([width / 2, height / 2]);
+    const baseScale = isPhone ? 180 : 250;
 
-    const pointProjection = d3.geoNaturalEarth1()
-      .scale(250)
-      .rotate([-60, 0])
-      .translate([width / 2, height / 2]);
+const polyProjection = d3.geoNaturalEarth1()
+  .scale(baseScale)
+  .rotate([120, 0])
+  .translate([width / 2, height / 2]);
+
+const pointProjection = d3.geoNaturalEarth1()
+  .scale(baseScale)
+  .rotate([-60, 0])
+  .translate([width / 2, height / 2]);
+
+
+ 
 
     const centroids: Record<string, { x: number; y: number }> = {};
     const isPointFeature: Record<string, boolean> = {};
