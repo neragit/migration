@@ -85,12 +85,7 @@ a {
 
 }
 
-#landscape-warning {
-  display: none;
-}
-
-
-@media only screen and (orientation: portrait) {
+@media only screen and (orientation: portrait) and (max-width: 400px) {
   #landscape-warning {
     display: flex;
     position: fixed;
