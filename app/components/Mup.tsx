@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
-import useResizeObserver from "../hooks/useResizeObs";
 
 interface CountryData {
   country: string;
@@ -29,11 +28,9 @@ export default function Mup({ width, height }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(2021);
-  const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
-  const svgWidth = size?.width ?? 400;
-  const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
-  const isMobile = svgWidth < 500; // or use window.innerWidth < 768
+const svgWidth = size?.width ?? 400; // fallback
+const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
 
 
   const iconSize = 8;
@@ -53,8 +50,6 @@ export default function Mup({ width, height }: Props) {
     MiddleEast: [0.5, 0.55],
     Asia: [0.75, 0.95]
   };
-
-
 
   const countryRegion: Record<string, string> = {
     "Bosna i Hercegovina": "Europe",
@@ -146,46 +141,38 @@ export default function Mup({ width, height }: Props) {
       .domain([0, d3.max(filteredData, d => d.value)!])
       .range([10, 45]);
 
-
+    // Initialize nodes with positions if missing
     const nodes = filteredData.map(d => {
-      let x, y;
-      const region = countryRegion[d.country] || "Europe";
-      const [min, max] = regionRanges[region];
-
       if (!nodesRef.current[d.country]) {
-        if (!isMobile) {
-          // Desktop: horizontal layout
-          x = width * (min + Math.random() * (max - min));
-          y = height / 2 + (Math.random() - 0.5) * height * 0.15;
-        } else {
-          // Mobile: vertical layout
-          x = width / 2 + (Math.random() - 0.5) * width * 0.15; // center horizontally
-          y = height * (min + Math.random() * (max - min)); // spread vertically
-        }
-        nodesRef.current[d.country] = { x, y };
-      } else {
-        ({ x, y } = nodesRef.current[d.country]);
+        const region = countryRegion[d.country] || "Europe";
+        const [xMin, xMax] = regionRanges[region];
+
+        nodesRef.current[d.country] = {
+          x: width * (xMin + Math.random() * (xMax - xMin)),
+          y: height / 2 + (Math.random() - 0.5) * height * 0.15
+        };
       }
 
       return {
-        x,
-        y,
-        r: radiusScale(d.value),
-        data: d
+        ...nodesRef.current[d.country],
+        data: d,
+        r: radiusScale(d.value)
       };
     });
 
-    const sim = d3.forceSimulation(nodes)
-      .force("x", d3.forceX(d => isMobile ? width / 2 : d.x!).strength(0.05))
+    // ───────────── Weak collision once ─────────────
+    const sim = d3.forceSimulation<NodeDatum>(nodes)
+      .force("x", d3.forceX(d => d.x!).strength(0.05))
       .force("y", d3.forceY(d => d.y!).strength(0.05))
-      .force("collide", d3.forceCollide(d => d.r * 3))
+      .force(
+        "collide",
+        d3.forceCollide(d => {
+          const region = countryRegion[d.data.country] || "Europe";
+          const baseRadius = d.r * 3;
+          return region === "Asia" ? baseRadius * 1.5 : baseRadius;
+        })
+      )
       .stop();
-
-
-
-
-
-
 
 
     for (let i = 0; i < 80; i++) sim.tick();
@@ -223,7 +210,6 @@ export default function Mup({ width, height }: Props) {
 
     const allGroups = enterGroups.merge(groups);
 
-
     // ───────────── ICONS ─────────────
     allGroups.each(function (d) {
       const g = d3.select(this);
@@ -237,10 +223,8 @@ export default function Mup({ width, height }: Props) {
       });
 
       const icons = g.selectAll("use").data(positions);
-
+      
       icons.style("opacity", 1)
-
-
 
 
       icons.exit()
@@ -327,7 +311,7 @@ export default function Mup({ width, height }: Props) {
 
   }, [filteredData, width, height]);
 
-
+  const containerRef = useRef<HTMLDivElement>(null);
   const years = [2021, 2022, 2023, 2024, 2025];
 
   // ─────────────────────────────────────────────────────
@@ -370,7 +354,7 @@ export default function Mup({ width, height }: Props) {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 5 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
         {years.map(y => (
           <button
             key={y}
@@ -390,16 +374,16 @@ export default function Mup({ width, height }: Props) {
       </div>
 
       <svg
-        ref={svgRef}
-        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-        preserveAspectRatio="xMidYMid meet"
-        style={{
-          width: "100%", // fills container width
-          height: "auto", // keeps aspect ratio
-          display: "block",
-          overflow: "visible"
-        }}
-      />
+  ref={svgRef}
+  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+  preserveAspectRatio="xMidYMid meet"
+  style={{
+    width: "100%", // fills container width
+    height: "auto", // keeps aspect ratio
+    display: "block",
+    overflow: "visible"
+  }}
+/>
 
 
       {tooltip && (

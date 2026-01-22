@@ -28,7 +28,7 @@ export default function Home() {
     { id: "choropleth-cro", label: "Godišnji dolasci" },
     { id: "top5", label: "Najčešći imigranti" },
     { id: "mup", label: "Godišnje stanje" }
-    
+
   ];
 
   useEffect(() => {
@@ -85,6 +85,10 @@ export default function Home() {
 
 
         <main className="ml-[350px] w-full overflow-x-visible text-gray-700" >
+
+          <div id="landscape-warning">
+            📱 Please rotate your device to landscape to view this site.
+          </div>
 
           <section className="section !pt-6 " id="start">
 
@@ -278,7 +282,7 @@ export default function Home() {
           </section>
 
 
-          
+
 
         </main>
 
