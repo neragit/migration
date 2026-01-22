@@ -60,6 +60,9 @@ export default function Home() {
 
   return (
     <>
+    <div id="landscape-warning">
+            📱 Please rotate your device to landscape to view this site.
+          </div>
       <div className="flex">
         <nav className="sidebar fixed top-0 left-6 w-52 z-50 pt-10">
 
@@ -85,10 +88,6 @@ export default function Home() {
 
 
         <main className="ml-[350px] w-full overflow-x-visible text-gray-700" >
-
-          <div id="landscape-warning">
-            📱 Please rotate your device to landscape to view this site.
-          </div>
 
           <section className="section !pt-6 " id="start">
 
