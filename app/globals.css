@@ -85,6 +85,11 @@ a {
 
 }
 
+#landscape-warning {
+  display: none;
+}
+
+
 @media only screen and (orientation: portrait) {
   #landscape-warning {
     display: flex;

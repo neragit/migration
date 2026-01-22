@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObs";
 
 interface CountryData {
   country: string;
@@ -28,10 +29,10 @@ export default function Mup({ width, height }: Props) {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(2021);
+  const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
-const svgWidth = size?.width ?? 400; // fallback
-const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
-
+  const svgWidth = size?.width ?? 400;
+  const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
 
   const iconSize = 8;
 
@@ -223,7 +224,7 @@ const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
       });
 
       const icons = g.selectAll("use").data(positions);
-      
+
       icons.style("opacity", 1)
 
 
@@ -311,7 +312,7 @@ const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
 
   }, [filteredData, width, height]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
+
   const years = [2021, 2022, 2023, 2024, 2025];
 
   // ─────────────────────────────────────────────────────
@@ -354,7 +355,7 @@ const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 15 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 5 }}>
         {years.map(y => (
           <button
             key={y}
@@ -374,16 +375,16 @@ const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
       </div>
 
       <svg
-  ref={svgRef}
-  viewBox={`0 0 ${svgWidth} ${svgHeight}`}
-  preserveAspectRatio="xMidYMid meet"
-  style={{
-    width: "100%", // fills container width
-    height: "auto", // keeps aspect ratio
-    display: "block",
-    overflow: "visible"
-  }}
-/>
+        ref={svgRef}
+        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+        preserveAspectRatio="xMidYMid meet"
+        style={{
+          width: "100%", // fills container width
+          height: "auto", // keeps aspect ratio
+          display: "block",
+          overflow: "visible"
+        }}
+      />
 
 
       {tooltip && (
