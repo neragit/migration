@@ -29,7 +29,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
   useEffect(() => {
     if (!migrationData || migrationData.length === 0) return;
 
-    const margin = { top: 40, right: 40, bottom: 50, left: 60 };
+    const margin = { top: 40, right: 80, bottom: 50, left: 60 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
