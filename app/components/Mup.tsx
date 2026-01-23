@@ -9,11 +9,6 @@ interface CountryData {
   [year: number]: number | null | string;
 }
 
-interface Props {
-  width: number;
-  height: number;
-}
-
 interface NodeDatum extends d3.SimulationNodeDatum {
   x: number;
   y: number;
@@ -25,7 +20,7 @@ interface NodeDatum extends d3.SimulationNodeDatum {
 }
 
 
-export default function Mup({ width, height }: Props) {
+export default function Mup() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
   const [selectedYear, setSelectedYear] = useState<number>(2021);
@@ -313,7 +308,7 @@ export default function Mup({ width, height }: Props) {
 
 
 
-  }, [filteredData, width, height]);
+  }, [filteredData]);
 
 
   const years = [2021, 2022, 2023, 2024, 2025];
