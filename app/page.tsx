@@ -262,7 +262,7 @@ export default function Home() {
             </p>
 
             <div>
-              <TopImmigrants width={740} height={420} />
+              <TopImmigrants  />
             </div>
 
           </section>
@@ -318,7 +318,7 @@ export default function Home() {
             </p>
 
             <div>
-              <Mup width={900} height={600} />
+              <Mup />
             </div>
 
           </section>

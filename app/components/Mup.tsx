@@ -151,9 +151,10 @@ export default function Mup({ width, height }: Props) {
         const [xMin, xMax] = regionRanges[region];
 
         nodesRef.current[d.country] = {
-          x: width * (xMin + Math.random() * (xMax - xMin)),
-          y: height / 2 + (Math.random() - 0.5) * height * 0.15
-        };
+  x: svgWidth * (xMin + Math.random() * (xMax - xMin)),
+  y: svgHeight / 2 + (Math.random() - 0.5) * svgHeight * 0.15
+};
+
       }
 
       return {
@@ -357,7 +358,7 @@ export default function Mup({ width, height }: Props) {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: size && size.width < 900 ? 0 : 5  }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: size && size.width < 900 ? 0 : 25  }}>
         {years.map(y => (
           <button
             key={y}
@@ -381,7 +382,7 @@ export default function Mup({ width, height }: Props) {
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          width: size && size.width < 900 ? "70%" : "100%",
+          width: size && size.width < 900 ? "70%" : "90%",
           height: "auto", // keeps aspect ratio
           marginBottom: size && size.width < 900 ? 100 : 0,
           display: "block",

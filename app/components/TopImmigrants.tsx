@@ -18,7 +18,8 @@ interface TopImmigrantsProps {
   height?: number;
 }
 
-export default function TopImmigrants({ width = 700, height = 400 }: TopImmigrantsProps) {
+export default function TopImmigrants({ width = 740, height = 420 }: TopImmigrantsProps) {
+
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
