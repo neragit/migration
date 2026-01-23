@@ -19,6 +19,7 @@ export default function ChoroplethCro() {
   const lockScrollRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
   const mapSize = useResizeObserver(mapRef);
+  
 
 // Decide whether to apply the desktop hack
 const isDesktop = mapSize ? mapSize.width > 768 : true; // fallback to desktop if size unknown
@@ -226,11 +227,14 @@ useEffect(() => {
           projection: { type: "natural earth" },
           showcoastlines: false,
           showframe: false,
+          
         },
         margin: { t: 0, b: 0, l: 0, r: 0 },
         width: mapSize?.width,
         height: mapSize?.height,
         autosize: true,
+        dragmode: isDesktop ? "pan" : false,
+
       }}
       config={{
         responsive: true,
