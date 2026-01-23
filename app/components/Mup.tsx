@@ -34,10 +34,14 @@ export default function Mup({ width, height }: Props) {
 
   const isMobile = (size?.width ?? 0) < 900;
 
-
   const svgWidth = size?.width ?? 400;
 
   const svgHeight = size ? Math.min(isMobile ? 600 : 500, size.width * 0.55) : 300;
+
+  const padding = isMobile
+  ? { top: 0, right: 30, bottom: 50, left: 30 }
+  : { top: 0, right: 0, bottom: 0, left: 0 };
+
 
 
   const iconSize = 8;
