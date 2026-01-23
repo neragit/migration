@@ -18,15 +18,15 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState("start");
   const [showLandscapeWarning, setShowLandscapeWarning] = useState(false);
 
-useEffect(() => {
-  const mediaQuery = window.matchMedia("(orientation: landscape)");
-  const handler = (e: MediaQueryListEvent) => setShowLandscapeWarning(!e.matches);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(orientation: landscape)");
+    const handler = (e: MediaQueryListEvent) => setShowLandscapeWarning(!e.matches);
 
-  setShowLandscapeWarning(!mediaQuery.matches);
-  mediaQuery.addEventListener("change", handler);
+    setShowLandscapeWarning(!mediaQuery.matches);
+    mediaQuery.addEventListener("change", handler);
 
-  return () => mediaQuery.removeEventListener("change", handler);
-}, []);
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
 
 
@@ -46,7 +46,7 @@ useEffect(() => {
     { id: "mup", label: "Godišnje stanje" }
 
   ];
-  
+
 
   useEffect(() => {
 
@@ -253,6 +253,20 @@ useEffect(() => {
 
           </section>
 
+          <section className="section pb-20" id="top5">
+
+            <h2>Kako se mijenjaju trendovi?</h2>
+
+            <p className="paragraph">
+              Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
+            </p>
+
+            <div>
+              <TopImmigrants width={740} height={420} />
+            </div>
+
+          </section>
+
 
           <section className="section " id="choropleth-cro">
 
@@ -280,19 +294,7 @@ useEffect(() => {
           </section>
 
 
-          <section className="section pb-20" id="top5">
 
-            <h2>Kako se mijenjaju trendovi?</h2>
-
-            <p className="paragraph">
-              Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
-            </p>
-
-            <div>
-              <TopImmigrants width={740} height={420} />
-            </div>
-
-          </section>
 
           <section className="section " id="mup">
 
