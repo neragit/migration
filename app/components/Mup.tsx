@@ -357,7 +357,7 @@ export default function Mup({ width, height }: Props) {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 5 }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: size && size.width < 900 ? 0 : 5  }}>
         {years.map(y => (
           <button
             key={y}
@@ -381,9 +381,9 @@ export default function Mup({ width, height }: Props) {
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          paddingBottom: size && size.width < 900 ? "20px" : auto,
           width: size && size.width < 900 ? "65%" : "100%",
           height: "auto", // keeps aspect ratio
+          marginBottom: size && size.width < 900 ? 50 : 0,
           display: "block",
           overflow: "visible"
         }}
