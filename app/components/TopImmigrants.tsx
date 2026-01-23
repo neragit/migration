@@ -100,7 +100,15 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const margin = { top: 40, right: 120, bottom: 50, left: 60 };
+    const isMobile = window.innerWidth < 900;
+
+    const margin = {
+      top: isMobile ? 20 : 40,
+      right: isMobile ? 40 : 80,
+      bottom: isMobile ? 20 : 50,
+      left: isMobile ? 10 : 60,
+    };
+
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
