@@ -381,7 +381,7 @@ export default function Mup({ width, height }: Props) {
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          width: size && size.width < 900 ? "65%" : "100%",
+          width: size && size.width < 900 ? "80%" : "100%",
           height: "auto", // keeps aspect ratio
           marginBottom: size && size.width < 900 ? 50 : 0,
           display: "block",
