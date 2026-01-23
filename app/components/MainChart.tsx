@@ -31,12 +31,12 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
 
     const isMobile = window.innerWidth < 900;
 
-const margin = {
-  top: isMobile ? 20 : 40,
-  right: isMobile ? 40 : 80,
-  bottom: isMobile ? 20 : 50,
-  left: isMobile ? 10 : 60,
-};
+    const margin = {
+      top: isMobile ? 20 : 40,
+      right: isMobile ? 40 : 80,
+      bottom: isMobile ? 20 : 50,
+      left: isMobile ? 10 : 60,
+    };
 
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -302,19 +302,19 @@ const margin = {
   return (
     <>
       <div style={{ width: "100%", maxWidth: `${width}px`, height: "auto" }}>
-  <svg
-    ref={svgRef}
-    width="100%"
-    height="100%"
-    viewBox={`0 0 ${width} ${height}`}
-    preserveAspectRatio="xMidYMid meet"
-    style={{ display: "block", overflow: "visible" }}
-  ></svg>
-</div>
+        <svg
+          ref={svgRef}
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          style={{ display: "block", overflow: "visible" }}
+        ></svg>
+      </div>
 
       <div
         ref={tooltipRef}
-        className = "tooltip"
+        className="tooltip"
         style={{
           position: "absolute",
         }}

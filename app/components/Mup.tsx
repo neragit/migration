@@ -31,8 +31,15 @@ export default function Mup({ width, height }: Props) {
   const [selectedYear, setSelectedYear] = useState<number>(2021);
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
-  const svgWidth = size?.width ?? 400;
-  const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
+
+  const isMobile = (size?.width ?? 0) < 900;
+
+
+  const svgWidth = size?.width ?? isMobile ? 250 : 400;
+  const svgHeight = size ? Math.min(isMobile ? 600 : 500, size.width * 0.55) : 300;
+
+
+
 
   const iconSize = 8;
 
