@@ -33,9 +33,9 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
 
 const margin = {
   top: 40,
-  right: isMobile ? 40 : 80,
+  right: isMobile ? 20 : 80,
   bottom: 50,
-  left: 60,
+  left: isMobile ? 30 : 60,
 };
 
     const innerWidth = width - margin.left - margin.right;
