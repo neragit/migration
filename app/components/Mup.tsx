@@ -32,14 +32,9 @@ export default function Mup({ width, height }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
-  const isMobile = (size?.width ?? 0) < 900;
-
+  
   const svgWidth = size?.width ?? 400;
-
-  const svgHeight = size
-    ? size.width * (isMobile ? 1.5 : 0.5)
-    : 300;
-
+  const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
 
   const iconSize = 8;
 
@@ -386,7 +381,7 @@ export default function Mup({ width, height }: Props) {
         viewBox={`0 0 ${svgWidth} ${svgHeight}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          width: "100%", // fills container width
+          width: size && size.width < 900 ? 200 : "100%",
           height: "auto", // keeps aspect ratio
           display: "block",
           overflow: "visible"
