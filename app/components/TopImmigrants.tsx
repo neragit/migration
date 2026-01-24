@@ -124,7 +124,7 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
 
     const margin = {
       top: isMobile ? 20 : 40,
-      right: isMobile ? 40 + safeInsetRight : 80,
+      right: isMobile ? 120 + safeInsetRight : 80,
       bottom: isMobile ? 20 + safeInsetBottom : 50,
       left: isMobile ? 10 : 60,
     };
