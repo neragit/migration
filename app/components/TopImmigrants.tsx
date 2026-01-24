@@ -22,11 +22,7 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-  const safeInsetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0;
-  const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
-  const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
-  const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
-
+  
 
   const data: CountryData[] = [
     {
@@ -118,6 +114,12 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
     if (!data.length) return;
 
     const isMobile = window.innerWidth < 900;
+
+    const safeInsetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0;
+  const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
+  const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
+  const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
+
 
 
     const margin = {
