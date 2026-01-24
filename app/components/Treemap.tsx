@@ -10,7 +10,7 @@ interface TreemapData {
   godina: number;
 }
 
-const isMobile = window.innerWidth < 900;
+
 
 
 
@@ -50,6 +50,7 @@ const Treemap: React.FC = () => {
 
 // Responsive container observer
 useEffect(() => {
+  
   if (!containerRef.current) return;
   const container = containerRef.current;
   const observer = new ResizeObserver(entries => {
@@ -311,12 +312,13 @@ const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
 
 const currentStats = statsPerYear[selectedYear] ?? { totalBroj: 0, avgPlaca: 0 };
 
+const isMobile = dimensions.width < 900;
 
 
 return (
   <div
     ref={containerRef}
-    style={{ position: "relative", width: "100%", maxWidth: "800px" }}
+    style={{ position: "relative", width: isMobile ? "90%" : "100%", maxWidth: "800px" }}
     onMouseMove={handleMouseMove}
     onMouseLeave={() => setTooltip(null)}
   >
@@ -352,7 +354,7 @@ return (
 
     <svg
       ref={svgRef}
-      width = {isMobile ? "90%" : "100%"}
+      width = "100%"
       height={dimensions.height}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       style={{ display: "block", overflow: "visible" }}
