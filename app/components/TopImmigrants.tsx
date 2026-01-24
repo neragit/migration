@@ -23,9 +23,9 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   const safeInsetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0;
-const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
-const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
-const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
+  const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
+  const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
+  const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
 
 
   const data: CountryData[] = [
@@ -102,30 +102,30 @@ const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPro
   ];
 
   useEffect(() => {
-  const handleResize = () => {
-    const isMobile = window.innerWidth < 900;
-    console.log("Resized, isMobile:", isMobile, "window.innerWidth:", window.innerWidth);
-  };
+    const handleResize = () => {
+      const isMobile = window.innerWidth < 900;
+      console.log("Resized, isMobile:", isMobile, "window.innerWidth:", window.innerWidth);
+    };
 
-  handleResize(); // initial check
-  window.addEventListener("resize", handleResize);
+    handleResize(); // initial check
+    window.addEventListener("resize", handleResize);
 
-  return () => window.removeEventListener("resize", handleResize);
-}, []);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
 
   useEffect(() => {
     if (!data.length) return;
 
-    const isMobile = window.innerWidth < 900; 
+    const isMobile = window.innerWidth < 900;
 
 
-const margin = {
-  top: isMobile ? 20 : 40,
-  right: isMobile ? 40 + safeInsetRight : 80,
-  bottom: isMobile ? 20 + safeInsetBottom : 50,
-  left: isMobile ? 10 : 60,
-};
+    const margin = {
+      top: isMobile ? 20 : 40,
+      right: isMobile ? 40 + safeInsetRight : 80,
+      bottom: isMobile ? 20 + safeInsetBottom : 50,
+      left: isMobile ? 10 : 60,
+    };
 
 
     console.log("D3 effect, isMobile:", isMobile, "window.innerWidth:", window.innerWidth, margin);
