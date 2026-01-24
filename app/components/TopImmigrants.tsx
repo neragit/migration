@@ -102,10 +102,12 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
   const svgWidth = width;
   const svgHeight = height;
 
+  const isMobile = window.innerWidth < 900;
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
-    const isMobile = window.innerWidth < 900;
+    
 
     const margin = {
       top: isMobile ? 20 : 40,
