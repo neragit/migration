@@ -68,7 +68,7 @@ a {
 @media (max-width: 900px) {
 
   .main {
-    padding: 5px;
+    padding-right: 10px;
     text-align: justify;
   }
 
