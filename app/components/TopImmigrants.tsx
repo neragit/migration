@@ -22,6 +22,12 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
+  const safeInsetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0;
+const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
+const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
+const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
+
+
   const data: CountryData[] = [
     {
       country: "Azija",
@@ -113,12 +119,14 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
 
     const isMobile = window.innerWidth < 900; 
 
-    const margin = {
-      top: isMobile ? 20 : 40,
-      right: isMobile ? 150 : 80,
-      bottom: isMobile ? 20 : 50,
-      left: isMobile ? 10 : 60,
-    };
+
+const margin = {
+  top: isMobile ? 20 : 40,
+  right: isMobile ? 40 + safeInsetRight : 80,
+  bottom: isMobile ? 20 + safeInsetBottom : 50,
+  left: isMobile ? 10 : 60,
+};
+
 
     console.log("D3 effect, isMobile:", isMobile, "window.innerWidth:", window.innerWidth, margin);
 
