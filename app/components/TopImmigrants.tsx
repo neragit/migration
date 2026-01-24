@@ -100,10 +100,9 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
 
     const isMobile = window.innerWidth < 900;
 
-    // ✅ SAME MARGINS AS FIRST CHART
     const margin = {
       top: isMobile ? 20 : 40,
-      right: isMobile ? 40 : 80,
+      right: isMobile ? 120 : 80,
       bottom: isMobile ? 20 : 50,
       left: isMobile ? 10 : 60,
     };
