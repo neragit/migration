@@ -10,6 +10,10 @@ interface TreemapData {
   godina: number;
 }
 
+const isMobile = window.innerWidth < 900;
+
+
+
 const Treemap: React.FC = () => {
   const [data, setData] = useState<TreemapData[]>([]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -348,7 +352,7 @@ return (
 
     <svg
       ref={svgRef}
-      width="100%"
+      width = {isMobile ? "100%" : "90%"}
       height={dimensions.height}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       style={{ display: "block", overflow: "visible" }}
