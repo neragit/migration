@@ -18,14 +18,10 @@ interface TopImmigrantsProps {
   height?: number;
 }
 
-export default function TopImmigrants({ width = 740, height = 420 }: TopImmigrantsProps) {
-
+export default function TopImmigrants({ width = 700, height = 400 }: TopImmigrantsProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-
-
-  // Internal dataset
   const data: CountryData[] = [
     {
       country: "Azija",
@@ -99,44 +95,42 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
     },
   ];
 
-  const svgWidth = width;
-  const svgHeight = height;
-
-  const isMobile = window.innerWidth < 900;
-
   useEffect(() => {
-    if (!data || data.length === 0) return;
+    if (!data.length) return;
 
-    
+    const isMobile = window.innerWidth < 900;
 
+    // ✅ SAME MARGINS AS FIRST CHART
     const margin = {
       top: isMobile ? 20 : 40,
-      right: isMobile ? 120 : 80,
+      right: isMobile ? 40 : 80,
       bottom: isMobile ? 20 : 50,
       left: isMobile ? 10 : 60,
     };
 
-
-    const innerWidth = svgWidth - margin.left - margin.right;
-    const innerHeight = svgHeight - margin.top - margin.bottom;
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
 
-    // X scale
     const years = data[0].values.map(d => d.year);
-    const xScale = d3.scaleLinear().domain(d3.extent(years) as [number, number]).range([0, innerWidth]);
+    const xScale = d3.scaleLinear()
+      .domain(d3.extent(years) as [number, number])
+      .range([0, innerWidth]);
 
-    // Y scale
     const maxY = d3.max(data, c => d3.max(c.values, d => d.value)) || 0;
-    const yScale = d3.scaleLinear().domain([0, maxY * 1.1]).range([innerHeight, 0]);
+    const yScale = d3.scaleLinear()
+      .domain([0, maxY * 1.1])
+      .range([innerHeight, 0]);
 
-    // Color scale
-    const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(data.map(d => d.country));
+    const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+      .domain(data.map(d => d.country));
 
-    // Grid lines
+    // Grid
     g.append("g")
       .attr("class", "grid")
       .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
@@ -144,9 +138,19 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
       .selectAll("line")
       .attr("stroke", "#888");
 
-    // Axes
-    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(5);
-    const yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(6);
+    const xAxis = d3.axisBottom(xScale)
+      .tickFormat(d3.format("d"))
+      .tickSize(0)
+      .tickPadding(20)
+      .ticks(5);
+
+
+    const yAxis = d3.axisLeft(yScale)
+      .tickFormat(d3.format("d"))
+      .tickSize(0)
+      .tickPadding(20)
+      .ticks(6);
+
 
     g.append("g")
       .attr("transform", `translate(0,${innerHeight})`)
@@ -164,17 +168,16 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
       .attr("font-family", "Mukta, sans-serif")
       .attr("font-size", "12px");
 
-    // Tooltip
     const tooltip = d3.select(tooltipRef.current);
 
-    // Line generator
-    const lineGen = d3.line<DataPoint>().x(d => xScale(d.year)).y(d => yScale(d.value)).curve(d3.curveMonotoneX);
+    const lineGen = d3.line<DataPoint>()
+      .x(d => xScale(d.year))
+      .y(d => yScale(d.value))
+      .curve(d3.curveMonotoneX);
 
-    // Draw lines and circles
     data.forEach((countryData, idx) => {
       const color = colorScale(countryData.country) as string;
 
-      // Line path
       const path = g.append("path")
         .datum(countryData.values)
         .attr("fill", "none")
@@ -183,16 +186,8 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
         .attr("d", lineGen);
 
       const totalLength = path.node()!.getTotalLength();
-      path.attr("stroke-dasharray", totalLength).attr("stroke-dashoffset", totalLength);
-
-      // Animate on scroll
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          path.transition().duration(3000).attr("stroke-dashoffset", 0);
-          circles.transition().delay(2500).duration(1000).style("opacity", 1);
-          observer.disconnect();
-        }
-      }, { threshold: 0.5 });
+      path.attr("stroke-dasharray", totalLength)
+        .attr("stroke-dashoffset", totalLength);
 
       const circles = g.selectAll(`.circle-${idx}`)
         .data(countryData.values)
@@ -205,48 +200,75 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
         .attr("fill", color)
         .style("opacity", 0)
         .on("mouseenter", (event, d) => {
-          tooltip.style("display", "block")
-            .html(`<strong>${countryData.country}</strong><br/>Godina: ${d.year}<br/>Broj imigranata: ${new Intl.NumberFormat('fr-FR').format(d.value)}`)
+          tooltip
+            .style("display", "block")
+            .html(
+              `<strong>${countryData.country}</strong><br/>
+               Godina: ${d.year}<br/>
+               Broj imigranata: ${new Intl.NumberFormat("fr-FR").format(d.value)}`
+            )
             .style("left", `${event.pageX + 10}px`)
             .style("top", `${event.pageY - 30}px`);
         })
-        .on("mousemove", (event) => {
-          tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 30}px`);
+        .on("mousemove", event => {
+          tooltip
+            .style("left", `${event.pageX + 10}px`)
+            .style("top", `${event.pageY - 30}px`);
         })
         .on("mouseleave", () => tooltip.style("display", "none"));
+
+      const observer = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          path.transition().duration(3000).attr("stroke-dashoffset", 0);
+          circles.transition().delay(2500).duration(1000).style("opacity", 1);
+          observer.disconnect();
+        }
+      }, { threshold: 0.5 });
 
       observer.observe(svgRef.current!);
     });
 
-    // Legend
-    const legend = svg.append("g").attr("transform", `translate(${width - margin.right + 40}, ${margin.top})`);
-    data.forEach((c, i) => {
-      const color = colorScale(c.country) as string;
-      const row = legend.append("g").attr("transform", `translate(0, ${i * 20})`);
-      row.append("circle")
-        .attr("cx", 6)        // circle center x
-        .attr("cy", 6)        // circle center y
-        .attr("r", 6)         // radius
-        .attr("fill", color);
+    // Legend (same positioning logic as first chart)
+    const legend = svg.append("g")
+      .attr("transform", `translate(${width - margin.right + 40}, ${margin.top})`);
 
-      row.append("text").attr("x", 18).attr("y", 10).attr("font-size", 12).attr("fill", "#555").text(c.country);
+    data.forEach((c, i) => {
+      const row = legend.append("g")
+        .attr("transform", `translate(0, ${i * 20})`);
+
+      row.append("circle")
+        .attr("cx", 6)
+        .attr("cy", 6)
+        .attr("r", 6)
+        .attr("fill", colorScale(c.country) as string);
+
+      row.append("text")
+        .attr("x", 18)
+        .attr("y", 10)
+        .attr("font-size", "13px")
+        .attr("fill", "#555")
+        .text(c.country);
     });
 
   }, [width, height]);
 
   return (
     <>
-
-
-      <svg ref={svgRef} width={svgWidth} height={svgHeight} style={{ overflow: "visible" }}></svg>
+      <div style={{ width: "100%", maxWidth: `${width}px`, height: "auto" }}>
+        <svg
+          ref={svgRef}
+          width="100%"
+          height="100%"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          style={{ display: "block", overflow: "visible" }}
+        />
+      </div>
 
       <div
         ref={tooltipRef}
         className="tooltip"
-        style={{
-          position: "absolute",
-          opacity: "0.90",
-        }}
+        style={{ position: "absolute", opacity: 0.9 }}
       />
     </>
   );
