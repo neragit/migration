@@ -23,6 +23,8 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
+  
+
   // Internal dataset
   const data: CountryData[] = [
     {
@@ -104,7 +106,7 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
 
     const margin = {
       top: isMobile ? 20 : 40,
-      right: isMobile ? 10 : 80,
+      right: isMobile ? 120 : 80,
       bottom: isMobile ? 20 : 50,
       left: isMobile ? 10 : 60,
     };
