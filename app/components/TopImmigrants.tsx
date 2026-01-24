@@ -23,7 +23,7 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
 
-  
+
 
   // Internal dataset
   const data: CountryData[] = [
@@ -99,6 +99,9 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
     },
   ];
 
+  const svgWidth = width;
+  const svgHeight = height;
+
   useEffect(() => {
     if (!data || data.length === 0) return;
 
@@ -111,8 +114,9 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
       left: isMobile ? 10 : 60,
     };
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+
+    const innerWidth = svgWidth - margin.left - margin.right;
+    const innerHeight = svgHeight - margin.top - margin.bottom;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -131,32 +135,32 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10).domain(data.map(d => d.country));
 
     // Grid lines
-        g.append("g")
-          .attr("class", "grid")
-          .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
-          .attr("stroke-opacity", 0.05)
-          .selectAll("line")
-          .attr("stroke", "#888");
-    
-        // Axes
-        const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(5);
-        const yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(6);
-    
-        g.append("g")
-          .attr("transform", `translate(0,${innerHeight})`)
-          .call(xAxis)
-          .select(".domain")
-          .attr("stroke", "#eee");
-    
-        g.append("g")
-          .call(yAxis)
-          .select(".domain")
-          .attr("stroke", "#eee");
-    
-        g.selectAll(".tick text")
-          .attr("fill", "#555")
-          .attr("font-family", "Mukta, sans-serif")
-          .attr("font-size", "12px");
+    g.append("g")
+      .attr("class", "grid")
+      .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
+      .attr("stroke-opacity", 0.05)
+      .selectAll("line")
+      .attr("stroke", "#888");
+
+    // Axes
+    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(5);
+    const yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20).ticks(6);
+
+    g.append("g")
+      .attr("transform", `translate(0,${innerHeight})`)
+      .call(xAxis)
+      .select(".domain")
+      .attr("stroke", "#eee");
+
+    g.append("g")
+      .call(yAxis)
+      .select(".domain")
+      .attr("stroke", "#eee");
+
+    g.selectAll(".tick text")
+      .attr("fill", "#555")
+      .attr("font-family", "Mukta, sans-serif")
+      .attr("font-size", "12px");
 
     // Tooltip
     const tooltip = d3.select(tooltipRef.current);
@@ -230,7 +234,10 @@ export default function TopImmigrants({ width = 740, height = 420 }: TopImmigran
 
   return (
     <>
-      <svg ref={svgRef} width={width} height={height} style={{ overflow: "visible" }}></svg>
+
+
+      <svg ref={svgRef} width={svgWidth} height={svgHeight} style={{ overflow: "visible" }}></svg>
+
       <div
         ref={tooltipRef}
         className="tooltip"
