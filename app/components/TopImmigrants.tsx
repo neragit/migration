@@ -96,16 +96,31 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
   ];
 
   useEffect(() => {
+  const handleResize = () => {
+    const isMobile = window.innerWidth < 900;
+    console.log("Resized, isMobile:", isMobile, "window.innerWidth:", window.innerWidth);
+  };
+
+  handleResize(); // initial check
+  window.addEventListener("resize", handleResize);
+
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
+
+  useEffect(() => {
     if (!data.length) return;
 
-    const isMobile = window.innerWidth < 900;
+    const isMobile = window.innerWidth < 900; // <- define here
 
     const margin = {
       top: isMobile ? 20 : 40,
-      right: isMobile ? 120 : 80,
+      right: isMobile ? 150 : 80,
       bottom: isMobile ? 20 : 50,
       left: isMobile ? 10 : 60,
     };
+
+    console.log("D3 effect, isMobile:", isMobile, "window.innerWidth:", window.innerWidth, margin);
 
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
