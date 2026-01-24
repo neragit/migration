@@ -352,7 +352,7 @@ return (
 
     <svg
       ref={svgRef}
-      width = {isMobile ? "100%" : "90%"}
+      width = {isMobile ? "90%" : "100%"}
       height={dimensions.height}
       viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}
       style={{ display: "block", overflow: "visible" }}
