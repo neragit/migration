@@ -119,7 +119,7 @@ export default function CroatiaMap() {
     let height = width * 0.75; // default proportional
 
     // Minimum height for small phones
-    if (width < 700) height = 300;
+    if (width < 700) height = 200;
 
     // Cap the height to a maximum so it doesn't get huge on large screens
     const maxHeight = 600;
