@@ -120,8 +120,8 @@ export default function OccupationCountyMap() {
     const draw = () => {
         if (!svgRef.current || !topoRef.current) return
 
+        const height = 500
         const width = 800
-        const height = 600
 
         const svg = d3.select(svgRef.current)
         svg.attr("viewBox", `0 0 ${width} ${height}`)
@@ -171,7 +171,7 @@ export default function OccupationCountyMap() {
             <div
                 style={{
                     width: 380,
-                    maxHeight: "80vh",
+                    maxHeight: "60vh",
                     overflowY: "auto",
                     fontSize: 13,
                     direction: "rtl",

@@ -110,22 +110,22 @@ export default function CroatiaMap() {
     });
   }, []);
 
-  // ──────────────────────────────────────────────
-  // Draw map
-  // ──────────────────────────────────────────────
   const draw = () => {
     if (!svgRef.current || !topoRef.current || !dataByYear[year]) return;
 
+
     const container = svgRef.current.parentElement!;
     const width = container.clientWidth;
+    let height = width * 0.75; // default proportional
 
-    const maxHeight =
-      Math.min(window.innerHeight, document.documentElement.clientHeight) * 0.9;
+    // Minimum height for small phones
+    if (height < 600) height = 600;
 
-    const height = Math.min(
-      Math.max(600, width * 0.78),
-      maxHeight
-    );
+    // Cap the height to a maximum so it doesn't get huge on large screens
+    const maxHeight = 600;
+    if (height > maxHeight) height = maxHeight;
+
+
 
     const svg = d3.select(svgRef.current);
 
@@ -282,8 +282,8 @@ export default function CroatiaMap() {
             position: "fixed",
             top: tooltip.y,
             left: tooltip.x,
-            opacity: 0.90,               
-            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out", 
+            opacity: 0.90,
+            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out",
           }}
         >
           {tooltip.content}
