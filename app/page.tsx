@@ -112,7 +112,7 @@ export default function Home() {
 
       <div className="flex">
         {!showLandscapeWarning && (
-          <nav className="sidebar fixed top-0 left-6 w-32 xl:w-52 z-50 pt-5 xl:pt-10">
+          <nav className="sidebar fixed top-0 left-6 w-32 xl:w-52 z-50 pt-5 xl:pt-10 hidden sm:block">
             <ul>
               {sections.map((s) => (
                 <li
@@ -134,7 +134,7 @@ export default function Home() {
 
 
 
-        <main className="ml-[250px] xl:ml-[350px] w-full overflow-x-visible text-gray-700">
+        <main className="ml-10 sm:ml-[250px] xl:ml-[350px] w-full overflow-x-visible text-gray-700">
 
           <section className="section !pt-6 " id="start">
 
