@@ -40,7 +40,7 @@ export default function Mup() {
 
     if (size && size.width < 500) { // mob portrait
       return {
-        width: size.width * 1.1, height: size.width * 3.1, iconSize: 4,
+        width: size.width * 1.1, height: size.width * 3.2, iconSize: 4,
         marginLeft: 10, marginTop: 50, marginBottom: 50
       };
 
