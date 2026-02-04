@@ -350,7 +350,7 @@ export default function Home() {
 
 
 
-          <section className="section " id="mup">
+          <section className="section pb-20" id="mup">
 
             <h2>Tko radi i boravi u Hrvatskoj?</h2>
 

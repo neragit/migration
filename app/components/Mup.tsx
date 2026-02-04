@@ -53,8 +53,8 @@ export default function Mup() {
     } else if (size) {
       // default / laptop
       return {
-        width: size.width, height: size.width * 0.6, iconSize: 5,
-        marginLeft: 0, marginTop: 0, marginBottom: 0
+        width: size.width, height: size.width * 0.5, iconSize: 6,
+        marginLeft: -10, marginTop: 0, marginBottom: 0
       };
 
     } else {
@@ -400,7 +400,8 @@ export default function Mup() {
               color: selectedYear === y ? "#fff" : "#000",
               border: "none",
               borderRadius: 4,
-              cursor: "pointer"
+              cursor: "pointer",
+              zIndex: 9999 
             }}
           >
             {y}
