@@ -241,13 +241,17 @@ export default function CroatiaMap() {
       ref={containerRef}
       style={{
         width: "100%",
+
         display: "flex",
         flexDirection: "column",
         gap: "10px",
       }}
     >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "10px" }}>
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
+
+      <div className="flex gap-5 justify-between items-start max-w-[850px] mr-10 mb-4">
+
+
+        <div style={{ display: "flex", gap: "5px" }}>
           {years.map(y => (
             <button
               key={y}
@@ -265,8 +269,8 @@ export default function CroatiaMap() {
             </button>
           ))}
         </div>
-        <div style={{ marginRight: 300, fontSize: "1.5rem", color: "#333" }}>
-          {formatNumber(totalYear)} <b> radnika</b>
+        <div style={{ fontSize: "1.5rem", color: "#333" }}>
+          {formatNumber(totalYear)}<b> radnika</b>
         </div>
       </div>
 

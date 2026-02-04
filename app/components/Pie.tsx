@@ -46,10 +46,6 @@ const CroatiaPie: React.FC = () => {
 
     const data = createPieData(selectedYear);
 
-    const width = 1000;
-    const height = 350;
-    const radius = height * 0.50 ;
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
@@ -60,6 +56,19 @@ const CroatiaPie: React.FC = () => {
     const viewportCenterX = window.innerWidth / 2;
 
     const offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
+
+    const width = 800;
+    const height = 300;
+
+    let radius: number;
+
+    if (window.innerWidth > 700) {
+      radius = height * 0.5;
+    } else {
+      radius = height * 0.7;
+    }
+
+
 
     const g = svg
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -230,7 +239,7 @@ const CroatiaPie: React.FC = () => {
           ))}
         </div>
 
-        <div style={{ marginRight: 300, fontSize: "1.5rem", color: "#333" }}>
+        <div className="sm:mr-[300px] text-2xl text-[#333333]">
           {new Intl.NumberFormat('fr-FR').format(totalWorkers)} <b>stranih radnika</b>
         </div>
 
@@ -238,7 +247,8 @@ const CroatiaPie: React.FC = () => {
 
 
 
-      <svg ref={svgRef} width="100%" height={500} />
+      <svg ref={svgRef} className="w-full h-[300px] sm:h-[500px]" />
+
 
 
       {tooltip && (
