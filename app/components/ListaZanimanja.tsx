@@ -175,7 +175,7 @@ export default function OccupationCountyMap() {
                 sm:gap-0
             "
         >
-            {/* LEFT LIST */}
+            
             <div
                 className="
                     w-96

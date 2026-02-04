@@ -198,7 +198,7 @@ const CroatiaPie: React.FC = () => {
           justifyContent: "space-between",
           alignItems: "flex-start",
           flexWrap: "wrap",
-          marginBottom: 8,
+
         }}
       >
 
