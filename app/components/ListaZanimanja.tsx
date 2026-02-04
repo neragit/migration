@@ -169,13 +169,14 @@ export default function OccupationCountyMap() {
         <div style={{ display: "flex", gap: 16 }}>
             {/* LEFT LIST */}
             <div
-                style={{
-                    width: 380,
-                    maxHeight: "60vh",
-                    overflowY: "auto",
-                    fontSize: 13,
-                    direction: "rtl",
-                }}
+                className="
+                    w-96
+                    max-h-[80vh]
+                    md:max-h-[60vh]
+                    overflow-y-auto
+                    text-sm
+                "
+                style={{ direction: "rtl" }}
             >
                 <div style={{ direction: "ltr", paddingLeft: "0.5rem" }}>
                     <strong>Prema županijama</strong>
