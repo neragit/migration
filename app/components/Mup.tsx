@@ -27,11 +27,25 @@ export default function Mup() {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
-  
-  const svgWidth = size?.width ?? 400;
-  const svgHeight = size ? Math.min(500, size.width * 0.55) : 300;
+  let svgWidth: number;
+  let svgHeight: number;
+    let iconSize: number;
 
-  const iconSize = 8;
+  if (size && (size.width > 900)) {
+    svgWidth = size.width * 1.1;
+    svgHeight = size.width * 0.5;
+    iconSize = 7;
+  } else if (size && (size.width > 500)) {
+    svgWidth = size.width * 1.3;
+    svgHeight = 500;
+    iconSize = 8;
+  } else {
+    svgWidth = 500;
+    svgHeight = 700;
+    iconSize = 4;
+  }
+
+
 
   const [tooltip, setTooltip] = useState<{
     x: number;
@@ -39,9 +53,7 @@ export default function Mup() {
     content: React.ReactNode;
   } | null>(null);
 
-  // ─────────────────────────────────────────────────────
-  // Fixed positions per region
-  // ─────────────────────────────────────────────────────
+
   const regionRanges: Record<string, [number, number]> = {
     Europe: [0.1, 0.35],
     Ukraine: [0.45, 0.55],
@@ -143,9 +155,9 @@ export default function Mup() {
         const [xMin, xMax] = regionRanges[region];
 
         nodesRef.current[d.country] = {
-  x: svgWidth * (xMin + Math.random() * (xMax - xMin)),
-  y: svgHeight / 2 + (Math.random() - 0.5) * svgHeight * 0.15
-};
+          x: svgWidth * (xMin + Math.random() * (xMax - xMin)),
+          y: svgHeight / 2 + (Math.random() - 0.5) * svgHeight * 0.15
+        };
 
       }
 
@@ -350,7 +362,7 @@ export default function Mup() {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 30  }}>
+      <div style={{ display: "flex", gap: 6, marginBottom: 30 }}>
         {years.map(y => (
           <button
             key={y}
@@ -375,8 +387,8 @@ export default function Mup() {
         preserveAspectRatio="xMidYMid meet"
         style={{
           width: size && size.width < 900 ? "72%" : "90%",
-          height: "auto", // keeps aspect ratio
-          marginBottom: size && size.width < 900 ? 100 : 20,
+          height: "auto", 
+          marginBottom: size && size.width < 900 ? 100 : 10,
           display: "block",
           overflow: "visible"
         }}

@@ -90,13 +90,15 @@ export default function PersonBars() {
         const fullIcons = Math.floor(count / PEOPLE_UNIT);
         const remainder = (count % PEOPLE_UNIT) / PEOPLE_UNIT;
 
+        let iconW: number;
+        let iconH: number;
+
         if (window.innerWidth > 800) {
           iconW = 10;
           iconH = 20;
         } else {
           iconW = 7;
           iconH = 14;
-
         }
 
         const gap = 1;
