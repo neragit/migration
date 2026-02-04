@@ -139,29 +139,29 @@ export default function OccupationCountyMap() {
             .attr("stroke", "#fff")
             .attr("stroke-width", 0.6)
             .attr("fill", d => {
-    const name = d.properties?.name?.toUpperCase() || "" // <-- safe fallback
+                const name = d.properties?.name?.toUpperCase() || "" // <-- safe fallback
 
-    if (ALL_COUNTIES_OCCUPATIONS.includes(activeOccupation || "")) {
-        return "green"
-    }
+                if (ALL_COUNTIES_OCCUPATIONS.includes(activeOccupation || "")) {
+                    return "green"
+                }
 
-    if (
-        activeOccupation &&
-        OCCUPATIONS_BY_COUNTY[activeOccupation]?.includes(name)
-    ) {
-        return "green"
-    }
+                if (
+                    activeOccupation &&
+                    OCCUPATIONS_BY_COUNTY[activeOccupation]?.includes(name)
+                ) {
+                    return "green"
+                }
 
-    if (activeCounty === name) {
-        return "green"
-    }
+                if (activeCounty === name) {
+                    return "green"
+                }
 
-    return "#eee"
-})
-.on("mouseenter", (_, d: any) => {
-    setActiveCounty(d.properties?.name?.toUpperCase() || null) // <-- safe
-    setActiveOccupation(null)
-})
+                return "#eee"
+            })
+            .on("mouseenter", (_, d: any) => {
+                setActiveCounty(d.properties?.name?.toUpperCase() || null) // <-- safe
+                setActiveOccupation(null)
+            })
 
     }
 
@@ -238,15 +238,18 @@ export default function OccupationCountyMap() {
             </div>
 
             <svg
-  ref={svgRef}
-  style={{
-    flex: 1, // take remaining width
-    height: "auto", // maintain aspect ratio
-    maxHeight: "80vh", // optional limit on mobile
-    display: "block",
-    minWidth: 500, 
-  }}
-/>
+                ref={svgRef}
+                className="
+                block
+                w-full
+                flex-[2_0_0%] 
+
+                md:flex-[1_0_0%] 
+                md:min-w-[600px]
+                md:max-h-[80vh]
+                "
+            />
+
 
         </div>
     )
