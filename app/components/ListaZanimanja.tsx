@@ -172,7 +172,7 @@ export default function OccupationCountyMap() {
                 className="
                     w-96
                     max-h-[80vh]
-                    md:max-h-[60vh]
+                    lg:max-h-[60vh]
                     overflow-y-auto
                     text-sm
                 "
