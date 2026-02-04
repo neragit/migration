@@ -334,7 +334,7 @@ const Treemap: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width: isMobile ? "90%" : "100%", maxWidth: "800px" }}
+      style={{ position: "relative", width:  "100%", maxWidth: "800px" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setTooltip(null)}
     >
