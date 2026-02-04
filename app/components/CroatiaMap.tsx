@@ -241,14 +241,13 @@ export default function CroatiaMap() {
       ref={containerRef}
       style={{
         width: "100%",
-
         display: "flex",
         flexDirection: "column",
         gap: "10px",
       }}
     >
 
-      <div className="flex gap-5 justify-between items-start max-w-[850px] mr-10 mb-4">
+      <div className="flex gap-6 flex-wrap justify-between items-start max-w-[850px] mr-10 mb-4">
 
 
         <div style={{ display: "flex", gap: "5px" }}>

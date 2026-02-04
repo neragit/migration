@@ -16,8 +16,7 @@ const dataByYear = {
   2025: { procjena: 3874350, stranci: 170723 },
 };
 
-const perIcon = 6000;
-const iconSize = 5;
+
 
 const years = Object.keys(dataByYear).map(Number).sort();
 
@@ -62,13 +61,17 @@ const CroatiaPie: React.FC = () => {
 
     let radius: number;
 
-    if (window.innerWidth > 700) {
+    const perIcon = 6000;
+    let iconSize: number;
+
+
+    if (window.innerWidth > 800) {
       radius = height * 0.5;
+      iconSize = 5;
     } else {
-      radius = height * 0.7;
+      radius = height * 0.8;
+      iconSize = 8;
     }
-
-
 
     const g = svg
       .attr("viewBox", `0 0 ${width} ${height}`)
