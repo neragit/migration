@@ -171,6 +171,8 @@ export default function OccupationCountyMap() {
                 flex
                 flex-col
                 sm:flex-row
+                gap-10
+                sm:gap-0
             "
         >
             {/* LEFT LIST */}
