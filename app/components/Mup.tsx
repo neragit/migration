@@ -96,19 +96,16 @@ export default function Mup() {
     [data, selectedYear]
   );
 
-  // ─────────────────────────────────────────────────────
-  // Ensure person icon
-  // ─────────────────────────────────────────────────────
   useEffect(() => {
     if (!svgRef.current) return;
     const svg = d3.select(svgRef.current);
     let defs = svg.select<SVGDefsElement>("defs");
     if (defs.empty()) defs = svg.append("defs");
 
-    if (!defs.select("#person-icon").node()) {
+    if (!defs.select("#mup-icon").node()) {
       const symbol = defs
         .append("symbol")
-        .attr("id", "person-icon")
+        .attr("id", "mup-icon")
         .attr("viewBox", "0 0 98 284");
 
       symbol.append("path")
@@ -233,8 +230,8 @@ export default function Mup() {
 
       icons.enter()
         .append("use")
-        .attr("href", "#person-icon")
-        .attr("fill", color(d.data.country))
+        .attr("href", "#mup-icon")
+        .style("color", color(d.data.country))
         .attr("transform", ([dx, dy]) =>
           `translate(${dx},${dy}) scale(${iconSize / 250})`
         )
@@ -379,7 +376,7 @@ export default function Mup() {
         style={{
           width: size && size.width < 900 ? "72%" : "90%",
           height: "auto", // keeps aspect ratio
-          marginBottom: size && size.width < 900 ? 100 : 0,
+          marginBottom: size && size.width < 900 ? 100 : 20,
           display: "block",
           overflow: "visible"
         }}

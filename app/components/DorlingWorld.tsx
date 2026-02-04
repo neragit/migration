@@ -75,7 +75,10 @@ export default function DorlingWorld() {
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-  const firstRenderRef = useRef(true);
+
+  const animationDoneRef = useRef(false);
+
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(containerRef);
 
@@ -83,6 +86,21 @@ export default function DorlingWorld() {
   const [worldData, setWorldData] = useState<CountryFeatureCollection | null>(null);
   const [mode, setMode] = useState("origin");
   const [totalMig, setTotalMig] = useState(0);
+
+  const [animateOnScroll, setAnimateOnScroll] = useState(false);
+
+  useEffect(() => {
+  const handleScroll = () => {
+    setAnimateOnScroll(true); // trigger animation once on first scroll
+    window.removeEventListener("scroll", handleScroll);
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
+
 
   countries.registerLocale(hrLocale);
 
@@ -119,7 +137,7 @@ export default function DorlingWorld() {
   useEffect(() => {
     if (!data.length || !worldData || !size) return;
 
-    const isPhone = size.width < 900;
+    const isPhone = size.width < 1000;
 
     let width = isPhone ? 450 : size.width;
     let height = isPhone ? 350 : Math.min(500, width * 0.45);
@@ -250,6 +268,7 @@ export default function DorlingWorld() {
 
     const g = svg.append("g").attr("class", "nodes-group");
 
+
     // after array
     const simulation = d3.forceSimulation<Node>(nodes)
       .force("x", d3.forceX<Node>(d => d.fxTarget).strength(0.05))
@@ -261,19 +280,25 @@ export default function DorlingWorld() {
     // Run the simulation for a few ticks
     for (let i = 0; i < 50; i++) simulation.tick();
 
-    // Update the squares positions after simulation
-    const rects = g.selectAll("rect")
-      .data(nodes)
-      .join("rect")
-      .attr("x", d => d.x)   // start at center
-      .attr("y", d => d.y)
-      .attr("rx", 2)
-      .attr("ry", 2)
-      .attr("width", 0)
-      .attr("height", 0)
-      .attr("fill", d => colorScale(d.total_mig))
-      .attr("fill-opacity", 0)
-      .attr("stroke", "#fde0dd")
+    const shouldAnimate = animateOnScroll;
+
+const rects = svg
+  .append("g")
+  .selectAll("rect")
+  .data(nodes)
+  .join("rect")
+  .attr("x", d => d.x - d.r / 2)
+  .attr("y", d => d.y - d.r / 2)
+  .attr("width", d => d.r)
+  .attr("height", d => d.r)
+  .attr("rx", 2)
+  .attr("ry", 2)
+  .attr("fill", d => colorScale(d.total_mig))
+  .attr("stroke", "#fde0dd")
+  // initial invisible
+  .attr("fill-opacity", 0)
+  .attr("transform", "scale(0.1)")
+
 
       .on("mouseover", (event, d) => {
         tooltip.transition().duration(200).style("opacity", 0.90);
@@ -355,28 +380,30 @@ export default function DorlingWorld() {
         tooltip.transition().duration(200).style("opacity", 0);
       });
 
-    if (firstRenderRef.current) {
-      rects.transition()
-        .duration(300)
-        .delay((d, i) => i * 20)
-        .attr("x", d => d.x - d.r / 2)
-        .attr("y", d => d.y - d.r / 2)
-        .attr("width", d => d.r)
-        .attr("height", d => d.r)
-        .attr("fill-opacity", 0.5);
+if (animateOnScroll && !animationDoneRef.current) {
+  rects
+    .attr("transform-origin", d => `${d.x}px ${d.y}px`) // center of each rect
+    .transition()
+    .duration(600)
+    .delay((_, i) => i * 6)
+    .attr("transform", "scale(1)")
+    .attr("fill-opacity", 0.5);
 
-      firstRenderRef.current = false; // first render flag
-    } else {
-      rects
-        .attr("x", d => d.x - d.r / 2)
-        .attr("y", d => d.y - d.r / 2)
-        .attr("width", d => d.r)
-        .attr("height", d => d.r)
-        .attr("fill", d => colorScale(d.total_mig))
-        .attr("fill-opacity", 0.5);
-    }
+  animationDoneRef.current = true; // mark animation as done
+} else if (animationDoneRef.current) {
+  rects
+    .attr("transform", "scale(1)")
+    .attr("fill-opacity", 0.5)
+    .attr("transform-origin", d => `${d.x}px ${d.y}px`);
+}
 
-  }, [data, worldData, size, mode]);
+
+
+
+  }, [data, worldData, size, mode, animateOnScroll]); // include animateOnScroll
+
+
+
 
   return (
     <div >

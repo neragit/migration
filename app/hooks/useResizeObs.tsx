@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function useResizeObserver<T extends HTMLElement>(
+export default function useResizeObserver<T extends Element>(
   ref: React.RefObject<T | null>
 ) {
   const [size, setSize] = useState<{ width: number; height: number } | null>(null);

@@ -10,8 +10,11 @@ import TopImmigrants from "./components/TopImmigrants";
 import ListaZanimanja from "./components/ListaZanimanja";
 import DorlingWorld from "./components/DorlingWorld";
 import ChoroplethCro from "./components/ChoroplethCro";
+import ChoroplethHr from "./components/ChoroplethHr";
 import Mup from "./components/Mup";
+import Pie from "./components/Pie";
 import ToggleDetails from "./components/Details";
+import PersonBars from "./components/PersonBars";
 
 export default function Home() {
 
@@ -37,13 +40,16 @@ export default function Home() {
   const sections = [
     { id: "start", label: "Početak" },
     { id: "dorling", label: "Migranti u svijetu" },
-    { id: "migration", label: "Migracije" },
+    { id: "migration", label: "Trendovi u Hrvatskoj" },
     { id: "hzz", label: "Radne dozvole" },
     { id: "treemap", label: "Tražena zanimanja" },
     { id: "map", label: "Županije" },
-    { id: "choropleth-cro", label: "Godišnji dolasci" },
+    { id: "pie", label: "Udio stranih radnika" },
     { id: "top5", label: "Najčešći imigranti" },
-    { id: "mup", label: "Godišnje stanje" }
+    { id: "choropleth-cro", label: "Godišnji dolasci" },
+    { id: "mup", label: "Godišnje stanje" },
+    { id: "bars", label: "Migracije Hrvata" },
+    { id: "choropleth-hr", label: "Hrvati u inozemstvu" }
 
   ];
 
@@ -145,8 +151,8 @@ export default function Home() {
               Cilj je pružiti uvid u podatke vezano uz migracije na jednom mjestu, bez
               dramatičnih naslova, subjektivnih interpretacija i reklama.
 
-              Podaci su prikupljeni u siječnju 2026. iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.).
-              Ponekad nema dostupnih podataka za prethodnu godinu, ali <b>možemo promatrati trendove</b>.
+              Prikazani su najnoviji dostupni podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u siječnju 2026.
+
             </p>
 
           </section>
@@ -203,11 +209,23 @@ export default function Home() {
 
             <p className="paragraph">
               Od 2022. godine Hrvatska bilježi više useljenika nego iseljenika.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
             </p>
 
             <MainChart />
 
           </section>
+
+
 
           <section className="section pb-20" id="hzz">
 
@@ -253,16 +271,50 @@ export default function Home() {
 
           </section>
 
+          <section className="section " id="pie">
+
+            <h2>Stanovništvo Hrvatske</h2>
+
+            <p className="paragraph">
+              Strani radnici čine otprilike 4,5% ukupnog stanovništva Hrvatske u 2025. godini.
+              *U siječnju 2026. nije još dostupna precizna procjena ukupnog stanovništa za 2025. pa je u ovom slučaju korištena procjena ukupnog stanovništva iz prethodne godine.
+
+              <span> Izvori:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+                {" "}i{" "}
+                <a
+                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  MUP
+                </a>
+              </span>
+
+            </p>
+
+            <div>
+              <Pie />
+            </div>
+
+          </section>
+
           <section className="section pb-20" id="top5">
 
-            <h2>Kako se mijenjaju trendovi?</h2>
+            <h2>Odakle dolazi najviše migranata?</h2>
 
             <p className="paragraph">
               Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
             </p>
 
             <div>
-              <TopImmigrants  />
+              <TopImmigrants />
             </div>
 
           </section>
@@ -270,7 +322,7 @@ export default function Home() {
 
           <section className="section " id="choropleth-cro">
 
-            <h2>Odakle dolazi najviše migranata?</h2>
+            <h2>Migranti prema podrijetlu</h2>
 
             <p className="paragraph">
               2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
@@ -292,6 +344,8 @@ export default function Home() {
             </div>
 
           </section>
+
+
 
 
 
@@ -319,6 +373,57 @@ export default function Home() {
 
             <div>
               <Mup />
+            </div>
+
+          </section>
+
+          <section className="section pb-20" id="bars">
+
+            <h2>Migracije Hrvata</h2>
+
+            <p className="paragraph">
+              Najviše Hrvata odlazi 2022. nakon čega se broj smanjuje.
+              Otprilike 10 tisuća Hrvata svake godine dolazi u Hrvatsku – ovaj trend blago raste.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
+
+            </p>
+
+            <div>
+              <PersonBars />
+            </div>
+
+          </section>
+
+          <section className="section " id="choropleth-hr">
+
+            <h2>A kamo idu Hrvati?</h2>
+
+            <p className="paragraph">
+              U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo//"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
+
+            </p>
+
+            <div className=" ml-0 ">
+              < ChoroplethHr />
             </div>
 
           </section>

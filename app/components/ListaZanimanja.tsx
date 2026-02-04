@@ -244,6 +244,7 @@ export default function OccupationCountyMap() {
     height: "auto", // maintain aspect ratio
     maxHeight: "80vh", // optional limit on mobile
     display: "block",
+    minWidth: 500, 
   }}
 />
 
