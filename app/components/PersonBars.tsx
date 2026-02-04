@@ -89,8 +89,16 @@ export default function PersonBars() {
       function drawPeopleRow({ g, count, y, direction, color, centerGap = 30, label }: any) {
         const fullIcons = Math.floor(count / PEOPLE_UNIT);
         const remainder = (count % PEOPLE_UNIT) / PEOPLE_UNIT;
-        const iconW = 10;
-        const iconH = 20;
+
+        if (window.innerWidth > 800) {
+          iconW = 10;
+          iconH = 20;
+        } else {
+          iconW = 7;
+          iconH = 14;
+
+        }
+
         const gap = 1;
         const getX = (i: number) => direction * (centerGap + i * (iconW + gap));
 

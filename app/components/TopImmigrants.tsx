@@ -292,7 +292,7 @@ export default function TopImmigrants({ width = 700, height = 400 }: TopImmigran
       <div
         ref={tooltipRef}
         className="tooltip"
-        style={{ position: "absolute", opacity: 0.9 }}
+        style={{ position: "absolute", opacity: 0.9, display: "none", }}
       />
     </>
   );
