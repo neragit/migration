@@ -41,13 +41,13 @@ export default function Mup() {
     if (size && size.width < 500) { // mob portrait
       return {
         width: size.width * 1.1, height: size.width * 3, iconSize: 4,
-        marginLeft: 10, marginTop: 50, marginBottom: 0
+        marginLeft: 10, marginTop: 100, marginBottom: 0
       };
 
     } else if (size && size.width < 800) { // mob landscape
       return {
-        width: size.width, height: size.width * 0.7, iconSize: 7,
-        marginLeft: 0, marginTop: 50, marginBottom: 10
+        width: size.width, height: size.width * 0.8, iconSize: 7,
+        marginLeft: 0, marginTop: 0, marginBottom: 0
       };
 
     } else if (size) {
