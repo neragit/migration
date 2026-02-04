@@ -27,39 +27,54 @@ export default function Mup() {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
-  let svgWidth: number;
-  let svgHeight: number;
-    let iconSize: number;
+  type Layout = {
+    width: number;
+    height: number;
+    iconSize: number;
+    marginLeft: number;
+    marginTop: number;
+    marginBottom: number;
+  };
 
-  if (size && (size.width > 900)) {
-    svgWidth = size.width * 1.1;
-    svgHeight = size.width * 0.5;
-    iconSize = 7;
-  } else if (size && (size.width > 500)) {
-    svgWidth = size.width * 1.3;
-    svgHeight = 500;
-    iconSize = 8;
-  } else {
-    svgWidth = 500;
-    svgHeight = 700;
-    iconSize = 4;
-  }
+  const layout: Layout = (() => {
 
+    if (size && size.width < 500) { // mob portrait
+      return {
+        width: size.width * 1.1, height: size.width * 2.5, iconSize: 3,
+        marginLeft: 10, marginTop: 50, marginBottom: 0
+      };
 
+    } else if (size && size.width < 800) { // mob landscape
+      return {
+        width: size.width, height: size.width * 0.5, iconSize: 6,
+        marginLeft: 0, marginTop: 50, marginBottom: 10
+      };
 
-  const [tooltip, setTooltip] = useState<{
-    x: number;
-    y: number;
-    content: React.ReactNode;
-  } | null>(null);
+    } else if (size) {
+      // default / laptop
+      return {
+        width: size.width, height: size.width * 0.6, iconSize: 5,
+        marginLeft: 0, marginTop: 0, marginBottom: 0
+      };
+
+    } else {
+      // fallback
+      return {
+        width: 500, height: 200 * 0.2, iconSize: 6,
+        marginLeft: 0, marginTop: 10, marginBottom: 10
+      };
+    }
+
+  })();
 
 
   const regionRanges: Record<string, [number, number]> = {
-    Europe: [0.1, 0.35],
+    Europe: [0.1, 0.35], // left
     Ukraine: [0.45, 0.55],
     MiddleEast: [0.5, 0.55],
     Asia: [0.75, 0.95]
   };
+
 
   const countryRegion: Record<string, string> = {
     "Bosna i Hercegovina": "Europe",
@@ -76,6 +91,12 @@ export default function Mup() {
     "Uzbekistan": "Asia",
     "Bangladeš": "Asia",
   };
+
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    content: React.ReactNode;
+  } | null>(null);
 
   // Store constant node positions
   const nodesRef = useRef<Record<string, { x: number; y: number }>>({});
@@ -150,14 +171,20 @@ export default function Mup() {
 
     // Initialize nodes with positions if missing
     const nodes = filteredData.map(d => {
-      if (!nodesRef.current[d.country]) {
+      if (size && !nodesRef.current[d.country]) {
         const region = countryRegion[d.country] || "Europe";
-        const [xMin, xMax] = regionRanges[region];
+        const isLandscape = size.width > size.height;
+        const [rangeMin, rangeMax] = regionRanges[region];
 
         nodesRef.current[d.country] = {
-          x: svgWidth * (xMin + Math.random() * (xMax - xMin)),
-          y: svgHeight / 2 + (Math.random() - 0.5) * svgHeight * 0.15
+          x: isLandscape
+            ? layout.width * (rangeMin + Math.random() * (rangeMax - rangeMin)) // horizontal in landscape
+            : layout.width / 2 + (Math.random() - 0.5) * layout.width * 0.15,   // center x in portrait
+          y: isLandscape
+            ? layout.height / 2 + (Math.random() - 0.5) * layout.height * 0.15   // center y in landscape
+            : layout.height * (rangeMin + Math.random() * (rangeMax - rangeMin)) // vertical in portrait
         };
+
 
       }
 
@@ -245,7 +272,7 @@ export default function Mup() {
         .attr("href", "#mup-icon")
         .style("color", color(d.data.country))
         .attr("transform", ([dx, dy]) =>
-          `translate(${dx},${dy}) scale(${iconSize / 250})`
+          `translate(${dx},${dy}) scale(${layout.iconSize / 250})`
         )
         .style("opacity", 0)
         .on("mousemove", function (event) {
@@ -286,7 +313,7 @@ export default function Mup() {
 
       icons.transition().duration(500)
         .attr("transform", ([dx, dy]) =>
-          `translate(${dx},${dy}) scale(${iconSize / 250})`
+          `translate(${dx},${dy}) scale(${layout.iconSize / 250})`
         );
     });
 
@@ -362,7 +389,7 @@ export default function Mup() {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 30 }}>
+      <div style={{ display: "flex", gap: 6 }}>
         {years.map(y => (
           <button
             key={y}
@@ -383,12 +410,14 @@ export default function Mup() {
 
       <svg
         ref={svgRef}
-        viewBox={`0 0 ${svgWidth} ${svgHeight}`}
+        viewBox={`0 0 ${layout.width} ${layout.height}`}
         preserveAspectRatio="xMidYMid meet"
         style={{
-          width: size && size.width < 900 ? "72%" : "90%",
-          height: "auto", 
-          marginBottom: size && size.width < 900 ? 100 : 10,
+          width: "90%",
+          height: "auto",
+          marginLeft: layout.marginLeft,
+          marginTop: layout.marginTop,
+          marginBottom: layout.marginBottom,
           display: "block",
           overflow: "visible"
         }}
