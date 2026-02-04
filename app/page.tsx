@@ -138,7 +138,7 @@ export default function Home() {
 
           <section className="section !pt-6 " id="start">
 
-            <h1 className="mb-8 text-5xl font-bold leading-tight">
+            <h1 className="mb-8 text-4xl sm:text-5xl font-bold leading-tight">
               Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
             </h1>
 
