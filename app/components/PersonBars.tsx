@@ -97,8 +97,8 @@ export default function PersonBars() {
           iconW = 10;
           iconH = 20;
         } else {
-          iconW = 7;
-          iconH = 14;
+          iconW = 5;
+          iconH = 10;
         }
 
         const gap = 1;
