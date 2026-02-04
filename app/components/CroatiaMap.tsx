@@ -123,7 +123,7 @@ export default function CroatiaMap() {
       Math.min(window.innerHeight, document.documentElement.clientHeight) * 0.9;
 
     const height = Math.min(
-      Math.max(350, width * 0.75),
+      Math.max(600, width * 0.78),
       maxHeight
     );
 
@@ -282,8 +282,8 @@ export default function CroatiaMap() {
             position: "fixed",
             top: tooltip.y,
             left: tooltip.x,
-            opacity: 0.90,                 // <-- visible opacity
-            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out", // <-- smooth fade
+            opacity: 0.90,               
+            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out", 
           }}
         >
           {tooltip.content}
