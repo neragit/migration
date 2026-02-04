@@ -47,7 +47,7 @@ export default function Mup() {
     } else if (size && size.width < 800) { // mob landscape
       return {
         width: size.width, height: size.width * 0.8, iconSize: 7,
-        marginLeft: 0, marginTop: 0, marginBottom: 0
+        marginLeft: 10, marginTop: 0, marginBottom: 0
       };
 
     } else if (size) {
