@@ -166,7 +166,13 @@ export default function OccupationCountyMap() {
     }
 
     return (
-        <div style={{ display: "flex", gap: 16 }}>
+        <div
+            className="
+                flex
+                flex-col
+                sm:flex-row
+            "
+        >
             {/* LEFT LIST */}
             <div
                 className="
