@@ -250,7 +250,7 @@ const CroatiaPie: React.FC = () => {
 
 
 
-      <svg ref={svgRef} className="w-full h-[300px] sm:h-[500px]" />
+      <svg ref={svgRef} className="w-full h-[400px] sm:h-[500px]" />
 
 
 

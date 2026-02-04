@@ -362,7 +362,7 @@ const Treemap: React.FC = () => {
         <div style={{ fontSize: "1.5rem", color: "#333" }}>
           <span style={{ animation: "fadeMoveIn 1s forwards" }}>
             {currentStats.avgPlaca.toFixed(0)}
-          </span> EUR<b> prosječna bruto plaća</b>
+          </span> EUR <b>prosječna bruto plaća</b>
         </div>
 
       </div>
