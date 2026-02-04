@@ -134,7 +134,7 @@ export default function Home() {
 
 
 
-        <main className="ml-10 sm:ml-[250px] xl:ml-[350px] w-full overflow-x-visible text-gray-700">
+        <main className="mr-10 ml-10 sm:ml-[250px] xl:ml-[350px] w-full overflow-x-visible text-gray-700">
 
           <section className="section !pt-6 " id="start">
 

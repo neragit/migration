@@ -47,8 +47,8 @@ const CroatiaPie: React.FC = () => {
     const data = createPieData(selectedYear);
 
     const width = 1000;
-    const height = 500;
-    const radius = Math.min(width, height) / 2 - 20;
+    const height = 350;
+    const radius = height * 0.50 ;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -185,10 +185,8 @@ const CroatiaPie: React.FC = () => {
       style={{
         width: "100%",
         maxWidth: 1200,
-        margin: "auto",
         display: "flex",
         flexDirection: "column",
-        gap: 12,
         userSelect: "none",
       }}
     >
