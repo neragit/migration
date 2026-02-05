@@ -97,7 +97,7 @@ export default function PersonBars() {
           iconW = 10;
           iconH = 20;
         } else {
-          iconW = 4;
+          iconW = 3;
           iconH = 8;
         }
 
