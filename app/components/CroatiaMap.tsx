@@ -276,7 +276,7 @@ export default function CroatiaMap() {
 
       <svg
         ref={svgRef}
-        className="w-full max-w-full h-auto block ml-9 xl:ml-0 "
+        className="w-full max-w-full h-auto block ml-5 xl:ml-0 "
       />
 
 

@@ -134,7 +134,7 @@ export default function Home() {
 
 
 
-        <main className="flex-1 pl-10 pr-5 min-w-0 landscape:ml-52  text-gray-700 max-w-full overflow-x-hidden">
+        <main className="flex-1 pl-5 pr-5 min-w-0 landscape:ml-52  text-gray-700 max-w-full overflow-x-hidden">
 
           <section className="section !pt-6 " id="start">
 
