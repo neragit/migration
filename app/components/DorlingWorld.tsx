@@ -151,7 +151,7 @@ export default function DorlingWorld() {
       return {
         width,
         height: width * 0.5,
-        baseScale: Math.max(50, Math.min(260, width / 5))
+        baseScale: Math.max(70, Math.min(260, width / 5))
       };
     })();
 
