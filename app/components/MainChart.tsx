@@ -60,7 +60,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
     const xScale = d3
       .scaleLinear()
       .domain(d3.extent(migrationData, (d) => d.year) as [number, number])
-      .range([0, size.width * 0.9]);
+      .range([0, size.width * 0.8]);
 
     const yScale = d3
       .scaleLinear()
@@ -74,7 +74,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
     // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-size.width * 0.9).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-size.width * 0.8).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
