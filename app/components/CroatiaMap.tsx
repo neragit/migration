@@ -247,7 +247,7 @@ export default function CroatiaMap() {
       }}
     >
 
-      <div className="flex gap-6 flex-wrap justify-between items-start max-w-[850px] mr-10 mb-4">
+      <div className="flex gap-5 flex-wrap justify-between items-start max-w-[850px] mb-10">
 
 
         <div style={{ display: "flex", gap: "5px" }}>
@@ -268,15 +268,17 @@ export default function CroatiaMap() {
             </button>
           ))}
         </div>
-        <div style={{ fontSize: "1.5rem", color: "#333" }}>
+        <div className="text-2xl text-gray-800 ">
+
           {formatNumber(totalYear)}<b> radnika</b>
         </div>
       </div>
 
       <svg
         ref={svgRef}
-        style={{ width: "100%", height: "auto", display: "block" }}
+        className="w-full max-w-full h-auto block ml-9 xl:ml-0 "
       />
+
 
       {tooltip && (
         <div

@@ -414,9 +414,10 @@ export default function DorlingWorld() {
 
   return (
     <div >
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", marginTop: "20px", marginBottom: "100px", paddingRight: "70px" }}>
+      <div className="flex flex-wrap items-center justify-between gap-5 mt-5 mb pr-[70px]">
 
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
+        <div className="flex flex-wrap gap-[5px] mb-2.5">
+
           {["origin", "destination"].map(m => (
             <button
               key={m}
@@ -449,7 +450,7 @@ export default function DorlingWorld() {
 
       <div
         ref={containerRef}
-        className="w-full flex justify-center"
+        className="w-90% flex justify-center mt-20 mb-10 pl-15 md:pl-0 "
       >
         <svg ref={svgRef} />
 

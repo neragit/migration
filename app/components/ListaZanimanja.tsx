@@ -170,19 +170,22 @@ export default function OccupationCountyMap() {
             className="
                 flex
                 flex-col
-                lg:flex-row
+                md:flex-row
+
                 gap-15
-                lg:gap-0
+                md:gap-0
             "
         >
-            
+
             <div
                 className="
+                    text-sm
                     w-96
+                    min-w-60
+
                     max-h-[80vh]
                     lg:max-h-[60vh]
                     overflow-y-auto
-                    text-sm
                 "
                 style={{ direction: "rtl" }}
             >
@@ -254,8 +257,9 @@ export default function OccupationCountyMap() {
                 flex-[2_0_0%] 
 
                 md:flex-[1_0_0%] 
-                md:min-w-[600px]
+                md:min-w-[300px]
                 md:max-h-[80vh]
+
                 "
             />
 
