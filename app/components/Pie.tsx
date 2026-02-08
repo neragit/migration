@@ -55,26 +55,30 @@ const CroatiaPie: React.FC = () => {
     if (!parent) return;
 
     const parentRect = parent.getBoundingClientRect();
-    const viewportCenterX = window.innerWidth / 2;
+    const sidebar = document.querySelector<HTMLElement>(".sidebar");
+
+    let sidebarVisible = sidebar && sidebar.getBoundingClientRect().width > 0;
+
+    let viewportCenterX = size.vw / 2;
+    let smallScreen = size.vw < 1000;
+
+
+    if (smallScreen && sidebarVisible) {
+      viewportCenterX += (sidebar?.offsetWidth || 0) / 2; // nudge right
+    }
 
     const offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
 
-    const width = 800;
-    const height = 300;
+    let width = size.width;
+    let height = size.width * 0.45;
+
+    const iconSize = 4;
+    const perIcon = 6000;
 
     let radius: number;
 
-    const perIcon = 6000;
-    let iconSize: number;
+    radius = Math.max(70, Math.min(height * (0.3 + 0.0003 * size.width), 170));
 
-
-    if (size.width > 800) {
-      radius = height * 0.5;
-      iconSize = 5;
-    } else {
-      radius = height * 0.8;
-      iconSize = 8;
-    }
 
     const g = svg
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -255,7 +259,7 @@ const CroatiaPie: React.FC = () => {
 
 
 
-      <svg ref={svgRef} className="w-full h-[400px] sm:h-[500px]" />
+      <svg ref={svgRef} className="w-full pt-10 lg:pt-0" />
 
 
 

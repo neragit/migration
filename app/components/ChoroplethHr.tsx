@@ -298,7 +298,7 @@ export default function ChoroplethHr() {
                                 responsive: true,
                                 displaylogo: false,
                                 scrollZoom: false,
-                                modeBarButtonsToRemove: ["", "select2d", "lasso2d"],
+                                modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
                             }}
                             onHover={handleHover}
                             onUnhover={handleUnhover}

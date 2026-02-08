@@ -9,7 +9,7 @@ interface LineChartProps {
   height?: number;
 }
 
-export default function LineChart({ width = 700, height = 350 }: LineChartProps) {
+export default function LineChart({ width = 700, height = 400 }: LineChartProps) {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -40,7 +40,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
 
     const margin = {
       top: isPortrait ? 80 : 20,
-      bottom: isPortrait ? 100 : 100,
+      bottom: isPortrait ? 50 : 50,
       left: isPortrait ? 60 : 60,
       right: isPortrait ? 0 : 0,
     };
@@ -54,19 +54,24 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
       ? margin.top - 70
       : margin.top;
 
-      
 
-    // Scales
+
+    const innerWidth = size.width - margin.left - margin.right;
+    const innerHeight = size.height - margin.top - margin.bottom;
+
+    // xScale
     const xScale = d3
       .scaleLinear()
       .domain(d3.extent(migrationData, (d) => d.year) as [number, number])
-      .range([0, size.width * 0.8]);
+      .range([0, innerWidth]);
 
+    // yScale
     const yScale = d3
       .scaleLinear()
       .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
-      .range([size.height, 0]);
+      .range([innerHeight, 0]);
 
+    
 
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -74,10 +79,11 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
     // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-size.width * 0.8).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-innerHeight).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
+
 
     // Axes
     const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
@@ -85,7 +91,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
 
     const xAxisGroup = g.append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(0,${size.height })`)
+      .attr("transform", `translate(0,${innerHeight})`)
       .call(xAxis)
       .select(".domain")
       .attr("stroke", "#eee");
@@ -110,7 +116,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
     const events = [
       {
         year: 2020,
-        yOffset: size.height * 0.53,
+        yOffset: innerHeight * 0.53,
         labels: [
           { text: "COVID-19 i ograničenja kretanja" },
           {
@@ -121,12 +127,12 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
       },
       {
         year: 2022,
-        yOffset: size.height * 0.18,
+        yOffset: innerHeight * 0.18,
         labels: [{ text: "Rat u Ukrajini" }],
       },
       {
         year: 2023,
-        yOffset: size.height * 0.05,
+        yOffset: innerHeight * 0.05,
         labels: [{ text: "Uveden EURO" }],
       },
     ];
@@ -141,7 +147,7 @@ export default function LineChart({ width = 700, height = 350 }: LineChartProps)
         .attr("x1", xScale(event.year))
         .attr("x2", xScale(event.year))
         .attr("y1", 0)
-        .attr("y2", size.height )
+        .attr("y2", innerHeight)
         .attr("stroke", "#666")
         .attr("stroke-width", 1)
         .attr("stroke-dasharray", "4,4")
