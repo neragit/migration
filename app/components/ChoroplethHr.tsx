@@ -201,6 +201,7 @@ export default function ChoroplethHr() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 flexWrap: "wrap",
+                gap: "12px",
                 marginBottom: "10px",
             }}>
 
