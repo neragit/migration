@@ -279,6 +279,10 @@ export default function ChoroplethHr() {
                             layout={{
                                 geo: {
                                     projection: { type: "natural earth" },
+                                    center: {
+                                        lon: 40,
+                                        lat: 0,
+                                    },
                                     showcoastlines: false,
                                     showframe: false,
 
@@ -300,23 +304,18 @@ export default function ChoroplethHr() {
                             onUnhover={handleUnhover}
                         />
 
-                        <div className="hidden sm:block">
+                        <div >
                             <button
                                 onClick={() => setOpen(!open)}
                                 style={{
-                                    position: "absolute",
-                                    left: "300px",
-                                    top: size!.height - 180,
-                                    zIndex: 2,
                                     display: "flex",
                                     alignItems: "center",
                                     gap: "6px",
-                                    padding: "6px 12px",
+                                    padding: "6px 0",
                                     cursor: "pointer",
                                     fontWeight: 600,
                                     fontSize: "14px",
-                                    transition: "color 0.2s ease, background 0.2s ease",
-                                    marginBottom: "6px",
+                                    marginBottom: "8px",
                                 }}
                             >
                                 {open ? "Sakrij" : "Podaci po regijama 2024."}
@@ -329,94 +328,74 @@ export default function ChoroplethHr() {
                                 />
                             </button>
 
-
                             <div
                                 style={{
-                                    overflow: "hidden",
-                                    maxHeight: open ? 500 : 0,
-                                    transition: "max-height 0.4s ease, opacity 0.4s ease",
+                                    maxHeight: open ? 600 : 0,
                                     opacity: open ? 1 : 0,
+                                    transition: "max-height 0.4s ease, opacity 0.4s ease",
                                 }}
                             >
-                                <svg
-                                    width="100%"
-                                    height="100%"
+                                <table
                                     style={{
-                                        position: "absolute",
-                                        bottom: "15%",
-                                        left: "20%",
-                                        pointerEvents: "none",
+                                        width: "100%",
+                                        maxWidth: "420px",
+                                        borderCollapse: "collapse",
+                                        fontSize: "12px",
+                                        color: "#333",
                                     }}
                                 >
-                                    <g
-                                        transform={`translate(26, ${size?.height! - 130 - tableData.length * 18})`}
-                                        fill="#333"
-                                        fontSize={"12px"}
-                                    >
-                                        {size?.width && size.width > 800 && (
-                                            <g transform={`translate(0, 0)`}>
-                                                <text x={0} y={-25} dominantBaseline="hanging" fontWeight={600}>
-                                                    {tableHeaders[0]}
-                                                </text>
-                                                <text x={220} y={-25} textAnchor="end" dominantBaseline="hanging" fontWeight={600}>
-                                                    {tableHeaders[1]}
-                                                </text>
-                                                <text x={300} y={-25} textAnchor="end" dominantBaseline="hanging" fontWeight={600}>
-                                                    {tableHeaders[2]}
-                                                </text>
+                                    <thead>
+                                        <tr>
+                                            <th style={{ textAlign: "left", paddingBottom: "6px" }}>
+                                                {tableHeaders[0]}
+                                            </th>
+                                            <th style={{ textAlign: "right", paddingBottom: "6px" }}>
+                                                {tableHeaders[1]}
+                                            </th>
+                                            <th style={{ textAlign: "right", paddingBottom: "6px" }}>
+                                                {tableHeaders[2]}
+                                            </th>
+                                        </tr>
+                                    </thead>
 
-                                            </g>
-                                        )}
-
-                                        {tableData.map((row, i) => (
-                                            <g key={row.label} transform={`translate(0, ${i * 24})`}>
-                                                {!row.bold && (
-                                                    <line
-                                                        x1={0}
-                                                        x2={300}
-                                                        y1={17}
-                                                        y2={17}
-                                                        stroke="#eee"
-                                                    />
-
-                                                )}
-
-                                                <text
-                                                    x={0}
-                                                    y={0}
-                                                    dominantBaseline="hanging"
-                                                    fontWeight={600}
+                                    <tbody>
+                                        {tableData.map((row) => (
+                                            <tr key={row.label}>
+                                                <td
+                                                    style={{
+                                                        padding: "4px 0",
+                                                        fontWeight: 600,
+                                                    }}
                                                 >
                                                     {row.label}
-                                                </text>
+                                                </td>
 
-                                                <text
-                                                    x={220}
-                                                    y={0}
-                                                    textAnchor="end"
-                                                    dominantBaseline="hanging"
-                                                    fontWeight={row.bold ? 600 : 400}
+                                                <td
+                                                    style={{
+                                                        padding: "4px 0",
+                                                        textAlign: "right",
+                                                        fontWeight: row.bold ? 600 : 400,
+                                                    }}
                                                 >
                                                     {new Intl.NumberFormat("fr-FR").format(row.a)}
-                                                </text>
+                                                </td>
 
-                                                <text
-                                                    x={300}
-                                                    y={0}
-                                                    textAnchor="end"
-                                                    dominantBaseline="hanging"
-                                                    fontWeight={row.bold ? 600 : 400}
+                                                <td
+                                                    style={{
+                                                        padding: "4px 0",
+                                                        textAlign: "right",
+                                                        fontWeight: row.bold ? 600 : 400,
+                                                    }}
                                                 >
                                                     {new Intl.NumberFormat("fr-FR").format(row.b)}
-                                                </text>
-
-
-                                            </g>
+                                                </td>
+                                            </tr>
                                         ))}
-                                    </g>
-                                </svg>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
+
                     </>
                 )}
             </div>

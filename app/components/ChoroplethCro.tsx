@@ -192,9 +192,9 @@ export default function ChoroplethCro() {
 
       </div>
 
-<div
-  ref={containerRef}
-  className="
+      <div
+        ref={containerRef}
+        className="
     relative
     w-full
     h-full
@@ -204,7 +204,7 @@ export default function ChoroplethCro() {
 
 
   "
->
+      >
 
         {isClient && (
           <Plot
@@ -226,17 +226,22 @@ export default function ChoroplethCro() {
             layout={{
               geo: {
                 projection: { type: "natural earth" },
-                showcoastlines: false,
-                showframe: false,
+                center: {
+                  lon: 40,
+                  lat: 0, },
 
-              },
-              margin: { t: 0, b: 0, l: 0, r: 0 },
-              width: size?.width,
-              height: (size?.width ?? 0) * 0.5,
-              autosize: true,
-              dragmode: isDesktop ? "pan" : false,
+                  showcoastlines: false,
+                  showframe: false,
 
-            }}
+                },
+                margin: { t: 0, b: 0, l: 0, r: 0 },
+                width: size?.width,
+                height: (size?.width ?? 0) * 0.5,
+                autosize: true,
+                dragmode: isDesktop ? "pan" : false,
+
+              }
+            }
             config={{
               responsive: true,
               displaylogo: false,
