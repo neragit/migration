@@ -151,7 +151,7 @@ export default function DorlingWorld() {
       return {
         width,
         height: width * 0.5,
-        baseScale: Math.max(70, Math.min(260, width / 5))
+        baseScale: Math.max(50, Math.min(260, width / 5))
       };
     })();
 
@@ -450,7 +450,7 @@ export default function DorlingWorld() {
 
       <div
         ref={containerRef}
-        className="w-full flex justify-center pl-20 md:pl-0 mt-20 mb-10 md:mt-10 md:mb-0 "
+        className="w-full flex justify-center  mt-20 mb-10 md:mt-10 md:mb-0 "
       >
         <svg ref={svgRef} />
 
