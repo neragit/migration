@@ -9,7 +9,7 @@ interface LineChartProps {
   height?: number;
 }
 
-export default function LineChart({ width = 700, height = 400 }: LineChartProps) {
+export default function LineChart({ width = 700, height = 500 }: LineChartProps) {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
