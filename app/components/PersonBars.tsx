@@ -10,7 +10,7 @@ const data = [
   { year: 2024, Imigranti: 13290, Emigranti: 20147 }
 ];
 
-const PEOPLE_UNIT = 1000;
+
 
 export default function PersonBars() {
   const [open, setOpen] = useState(false);
@@ -44,10 +44,35 @@ export default function PersonBars() {
     function drawChart() {
       if (!size) return;
       if (!parent) return;
+      if (!size) return;
 
-      const width = size.width;
+
       const height = 400;
       const margin = { top: 10, right: 10, bottom: 10, left: 10 };
+
+      const sidebar = document.querySelector<HTMLElement>(".sidebar");
+
+      let sidebarVisible = sidebar && sidebar.getBoundingClientRect().width > 0;
+
+      let smallScreen = size.vw < 1000;
+
+      let nudge = 0;
+
+      if (smallScreen && sidebarVisible) {
+        nudge += (sidebar?.offsetWidth || 0) + 300;
+      }
+
+      const width = size.width + nudge;
+
+
+      const maxIconsPerRow = 50; // maximum number of icons we want in one row
+      const PEOPLE_UNIT = 1000;
+
+      const gap = width / 500;
+
+      const iconW = Math.min(10, width / (2 * maxIconsPerRow));
+      const iconH = iconW * 2.5;
+
 
       const parentRect = parent.getBoundingClientRect();
       const viewportCenterX = window.innerWidth / 2;
@@ -61,8 +86,8 @@ export default function PersonBars() {
 
       const root = svg.append("g").attr("transform", `translate(${offsetX}, 0)`);
 
-
       const imageWidth = 700;
+
       root
         .append("image")
         .attr("href", "/hr.png")
@@ -87,21 +112,11 @@ export default function PersonBars() {
       const yScale = d3.scaleBand<number>().domain(data.map(d => d.year)).range([margin.top, height - margin.bottom]).padding(0.2);
 
       function drawPeopleRow({ g, count, y, direction, color, centerGap = 30, label }: any) {
+
         const fullIcons = Math.floor(count / PEOPLE_UNIT);
         const remainder = (count % PEOPLE_UNIT) / PEOPLE_UNIT;
 
-        let iconW: number;
-        let iconH: number;
 
-        if (window.innerWidth > 800) {
-          iconW = 10;
-          iconH = 20;
-        } else {
-          iconW = 3;
-          iconH = 8;
-        }
-
-        const gap = 1;
         const getX = (i: number) => direction * (centerGap + i * (iconW + gap));
 
         // grey
@@ -258,28 +273,28 @@ export default function PersonBars() {
 
       const scaleY = height - 20; // below the chart
       const step = 10000; // people per tick
-      const iconW = 10;
-      const gap = 1;
+
 
 
       const maxValue = d3.max(data.flatMap(d => [d.Imigranti, d.Emigranti]))!;
-
       const pixelsPerPerson = (iconW + gap) / PEOPLE_UNIT;
-
+      const axisHalf = (maxValue * pixelsPerPerson) + 5;
+      const centerGap = 30;
 
       root
         .append("line")
-        .attr("x1", 0)
-        .attr("x2", width * 0.85)
+        .attr("x1", centerGap - centerX - axisHalf)
+        .attr("x2", centerGap + centerX + axisHalf)
         .attr("y1", scaleY)
         .attr("y2", scaleY)
         .attr("stroke", "#ddd")
         .attr("stroke-width", 0.5);
 
 
+
       for (let i = 1; i <= 3; i++) {
-        const tickX = centerX + i * step * pixelsPerPerson + 30; // right
-        const tickXLeft = centerX - i * step * pixelsPerPerson - 30; // left
+        const tickX = centerX + i * step * pixelsPerPerson + centerGap; // right
+        const tickXLeft = centerX - i * step * pixelsPerPerson - centerGap; // left
 
         // Right tick
         root

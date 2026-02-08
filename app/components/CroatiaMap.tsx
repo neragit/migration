@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
+import useResizeObserver from "../hooks/useResizeObs"; // size
 
 type Zahtjev = { zupanija: string; neg: number; poz: number; godina: number };
 
@@ -10,6 +11,7 @@ export default function CroatiaMap() {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const topoRef = useRef<GeoJSON.FeatureCollection | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const size = useResizeObserver(containerRef);
 
   const [data, setData] = useState<Zahtjev[]>([]);
   const [year, setYear] = useState<number>(2021);
@@ -20,9 +22,6 @@ export default function CroatiaMap() {
   } | null>(null);
 
 
-  // ──────────────────────────────────────────────
-  // Load CSV data
-  // ──────────────────────────────────────────────
   useEffect(() => {
     d3.csv("/data/zahtjevi.csv").then((raw) => {
       const parsed = raw.map((d: any) => ({
@@ -97,9 +96,7 @@ export default function CroatiaMap() {
     });
   }, []);
 
-  // ──────────────────────────────────────────────
-  // Load TopoJSON
-  // ──────────────────────────────────────────────
+ 
   useEffect(() => {
     d3.json("/maps/zupanije.topojson").then((topology: any) => {
       topoRef.current = topojson.feature(
@@ -111,17 +108,16 @@ export default function CroatiaMap() {
   }, []);
 
   const draw = () => {
-    if (!svgRef.current || !topoRef.current || !dataByYear[year]) return;
+    if (!size || !svgRef.current || !topoRef.current || !dataByYear[year]) return;
 
 
     const container = svgRef.current.parentElement!;
     const width = container.clientWidth;
-    let height = width * 0.75; // default proportional
+    let height = size.width * 0.75; // default proportional
 
-    // Minimum height for small phones
-    if (width < 800) height = 350;
 
-    // Cap the height to a maximum so it doesn't get huge on large screens
+    if (size.width < 800) height = 350;
+
     const maxHeight = 600;
     if (height > maxHeight) height = maxHeight;
 
@@ -161,7 +157,7 @@ export default function CroatiaMap() {
       .attr("d", path)
       .attr("fill", d => {
         const name = d.properties?.name?.toUpperCase();
-        if (!name) return "#eee";                        // return default color if name is missing
+        if (!name) return "#eee";
         const v = selectedData[name];
         return v ? color(v.pos) : "#eee";
       })
@@ -195,17 +191,9 @@ export default function CroatiaMap() {
 
   useEffect(() => {
     draw();
-  }, [year, data]);
+  }, [year, data, size]);
 
-  useEffect(() => {
-    const onResize = () => draw();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  // ──────────────────────────────────────────────
-  // Scroll to change year
-  // ──────────────────────────────────────────────
+  
   useEffect(() => {
     let lastScrollTime = 0;
     const cooldown = 50; // ms

@@ -142,7 +142,7 @@ const CroatiaPie: React.FC = () => {
             .attr("href", "#pie-icon")
             .attr("xlink:href", "#pie-icon")
             .attr("transform", `translate(${x}, ${y}) scale(${iconSize / 100})`)
-            .attr("fill", color(d.data.group))  // <- explicit fill
+            .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
             .on("mousemove", (event) => {
               setTooltip({
