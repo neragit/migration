@@ -306,14 +306,14 @@ export default function DorlingWorld() {
       .attr("ry", 2)
       .attr("fill", d => colorScale(d.total_mig))
       .attr("stroke", "#fde0dd")
-
       .attr("fill-opacity", 0)
       .attr("transform", "scale(0.1)")
 
 
       .on("mouseover", (event, d) => {
         d3.select(event.currentTarget)
-          .attr("stroke", "#ff6600")
+          .attr("stroke", "#ff00ff")
+
 
 
         tooltip.transition().duration(200).style("opacity", 0.90);
@@ -383,6 +383,7 @@ export default function DorlingWorld() {
       })
 
       .on("mousemove", (event) => {
+
         const [x, y] = d3.pointer(event); // relative to the SVG
         tooltip
 
@@ -391,8 +392,9 @@ export default function DorlingWorld() {
       })
 
 
-      .on("mouseout", () => {
+      .on("mouseout", (event) => {
         tooltip.transition().duration(200).style("opacity", 0);
+        d3.select(event.currentTarget).attr("stroke", "#fde0dd");
       });
 
     if (animateOnScroll && !animationDoneRef.current) {
