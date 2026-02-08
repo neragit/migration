@@ -1,16 +1,20 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObs";
 
 interface LineChartProps {
   width?: number;
   height?: number;
 }
 
-export default function LineChart({ width = 700, height = 400 }: LineChartProps) {
+export default function LineChart({ width = 700, height = 350 }: LineChartProps) {
+
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const size = useResizeObserver(containerRef); // width, height
 
 
   const migrationData = [
@@ -27,40 +31,50 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
   ];
 
   useEffect(() => {
-    if (!migrationData || migrationData.length === 0) return;
-
-    const isMobile = window.innerWidth < 900;
-
-    const margin = {
-      top: isMobile ? 20 : 40,
-      right: isMobile ? 120 : 80,
-      bottom: isMobile ? 20 : 50,
-      left: isMobile ? 10 : 60,
-    };
-
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    if (!size || !migrationData || migrationData.length === 0) return;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
+
+    let isPortrait = size.vw / size.vh < 1.7;
+
+    const margin = {
+      top: isPortrait ? 80 : 20,
+      bottom: isPortrait ? 100 : 100,
+      left: isPortrait ? 60 : 60,
+      right: isPortrait ? 0 : 0,
+    };
+
+
+    let x = isPortrait // legend x
+      ? margin.left
+      : size.width + 30;
+
+    let y = isPortrait // legend y
+      ? margin.top - 70
+      : margin.top;
+
+      
 
     // Scales
     const xScale = d3
       .scaleLinear()
       .domain(d3.extent(migrationData, (d) => d.year) as [number, number])
-      .range([0, innerWidth]);
+      .range([0, size.width * 0.9]);
 
     const yScale = d3
       .scaleLinear()
       .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
-      .range([innerHeight, 0]);
+      .range([size.height, 0]);
+
+
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-size.width * 0.9).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
@@ -71,7 +85,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
 
     const xAxisGroup = g.append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(0,${innerHeight})`)
+      .attr("transform", `translate(0,${size.height })`)
       .call(xAxis)
       .select(".domain")
       .attr("stroke", "#eee");
@@ -96,7 +110,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
     const events = [
       {
         year: 2020,
-        yOffset: 180,
+        yOffset: size.height * 0.53,
         labels: [
           { text: "COVID-19 i ograničenja kretanja" },
           {
@@ -107,12 +121,12 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
       },
       {
         year: 2022,
-        yOffset: 60,
+        yOffset: size.height * 0.18,
         labels: [{ text: "Rat u Ukrajini" }],
       },
       {
         year: 2023,
-        yOffset: -15,
+        yOffset: size.height * 0.05,
         labels: [{ text: "Uveden EURO" }],
       },
     ];
@@ -127,7 +141,7 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
         .attr("x1", xScale(event.year))
         .attr("x2", xScale(event.year))
         .attr("y1", 0)
-        .attr("y2", innerHeight)
+        .attr("y2", size.height )
         .attr("stroke", "#666")
         .attr("stroke-width", 1)
         .attr("stroke-dasharray", "4,4")
@@ -268,40 +282,58 @@ export default function LineChart({ width = 700, height = 400 }: LineChartProps)
       observer.observe(svgRef.current!);
     });
 
-    const legend = svg.append("g").attr("transform", `translate(${width - margin.right + 40}, ${margin.top})`);
+    let legend = svg.select<SVGGElement>(".legend");
 
-    legend
-      .append("circle")
-      .attr("cx", 6)
-      .attr("cy", 6)
-      .attr("r", 6)
-      .attr("fill", "#00a651");
-    legend
-      .append("text")
-      .attr("x", 18)
-      .attr("y", 10)
-      .text("Imigranti")
-      .attr("font-size", "13px")
-      .attr("fill", "#555");
 
-    legend
-      .append("circle")
-      .attr("cx", 6)
-      .attr("cy", 26)
-      .attr("r", 6)
-      .attr("fill", "#6a0dad");
-    legend
-      .append("text")
-      .attr("x", 18)
-      .attr("y", 30)
-      .text("Emigranti")
-      .attr("font-size", "13px")
-      .attr("fill", "#555");
-  }, [width, height]);
+
+    if (legend.empty()) {
+      legend = svg.append("g").attr("class", "legend");
+
+      legend.append("circle")
+        .attr("class", "imm")
+        .attr("r", 6)
+        .attr("fill", "#00a651");
+
+      legend.append("text")
+        .attr("class", "imm-text")
+        .attr("x", 18)
+        .attr("y", 4)
+        .text("Imigranti")
+        .attr("font-size", "13px")
+        .attr("fill", "#555");
+
+      legend.append("circle")
+        .attr("class", "emg")
+        .attr("r", 6)
+        .attr("fill", "#6a0dad");
+
+      legend.append("text")
+        .attr("class", "emg-text")
+        .attr("x", 18)
+        .attr("y", 4)
+        .text("Emigranti")
+        .attr("font-size", "13px")
+        .attr("fill", "#555");
+    }
+
+    legend.attr("transform", `translate(${x}, ${y})`);
+
+    legend.select(".imm").attr("cx", 6).attr("cy", 6);
+    legend.select(".imm-text").attr("y", 10);
+
+    legend.select(".emg").attr("cx", 6).attr("cy", 26);
+    legend.select(".emg-text").attr("y", 30);
+
+
+
+  }, [size, width, height]);
+
 
   return (
     <>
-      <div style={{ width: "100%", maxWidth: `${width}px`, height: "auto" }}>
+      <div
+        ref={containerRef}
+        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `${width * 0.75}px`, height: "auto" }}>
         <svg
           ref={svgRef}
           width="100%"

@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObs"; // size
 
 interface PieSlice {
   group: string;
@@ -23,6 +24,8 @@ const years = Object.keys(dataByYear).map(Number).sort();
 const CroatiaPie: React.FC = () => {
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const size = useResizeObserver(containerRef);
+
   const [tooltip, setTooltip] = useState<{
     x: number;
     y: number;
@@ -41,7 +44,7 @@ const CroatiaPie: React.FC = () => {
 
 
   useEffect(() => {
-    if (!svgRef.current) return;
+    if (!size || !svgRef.current) return;
 
     const data = createPieData(selectedYear);
 
@@ -65,7 +68,7 @@ const CroatiaPie: React.FC = () => {
     let iconSize: number;
 
 
-    if (window.innerWidth > 800) {
+    if (size.width > 800) {
       radius = height * 0.5;
       iconSize = 5;
     } else {
@@ -153,10 +156,12 @@ const CroatiaPie: React.FC = () => {
             .on("mouseleave", () => setTooltip(null));
         }
       });
-  }, [selectedYear]);
+  }, [size, selectedYear]);
 
 
   useEffect(() => {
+    if (!size) return;
+
     let lastScrollTime = 0;
     const cooldown = 50; // ms
 
@@ -165,7 +170,7 @@ const CroatiaPie: React.FC = () => {
       const rect = containerRef.current.getBoundingClientRect();
 
 
-      const lockScroll = rect.top < window.innerHeight && rect.top < 200;
+      const lockScroll = rect.top < size.height && rect.top < 200;
       if (!lockScroll) return;
 
       const now = Date.now();
@@ -186,7 +191,7 @@ const CroatiaPie: React.FC = () => {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [selectedYear]);
+  }, [size, selectedYear]);
 
 
   const totalWorkers = dataByYear[selectedYear as keyof typeof dataByYear].stranci;
@@ -242,7 +247,7 @@ const CroatiaPie: React.FC = () => {
           ))}
         </div>
 
-        <div className="sm:mr-[300px] text-2xl text-[#333333]">
+        <div className="md:mr-[300px] text-2xl text-[#333333]">
           {new Intl.NumberFormat('fr-FR').format(totalWorkers)} <b>stranih radnika</b>
         </div>
 

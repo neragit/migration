@@ -31,41 +31,33 @@ export default function Mup() {
     width: number;
     height: number;
     iconSize: number;
-    marginLeft: number;
+
     marginTop: number;
     marginBottom: number;
+    isLandscape: Boolean;
   };
 
-  const layout: Layout = (() => {
+  const layout: Layout = size
+    ? size.vw / size.vh < 1.6
+      ? {
+        width: size.width,
+        height: size.width * 1.5, // taller in portrait
+        iconSize: 4,
 
-    if (size && size.width < 500) { // mob portrait
-      return {
-        width: size.width * 1.1, height: size.width * 2.2, iconSize: 4,
-        marginLeft: 10, marginTop: 100, marginBottom: 150
-      };
+        marginTop: 100,
+        marginBottom: 200,
+        isLandscape: false
+      }
+      : {
+        width: size.width,
+        height: size.width * 0.6, // landscape is wider
+        iconSize: 5,
 
-    } else if (size && size.width < 800) { // mob landscape
-      return {
-        width: size.width, height: size.width * 0.8, iconSize: 7,
-        marginLeft: 10, marginTop: 0, marginBottom: 0
-      };
-
-    } else if (size) {
-      // default / laptop
-      return {
-        width: size.width, height: size.width * 0.5, iconSize: 6,
-        marginLeft: -10, marginTop: 0, marginBottom: 0
-      };
-
-    } else {
-      // fallback
-      return {
-        width: 500, height: 200 * 0.2, iconSize: 6,
-        marginLeft: 0, marginTop: 10, marginBottom: 10
-      };
-    }
-
-  })();
+        marginTop: 0,
+        marginBottom: 10,
+        isLandscape: true
+      }
+    : { width: 500, height: 300, iconSize: 5, marginTop: 0, marginBottom: 0, isLandscape: true };
 
 
   const regionRanges: Record<string, [number, number]> = {
@@ -101,9 +93,8 @@ export default function Mup() {
   // Store constant node positions
   const nodesRef = useRef<Record<string, { x: number; y: number }>>({});
 
-  // ─────────────────────────────────────────────────────
-  // Load CSV
-  // ─────────────────────────────────────────────────────
+
+  
   useEffect(() => {
     d3.csv("/data/mup_top10.csv").then(rawData => {
       const parsed: CountryData[] = rawData.map(row => {
@@ -156,46 +147,39 @@ export default function Mup() {
     }
   }, []);
 
-  // ─────────────────────────────────────────────────────
-  // Draw bubbles with stable positions and smooth transitions
-  // ─────────────────────────────────────────────────────
-  useEffect(() => {
-    if (!svgRef.current) return;
-    const svg = d3.select(svgRef.current);
 
-    if (!filteredData.length) return;
+  useEffect(() => {
+    if (!size || !svgRef.current || !filteredData.length) return;
+
+    const svg = d3.select(svgRef.current);
 
     const radiusScale = d3.scaleSqrt()
       .domain([0, d3.max(filteredData, d => d.value)!])
       .range([10, 45]);
 
-    // Initialize nodes with positions if missing
+
     const nodes = filteredData.map(d => {
-      if (size && !nodesRef.current[d.country]) {
-        const region = countryRegion[d.country] || "Europe";
-        const isLandscape = size.width > size.height;
-        const [rangeMin, rangeMax] = regionRanges[region];
+      const region = countryRegion[d.country] || "Europe";
+      const [rangeMin, rangeMax] = regionRanges[region];
 
-        nodesRef.current[d.country] = {
-          x: isLandscape
-            ? layout.width * (rangeMin + Math.random() * (rangeMax - rangeMin)) // horizontal in landscape
-            : layout.width / 2 + (Math.random() - 0.5) * layout.width * 0.15,   // center x in portrait
-          y: isLandscape
-            ? layout.height / 2 + (Math.random() - 0.5) * layout.height * 0.15   // center y in landscape
-            : layout.height * (rangeMin + Math.random() * (rangeMax - rangeMin)) // vertical in portrait
-        };
+      const x = layout.isLandscape
+        ? layout.width * (rangeMin + Math.random() * (rangeMax - rangeMin))
+        : layout.width / 2 + (Math.random() - 0.5) * layout.width * 0.15;
 
+      const y = layout.isLandscape
+        ? layout.height / 2 + (Math.random() - 0.5) * layout.height * 0.15
+        : layout.height * (rangeMin + Math.random() * (rangeMax - rangeMin));
 
-      }
+      nodesRef.current[d.country] = { x, y };
 
       return {
         ...nodesRef.current[d.country],
         data: d,
-        r: radiusScale(d.value)
+        r: radiusScale(d.value),
       };
     });
 
-    // ───────────── Weak collision once ─────────────
+
     const sim = d3.forceSimulation<NodeDatum>(nodes)
       .force("x", d3.forceX(d => d.x!).strength(0.05))
       .force("y", d3.forceY(d => d.y!).strength(0.05))
@@ -225,7 +209,7 @@ export default function Mup() {
     const color = d3.scaleOrdinal(tableauExtended)
       .domain(filteredData.map(d => d.country));
 
-    // ───────────── DATA JOIN FOR GROUPS ─────────────
+
     const groups = svg.selectAll<SVGGElement, any>("g.country-group")
       .data(nodes, d => d.data.country);
 
@@ -245,7 +229,6 @@ export default function Mup() {
 
     const allGroups = enterGroups.merge(groups);
 
-    // ───────────── ICONS ─────────────
     allGroups.each(function (d) {
       const g = d3.select(this);
 
@@ -276,7 +259,7 @@ export default function Mup() {
         )
         .style("opacity", 0)
         .on("mousemove", function (event) {
-          const parent = this.parentNode as SVGElement; // cast to SVGElement
+          const parent = this.parentNode as SVGElement;
           const parentData = d3.select(parent).datum() as {
             data: { country: string; value: number };
           };
@@ -317,22 +300,23 @@ export default function Mup() {
         );
     });
 
-    // ───────────── LABELS LAYER (ALWAYS ON TOP) ─────────────
+
+    
     let labelsLayer = svg.select<SVGGElement>(".labels-layer");
     if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
 
     const labels = labelsLayer.selectAll<SVGTextElement, any>("text")
       .data(nodes, d => d.data.country);
 
-    // remove old labels
+
+      
     labels.exit().remove();
 
-    // append new labels
     labels.enter()
       .append("text")
       .text(d => d.data.country)
-      .attr("x", d => d.x)   // set x only on enter
-      .attr("y", d => d.y)   // set y only on enter
+      .attr("x", d => d.x)
+      .attr("y", d => d.y)
       .attr("text-anchor", "middle")
       .attr("font-size", 16)
       .attr("font-weight", 700)
@@ -342,16 +326,12 @@ export default function Mup() {
       .attr("paint-order", "stroke")
       .style("pointer-events", "none");
 
-
-
   }, [filteredData]);
 
 
   const years = [2021, 2022, 2023, 2024, 2025];
 
-  // ─────────────────────────────────────────────────────
-  // Scroll to change year
-  // ─────────────────────────────────────────────────────
+
   useEffect(() => {
     let lastScrollTime = 0;
     const cooldown = 500; // ms
@@ -380,12 +360,85 @@ export default function Mup() {
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [selectedYear, years]);
+  }, [size, selectedYear, years]);
 
 
-  // ─────────────────────────────────────────────────────
-  // Render
-  // ─────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!size || !svgRef.current || !filteredData.length) return;
+
+    const svg = d3.select(svgRef.current);
+
+    const minYear = Math.min(...[2021, 2022, 2023, 2024, 2025]);
+    setSelectedYear(minYear);
+
+
+    nodesRef.current = {};
+
+
+    const radiusScale = d3.scaleSqrt()
+      .domain([0, d3.max(filteredData, d => d.value)!])
+      .range([10, 45]);
+
+    const nodes = filteredData.map(d => {
+      const region = countryRegion[d.country] || "Europe";
+      const [rangeMin, rangeMax] = regionRanges[region];
+
+      const x = layout.isLandscape
+        ? layout.width * (rangeMin + Math.random() * (rangeMax - rangeMin))
+        : layout.width / 2 + (Math.random() - 0.5) * layout.width * 0.15;
+
+      const y = layout.isLandscape
+        ? layout.height / 2 + (Math.random() - 0.5) * layout.height * 0.15
+        : layout.height * (rangeMin + Math.random() * (rangeMax - rangeMin));
+
+      const r = radiusScale(d.value);
+
+      nodesRef.current[d.country] = { x, y };
+
+      return { x, y, data: d, r };
+    });
+
+    const sim = d3.forceSimulation(nodes as any)
+      .force("x", d3.forceX(d => (d.x ?? 0)).strength(0.05))
+      .force("y", d3.forceY(d => (d.y ?? 0)).strength(0.05))
+      .force(
+        "collide",
+        d3.forceCollide<NodeDatum>(d => {
+          const region = countryRegion[d.data.country] || "Europe";
+          const baseRadius = d.r * 3;
+          return region === "Asia" ? baseRadius * 1.5 : baseRadius;
+        })
+      )
+      .stop();
+
+
+    for (let i = 0; i < 80; i++) sim.tick();
+
+    nodes.forEach(n => {
+      nodesRef.current[n.data.country] = { x: n.x, y: n.y };
+    });
+
+
+    svg.selectAll<SVGGElement, any>("g.country-group")
+      .data(nodes, d => d.data.country)
+      .transition()
+      .duration(600)
+      .attr("transform", d => `translate(${d.x},${d.y})`);
+
+      
+    svg.select(".labels-layer")
+      .selectAll<SVGTextElement, any>("text")
+      .data(nodes, d => d.data.country)
+      .transition()
+      .duration(600)
+      .attr("x", d => d.x)
+      .attr("y", d => d.y);
+
+  }, [size?.width, size?.height, size?.isPortrait]);
+
+
+
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
@@ -401,7 +454,7 @@ export default function Mup() {
               border: "none",
               borderRadius: 4,
               cursor: "pointer",
-              zIndex: 9999 
+              zIndex: 50
             }}
           >
             {y}
@@ -416,7 +469,7 @@ export default function Mup() {
         style={{
           width: "90%",
           height: "auto",
-          marginLeft: layout.marginLeft,
+
           marginTop: layout.marginTop,
           marginBottom: layout.marginBottom,
           display: "block",

@@ -170,9 +170,9 @@ export default function OccupationCountyMap() {
             className="
                 flex
                 flex-col
-                sm:flex-row
-                gap-10
-                sm:gap-0
+                lg:flex-row
+                gap-15
+                lg:gap-0
             "
         >
             

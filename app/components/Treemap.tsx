@@ -328,13 +328,12 @@ const Treemap: React.FC = () => {
 
   const currentStats = statsPerYear[selectedYear] ?? { totalBroj: 0, avgPlaca: 0 };
 
-  const isMobile = dimensions.width < 900;
 
 
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width:  "100%", maxWidth: "800px" }}
+      style={{ position: "relative", width:  "95%", maxWidth: "800px" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setTooltip(null)}
     >

@@ -90,15 +90,15 @@ export default function DorlingWorld() {
   const [animateOnScroll, setAnimateOnScroll] = useState(false);
 
   useEffect(() => {
-  const handleScroll = () => {
-    setAnimateOnScroll(true); // trigger animation once on first scroll
-    window.removeEventListener("scroll", handleScroll);
-  };
+    const handleScroll = () => {
+      setAnimateOnScroll(true); // trigger once
+      window.removeEventListener("scroll", handleScroll);
+    };
 
-  window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
 
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
 
 
@@ -132,23 +132,37 @@ export default function DorlingWorld() {
   }, []);
 
 
-
-
   useEffect(() => {
     if (!data.length || !worldData || !size) return;
 
-    const isPhone = size.width < 1000;
+    type Layout = {
+      width: number;
+      height: number;
+      baseScale: number;
+    };
 
-    let width = isPhone ? 450 : size.width;
-    let height = isPhone ? 350 : Math.min(500, width * 0.45);
+    const layout: Layout = (() => {
+      if (!size) {
+        return { width: 500, height: 250, baseScale: 200 };
+      }
+
+      const width = size.width;
+
+      return {
+        width,
+        height: width * 0.4,
+        baseScale: Math.max(110, Math.min(260, width / 5))
+      };
+    })();
+
 
     if (!svgRef.current) return;
 
     const svg = d3
       .select(svgRef.current)
-      .attr("viewBox", `0 0 ${width} ${height}`)
-      .style("width", `${width}px`)
-      .style("height", `${height}px`)
+      .attr("viewBox", `0 0 ${layout.width} ${layout.height}`)
+      .style("width", `${layout.width}px`)
+      .style("height", `${layout.height}px`)
       .style("max-width", "100%")
       .style("overflow", "visible");
 
@@ -206,19 +220,17 @@ export default function DorlingWorld() {
     tooltip.style("position", "absolute");
 
 
-    const baseScale = isPhone ? 180 : 250;
+
 
     const polyProjection = d3.geoNaturalEarth1()
-      .scale(baseScale)
+      .scale(layout.baseScale)
       .rotate([120, 0])
-      .translate([width / 2, height / 2]);
+      .translate([layout.width / 2, layout.height / 2]);
 
     const pointProjection = d3.geoNaturalEarth1()
-      .scale(baseScale)
+      .scale(layout.baseScale)
       .rotate([-60, 0])
-      .translate([width / 2, height / 2]);
-
-
+      .translate([layout.width / 2, layout.height / 2]);
 
 
     const centroids: Record<string, { x: number; y: number }> = {};
@@ -258,10 +270,10 @@ export default function DorlingWorld() {
         ...d,
         country_hr: croName,
         r: sizeScale(d.total_pop),
-        x: centroid ? centroid.x : width / 2,
-        y: centroid ? (pointFeature ? centroid.y : height - centroid.y) : height / 2,
-        fxTarget: centroid ? centroid.x : width / 2,
-        fyTarget: centroid ? (pointFeature ? centroid.y : height - centroid.y) : height / 2,
+        x: centroid ? centroid.x : layout.width / 2,
+        y: centroid ? (pointFeature ? centroid.y : layout.height - centroid.y) : layout.height / 2,
+        fxTarget: centroid ? centroid.x : layout.width / 2,
+        fyTarget: centroid ? (pointFeature ? centroid.y : layout.height - centroid.y) : layout.height / 2,
       };
     });
 
@@ -280,24 +292,21 @@ export default function DorlingWorld() {
     // Run the simulation for a few ticks
     for (let i = 0; i < 50; i++) simulation.tick();
 
-    const shouldAnimate = animateOnScroll;
-
-const rects = svg
-  .append("g")
-  .selectAll("rect")
-  .data(nodes)
-  .join("rect")
-  .attr("x", d => d.x - d.r / 2)
-  .attr("y", d => d.y - d.r / 2)
-  .attr("width", d => d.r)
-  .attr("height", d => d.r)
-  .attr("rx", 2)
-  .attr("ry", 2)
-  .attr("fill", d => colorScale(d.total_mig))
-  .attr("stroke", "#fde0dd")
-  // initial invisible
-  .attr("fill-opacity", 0)
-  .attr("transform", "scale(0.1)")
+    const rects = svg
+      .append("g")
+      .selectAll("rect")
+      .data(nodes)
+      .join("rect")
+      .attr("x", d => d.x - d.r / 2)
+      .attr("y", d => d.y - d.r / 2)
+      .attr("width", d => d.r)
+      .attr("height", d => d.r)
+      .attr("rx", 2)
+      .attr("ry", 2)
+      .attr("fill", d => colorScale(d.total_mig))
+      .attr("stroke", "#fde0dd")
+      .attr("fill-opacity", 0)
+      .attr("transform", "scale(0.1)")
 
 
       .on("mouseover", (event, d) => {
@@ -380,28 +389,26 @@ const rects = svg
         tooltip.transition().duration(200).style("opacity", 0);
       });
 
-if (animateOnScroll && !animationDoneRef.current) {
-  rects
-    .attr("transform-origin", d => `${d.x}px ${d.y}px`) // center of each rect
-    .transition()
-    .duration(600)
-    .delay((_, i) => i * 6)
-    .attr("transform", "scale(1)")
-    .attr("fill-opacity", 0.5);
+    if (animateOnScroll && !animationDoneRef.current) {
+      rects
+        .attr("transform-origin", d => `${d.x}px ${d.y}px`) // center of each rect
+        .transition()
+        .duration(600)
+        .delay((_, i) => i * 6)
+        .attr("transform", "scale(1)")
+        .attr("fill-opacity", 0.5);
 
-  animationDoneRef.current = true; // mark animation as done
-} else if (animationDoneRef.current) {
-  rects
-    .attr("transform", "scale(1)")
-    .attr("fill-opacity", 0.5)
-    .attr("transform-origin", d => `${d.x}px ${d.y}px`);
-}
+      animationDoneRef.current = true; // animation done
+
+    } else if (animationDoneRef.current) {
+      rects
+        .attr("transform", "scale(1)")
+        .attr("fill-opacity", 0.5)
+        .attr("transform-origin", d => `${d.x}px ${d.y}px`);
+    }
 
 
-
-
-  }, [data, worldData, size, mode, animateOnScroll]); // include animateOnScroll
-
+  }, [data, worldData, size, mode, animateOnScroll]);
 
 
 
@@ -411,8 +418,11 @@ if (animateOnScroll && !animationDoneRef.current) {
 
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", marginBottom: "10px" }}>
           {["origin", "destination"].map(m => (
-            <label
+            <button
               key={m}
+              aria-pressed={mode === m} // for the screen reader
+              lang="hr" // Croatian TTS
+              onClick={() => setMode(m)}
               style={{
                 padding: "5px 10px",
                 backgroundColor: mode === m ? "#c51b8a" : "#eee",
@@ -423,16 +433,10 @@ if (animateOnScroll && !animationDoneRef.current) {
                 userSelect: "none",
               }}
             >
-              <input
-                type="radio"
-                value={m}
-                checked={mode === m}
-                onChange={() => setMode(m)}
-                style={{ display: "none" }} // hide the actual radio
-              />
               {m === "origin" ? "Podrijetlo" : "Destinacija"}
-            </label>
+            </button>
           ))}
+
         </div>
 
         <div style={{ fontSize: "1.5rem", color: "#333" }}>
@@ -451,9 +455,6 @@ if (animateOnScroll && !animationDoneRef.current) {
 
         <div ref={tooltipRef} className="tooltip"></div>
       </div>
-
-
-
 
 
     </div>

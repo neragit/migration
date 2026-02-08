@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import * as d3 from "d3";
+import useResizeObserver from "../hooks/useResizeObs";
 
 interface DataPoint {
   year: number;
@@ -21,6 +22,9 @@ interface TopImmigrantsProps {
 export default function TopImmigrants({ width = 700, height = 400 }: TopImmigrantsProps) {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+const size = useResizeObserver(containerRef); // { width, height }
+
 
   
 

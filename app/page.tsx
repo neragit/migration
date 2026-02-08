@@ -87,7 +87,7 @@ export default function Home() {
       {showLandscapeWarning && (
         <div
           id="landscape-warning"
-          className="portrait:flex fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-50 flex-col"
+          className="portrait:flex fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-999 flex-col"
         >
           <div className="w-24 h-24 mb-4">
             <Lottie
@@ -112,7 +112,7 @@ export default function Home() {
 
       <div className="flex">
         {!showLandscapeWarning && (
-          <nav className="sidebar fixed top-0 left-6 w-32 xl:w-52 z-50 pt-5 xl:pt-10 hidden sm:block">
+          <nav className="sidebar pl-5 min-w-48 max-w-56 pt-10 hidden landscape:flex flex-col fixed top-0 left-0 h-full z-50 ">
             <ul>
               {sections.map((s) => (
                 <li
@@ -125,7 +125,7 @@ export default function Home() {
               ))}
             </ul>
 
-            <div className="fixed bottom-4 left-6 flex gap-4 text-xs text-slate-400 z-50 ">
+            <div className="relative sm:fixed sm:bottom-4 flex gap-5 text-xs text-slate-400">
               <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
               <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
             </div>
@@ -134,7 +134,7 @@ export default function Home() {
 
 
 
-        <main className="mr-10 ml-10 sm:ml-[250px] xl:ml-[350px] w-full overflow-x-visible text-gray-700">
+        <main className="flex-1 pl-10 min-w-0 landscape:ml-52  text-gray-700">
 
           <section className="section !pt-6 " id="start">
 
@@ -348,9 +348,7 @@ export default function Home() {
 
 
 
-
-
-          <section className="section pb-10" id="mup">
+          <section className="section " id="mup">
 
             <h2>Tko radi i boravi u Hrvatskoj?</h2>
 
@@ -412,7 +410,7 @@ export default function Home() {
 
               <span> Izvor:{" "}
                 <a
-                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo//"
+                  href="https://podaci.dzs.hr/2025/hr/97255"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
