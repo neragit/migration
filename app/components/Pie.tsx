@@ -77,7 +77,7 @@ const CroatiaPie: React.FC = () => {
 
     let radius: number;
 
-    radius = Math.max(70, Math.min(height * (0.3 + 0.0003 * size.width), 170));
+    radius = Math.max(80, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
 
 
     const g = svg
