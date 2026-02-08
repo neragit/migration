@@ -70,7 +70,7 @@ const CroatiaPie: React.FC = () => {
     const offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
 
     let width = size.width;
-    let height = size.width * 0.45;
+    let height = size.width * 0.5;
 
     const iconSize = 4;
     const perIcon = 6000;
