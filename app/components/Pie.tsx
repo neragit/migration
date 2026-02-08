@@ -247,7 +247,7 @@ const CroatiaPie: React.FC = () => {
           ))}
         </div>
 
-        <div className="md:mr-[300px] text-2xl text-[#333333]">
+        <div className="lg:mr-[300px] text-2xl text-[#333333]">
           {new Intl.NumberFormat('fr-FR').format(totalWorkers)} <b>stranih radnika</b>
         </div>
 
