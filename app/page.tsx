@@ -115,7 +115,7 @@ export default function Home() {
 
 
 
-      <div className="flex w-screen mt-5">
+      <div className="flex mt-5">
         {!showLandscapeWarning && (
           <div className="fixed left-5 z-50 portrait:hidden ">
 
@@ -169,7 +169,7 @@ export default function Home() {
           className={`flex-1 pl-10 pr-5 min-w-0 text-gray-700 max-w-full 
             transition-all duration-100
             ${sidebarVisible ? "ml-52" : "ml-5"}
-            portrait:ml-0 portrait:w-screen lg:ml-52`}
+            portrait:ml-0 portrait:overflow-x-hidden lg:ml-52`}
             id="start"
         >
 
