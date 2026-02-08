@@ -306,11 +306,16 @@ export default function DorlingWorld() {
       .attr("ry", 2)
       .attr("fill", d => colorScale(d.total_mig))
       .attr("stroke", "#fde0dd")
+
       .attr("fill-opacity", 0)
       .attr("transform", "scale(0.1)")
 
 
       .on("mouseover", (event, d) => {
+        d3.select(event.currentTarget)
+          .attr("stroke", "#ff6600")
+
+
         tooltip.transition().duration(200).style("opacity", 0.90);
         const religionMap = {
           "Christians": "Kršćanstvo",
