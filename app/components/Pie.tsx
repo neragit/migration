@@ -211,7 +211,7 @@ const CroatiaPie: React.FC = () => {
       <div
         style={{
           display: "flex",
-          gap: 12,
+          gap: "20px",
           justifyContent: "space-between",
           alignItems: "flex-start",
           flexWrap: "wrap",

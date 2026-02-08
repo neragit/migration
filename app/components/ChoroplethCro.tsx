@@ -158,6 +158,7 @@ useEffect(() => {
         alignItems: "center",
         flexWrap: "wrap",
         marginBottom: "10px",
+        gap: "20px",
       }}>
 
         <div style={{  display: "flex", gap: "8px", flexWrap: "wrap" }}>

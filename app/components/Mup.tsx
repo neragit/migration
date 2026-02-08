@@ -47,7 +47,7 @@ export default function Mup() {
 
         marginTop: 150,
         marginBottom: 250,
-        marginLeft: 10,
+        marginLeft: 20,
         isLandscape: false
       }
       : {
