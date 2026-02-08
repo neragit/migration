@@ -115,7 +115,7 @@ export default function Home() {
 
 
 
-      <div className="flex w-full mt-5">
+      <div className="flex w-screen mt-5">
         {!showLandscapeWarning && (
           <div className="fixed left-5 z-50 portrait:hidden ">
 
