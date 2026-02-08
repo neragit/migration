@@ -291,14 +291,14 @@ export default function ChoroplethHr() {
                                 width: size?.width,
                                 height: (size?.width ?? 0) * 0.5,
                                 autosize: true,
-                                dragmode: isDesktop ? "pan" : false,
+
 
                             }}
                             config={{
                                 responsive: true,
                                 displaylogo: false,
                                 scrollZoom: false,
-                                modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
+                                modeBarButtonsToRemove: ["", "select2d", "lasso2d"],
                             }}
                             onHover={handleHover}
                             onUnhover={handleUnhover}
