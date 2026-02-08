@@ -146,7 +146,7 @@ export default function DorlingWorld() {
         return { width: 500, height: 250, baseScale: 200 };
       }
 
-      let width = size.width * (size.width < 900 ? 0.7 : 0.9);
+      let width = size.width * (size.width < 500 ? 0.7 : 0.9);
 
 
       return {
