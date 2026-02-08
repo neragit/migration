@@ -125,7 +125,7 @@ export default function Home() {
               ))}
             </ul>
 
-            <div className="relative sm:fixed sm:bottom-4 flex gap-5 text-xs text-slate-400">
+            <div className="relative lg:fixed lg:bottom-4 flex gap-5 text-xs text-slate-400">
               <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
               <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
             </div>
