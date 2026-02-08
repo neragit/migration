@@ -34,6 +34,7 @@ export default function Mup() {
 
     marginTop: number;
     marginBottom: number;
+    marginLeft: number;
     isLandscape: Boolean;
   };
 
@@ -42,10 +43,11 @@ export default function Mup() {
       ? {
         width: size.width,
         height: size.width * 1.5, // taller in portrait
-        iconSize: 4,
+        iconSize: 5,
 
-        marginTop: 100,
-        marginBottom: 200,
+        marginTop: 150,
+        marginBottom: 250,
+        marginLeft: 10,
         isLandscape: false
       }
       : {
@@ -55,9 +57,10 @@ export default function Mup() {
 
         marginTop: 0,
         marginBottom: 10,
+        marginLeft: 0,
         isLandscape: true
       }
-    : { width: 500, height: 300, iconSize: 5, marginTop: 0, marginBottom: 0, isLandscape: true };
+    : { width: 500, height: 300, iconSize: 5, marginTop: 0, marginBottom: 0, marginLeft: 0, isLandscape: true };
 
 
   const regionRanges: Record<string, [number, number]> = {
@@ -472,6 +475,7 @@ export default function Mup() {
 
           marginTop: layout.marginTop,
           marginBottom: layout.marginBottom,
+          marginLeft: layout.marginLeft,
           display: "block",
           overflow: "visible"
         }}
