@@ -6,48 +6,44 @@ import * as d3 from "d3";
 import allCountries from "world-countries";
 import useResizeObserver from "../hooks/useResizeObs";
 
-
-
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
 export default function ChoroplethCro() {
+
   const [csvData, setCsvData] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState("2020");
   const [isClient, setIsClient] = useState(false);
   const years = ["2020", "2021", "2022", "2023"];
-  const mapRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const lockScrollRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
-  const mapSize = useResizeObserver(mapRef);
-  
+  const size = useResizeObserver(containerRef);
 
-// Decide whether to apply the desktop hack
-const isDesktop = mapSize ? mapSize.width > 768 : true; // fallback to desktop if size unknown
+  const isDesktop = size ? size.width > 768 : true; // fallback to desktop if size unknown
 
   useEffect(() => {
     setIsClient(true);
     d3.csv("/data/hrv_choropleth.csv").then(setCsvData);
   }, []);
 
-useEffect(() => {
-  const tooltip = d3
-    .select("body")
-    .append("div")
-    .attr("class", "tooltip")
-    .style("position", "absolute")
-    .style("pointer-events", "none")
-    .style("opacity", 0)
+  useEffect(() => {
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("pointer-events", "none")
+      .style("opacity", 0)
 
-  const cleanup = (): void => {
-    tooltip.remove();
-  };
+    const cleanup = (): void => {
+      tooltip.remove();
+    };
 
-  return cleanup;
-}, []);
+    return cleanup;
+  }, []);
 
 
 
-  // Tooltip follow
   useEffect(() => {
     const tooltip = d3.select(".tooltip");
     const moveHandler = (e: MouseEvent) => {
@@ -82,7 +78,7 @@ useEffect(() => {
     return stats[selectedYear] ?? 0;
   }, [csvData, selectedYear]);
 
-  // Hover handlers
+
   const handleHover = (event: any) => {
     const tooltip = d3.select(".tooltip");
     if (!event.points || event.points.length === 0) return;
@@ -99,31 +95,31 @@ useEffect(() => {
     d3.select(".tooltip").style("opacity", 0);
   };
 
-  // Observe when map is fully visible
+
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!containerRef.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
         if (entry.isIntersecting && entry.intersectionRatio > 0.2) {
-          lockScrollRef.current = true; // map fully visible
+          lockScrollRef.current = true; // fully visible
         } else {
-          lockScrollRef.current = false; // map partially/not visible
-          accumulatedDeltaRef.current = 0; // reset scroll accumulation
+          lockScrollRef.current = false; // partial/not
+          accumulatedDeltaRef.current = 0; // reset
         }
       },
       { threshold: 0.3 }
     );
 
-    observer.observe(mapRef.current);
+    observer.observe(containerRef.current);
     return () => observer.disconnect();
-  }, [mapRef]);
+  }, [containerRef]);
 
 
   useEffect(() => {
     let lastScrollTime = 0; // timestamp of last year change
-    const cooldown = 200;   // milliseconds between allowed scrolls
+    const cooldown = 200;   // ms
 
     const handleWheel = (e: WheelEvent) => {
       if (!lockScrollRef.current) return; // only act when map fully visible
@@ -137,12 +133,13 @@ useEffect(() => {
         e.preventDefault(); // only prevent default if we are actually changing the year
         setSelectedYear(years[currentIndex + 1]);
         lastScrollTime = now;
+
       } else if (e.deltaY < 0 && currentIndex > 0) {
         e.preventDefault(); // only prevent default if we are actually changing the year
         setSelectedYear(years[currentIndex - 1]);
         lastScrollTime = now;
       }
-      // Otherwise: do NOT prevent default → lets the user scroll past the map
+      // Otherwise: do NOT prevent default, let the user scroll past the map
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
@@ -161,7 +158,7 @@ useEffect(() => {
         gap: "20px",
       }}>
 
-        <div style={{  display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
           {years.map((year) => (
             <label key={year} style={{ display: "inline-block" }}>
               <input
@@ -195,59 +192,62 @@ useEffect(() => {
 
       </div>
 
-      <div
-  ref={mapRef}
-  style={{
-    width: "93vw",
-    height: "93vh",
-    position: "relative",
-    left: isDesktop ? -310 : 0, // only offset on desktop
-    top: 0,
-    zIndex: 1,
-  }}
->
-  {isClient && (
-    <Plot
-      data={[
-        {
-          type: "choropleth",
-          locations,
-          z: zValues,
-          colorscale: "Greens",
-          reversescale: true,
-          zmin,
-          zmax,
-          marker: { line: { color: "white", width: 0.5 }, color: markerColors },
-          showscale: false,
-          hoverinfo: "none",
-          hovertemplate: "",
-        },
-      ]}
-      layout={{
-        geo: {
-          projection: { type: "natural earth" },
-          showcoastlines: false,
-          showframe: false,
-          
-        },
-        margin: { t: 0, b: 0, l: 0, r: 0 },
-        width: mapSize?.width,
-        height: mapSize?.height,
-        autosize: true,
-        dragmode: isDesktop ? "pan" : false,
+<div
+  ref={containerRef}
+  className="
+    relative
+    w-full
+    h-full
+    top-0
+    z-10
 
-      }}
-      config={{
-        responsive: true,
-        displaylogo: false,
-        scrollZoom: false,
-        modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
-      }}
-      onHover={handleHover}
-      onUnhover={handleUnhover}
-    />
-  )}
-</div>
+
+
+  "
+>
+
+        {isClient && (
+          <Plot
+            data={[
+              {
+                type: "choropleth",
+                locations,
+                z: zValues,
+                colorscale: "Greens",
+                reversescale: true,
+                zmin,
+                zmax,
+                marker: { line: { color: "white", width: 0.5 }, color: markerColors },
+                showscale: false,
+                hoverinfo: "none",
+                hovertemplate: "",
+              },
+            ]}
+            layout={{
+              geo: {
+                projection: { type: "natural earth" },
+                showcoastlines: false,
+                showframe: false,
+
+              },
+              margin: { t: 0, b: 0, l: 0, r: 0 },
+              width: size?.width,
+              height: (size?.width ?? 0) * 0.5,
+              autosize: true,
+              dragmode: isDesktop ? "pan" : false,
+
+            }}
+            config={{
+              responsive: true,
+              displaylogo: false,
+              scrollZoom: false,
+              modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
+            }}
+            onHover={handleHover}
+            onUnhover={handleUnhover}
+          />
+        )}
+      </div>
 
 
     </div>

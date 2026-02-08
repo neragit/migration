@@ -3,6 +3,8 @@
 import Lottie from "lottie-react";
 
 import { useEffect, useState } from "react";
+import { ChevronRight, XIcon } from "lucide-react";
+
 import CroatiaMap from "./components/CroatiaMap";
 import Treemap from "./components/Treemap";
 import MainChart from "./components/MainChart";
@@ -20,6 +22,8 @@ export default function Home() {
 
   const [activeSection, setActiveSection] = useState("start");
   const [showLandscapeWarning, setShowLandscapeWarning] = useState(false);
+  const [sidebarVisible, setSidebarVisible] = useState(true);
+
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(orientation: landscape)");
@@ -33,9 +37,9 @@ export default function Home() {
 
 
 
-
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
+  
 
   const sections = [
     { id: "start", label: "Početak" },
@@ -59,7 +63,7 @@ export default function Home() {
     const sectionIds = sections.map(s => s.id);
 
     const handleScroll = () => {
-      const scrollY = window.scrollY + 40; // offset
+      const scrollY = window.scrollY + 40; // timing
       let current = "start"; // default
 
       // Loop from bottom to top so last section reached is active
@@ -102,6 +106,7 @@ export default function Home() {
           <button
             className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             onClick={() => setShowLandscapeWarning(false)}
+            
           >
             Ne mogu
           </button>
@@ -110,33 +115,68 @@ export default function Home() {
 
 
 
-      <div className="flex">
+      <div className="flex mt-5">
         {!showLandscapeWarning && (
-          <nav className="sidebar pl-5 min-w-48 max-w-56 pt-10 hidden landscape:flex flex-col fixed top-0 left-0 h-full z-50 ">
-            <ul>
-              {sections.map((s) => (
-                <li
-                  key={s.id}
-                  className={`mb-3 cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
-                  onClick={() => scrollTo(s.id)}
-                >
-                  {s.label}
-                </li>
-              ))}
-            </ul>
+          <div className="fixed left-5 z-50 portrait:hidden ">
 
-            <div className="relative lg:fixed lg:bottom-4 flex gap-5 text-xs text-slate-400">
-              <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
-              <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
-            </div>
-          </nav>
+            <button
+              className="
+              relative text-sm text-slate-400 hover:text-slate-600 focus:outline-none
+              flex items-center gap-1 cursor-pointer
+               lg:hidden "
+              onClick={() => setSidebarVisible(!sidebarVisible)}
+            >
+              {sidebarVisible ? (
+                <XIcon strokeWidth={3} className="w-4 h-4 transition-transform duration-300" />
+              ) : (
+                <ChevronRight strokeWidth={3} className="w-4 h-4 transition-transform duration-300" />
+              )}
+            </button>
+
+
+            <nav
+              className={`sidebar  pt-5 min-w-48 max-w-56 flex-col fixed  h-full landscape:translate-x-0  portrait:hidden
+              transition-transform duration-300 
+              ${sidebarVisible ? "block" : "hidden"} 
+              lg:block 
+              
+              ` }
+            >
+
+              <ul>
+                {sections.map((s) => (
+                  <li
+                    key={s.id}
+                    className={`mb-3 cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
+                    onClick={() => scrollTo(s.id)}
+                  >
+                    {s.label}
+                  </li>
+                ))}
+              </ul>
+
+
+            </nav>
+          </div>
         )}
 
 
 
-        <main className="flex-1 pl-10 pr-5 min-w-0 landscape:ml-52  text-gray-700 max-w-full overflow-x-hidden">
+        <main
+          className={`flex-1 pl-10 pr-5 min-w-0 text-gray-700 max-w-full 
+            transition-all duration-100
+            ${sidebarVisible ? "ml-52" : "ml-5"}
+            portrait:ml-0 lg:ml-52`}
+            id="start"
+        >
 
-          <section className="section !pt-6 " id="start">
+
+          <section className=" section !pb-5  flex gap-5 text-xs text-slate-400  " >
+            <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
+            <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
+          </section>
+
+          <section className="section " >
 
             <h1 className="mb-8 text-4xl sm:text-5xl font-bold leading-tight">
               Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
@@ -339,7 +379,7 @@ export default function Home() {
 
             </p>
 
-            <div className=" ml-0 ">
+            <div >
               < ChoroplethCro />
             </div>
 
@@ -420,7 +460,7 @@ export default function Home() {
 
             </p>
 
-            <div className=" ml-0 ">
+            <div >
               < ChoroplethHr />
             </div>
 

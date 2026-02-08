@@ -21,10 +21,10 @@ export default function ChoroplethHr() {
     const [selectedMode, setselectedMode] = useState("Iseljenici");
     const [isClient, setIsClient] = useState(false);
     const modes = ["Iseljenici", "Useljenici"];
-    const mapRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
     const lockScrollRef = useRef(false);
     const accumulatedDeltaRef = useRef(0);
-    const mapSize = useResizeObserver(mapRef);
+    const size = useResizeObserver(containerRef);
 
     const tableHeaders = ["Regija", "Iseljenici", "Useljenici"];
     const tableData = [
@@ -43,7 +43,7 @@ export default function ChoroplethHr() {
 
 
     // Decide whether to apply the desktop hack
-    const isDesktop = mapSize ? mapSize.width > 768 : true; // fallback to desktop if size unknown
+    const isDesktop = size ? size.width > 768 : true; // fallback to desktop if size unknown
 
     useEffect(() => {
         setIsClient(true);
@@ -135,7 +135,7 @@ export default function ChoroplethHr() {
 
     // Observe when map is fully visible
     useEffect(() => {
-        if (!mapRef.current) return;
+        if (!containerRef.current) return;
 
         const observer = new IntersectionObserver(
             (entries) => {
@@ -150,9 +150,9 @@ export default function ChoroplethHr() {
             { threshold: 0.3 }
         );
 
-        observer.observe(mapRef.current);
+        observer.observe(containerRef.current);
         return () => observer.disconnect();
-    }, [mapRef]);
+    }, [containerRef]);
 
 
     useEffect(() => {
@@ -245,15 +245,16 @@ export default function ChoroplethHr() {
             </div>
 
             <div
-                ref={mapRef}
-                style={{
-                    width: "93vw",
-                    height: "93vh",
-                    position: "relative",
-                    left: isDesktop ? -310 : 0, // only offset on desktop
-                    top: 0,
-                    zIndex: 1,
-                }}
+                ref={containerRef}
+                className="
+    relative
+    w-full
+    h-full
+    top-0
+    z-10
+
+
+  "
             >
                 {isClient && (
                     <>
@@ -283,8 +284,8 @@ export default function ChoroplethHr() {
 
                                 },
                                 margin: { t: 0, b: 0, l: 0, r: 0 },
-                                width: mapSize?.width,
-                                height: mapSize?.height,
+                                width: size?.width,
+                                height: (size?.width ?? 0) * 0.5,
                                 autosize: true,
                                 dragmode: isDesktop ? "pan" : false,
 
@@ -305,7 +306,7 @@ export default function ChoroplethHr() {
                                 style={{
                                     position: "absolute",
                                     left: "300px",
-                                    top: mapSize!.height - 180,
+                                    top: size!.height - 180,
                                     zIndex: 2,
                                     display: "flex",
                                     alignItems: "center",
@@ -348,11 +349,11 @@ export default function ChoroplethHr() {
                                     }}
                                 >
                                     <g
-                                        transform={`translate(26, ${mapSize?.height! - 130 - tableData.length * 18})`}
+                                        transform={`translate(26, ${size?.height! - 130 - tableData.length * 18})`}
                                         fill="#333"
                                         fontSize={"12px"}
                                     >
-                                        {mapSize?.width && mapSize.width > 800 && (
+                                        {size?.width && size.width > 800 && (
                                             <g transform={`translate(0, 0)`}>
                                                 <text x={0} y={-25} dominantBaseline="hanging" fontWeight={600}>
                                                     {tableHeaders[0]}
