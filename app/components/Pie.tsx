@@ -259,7 +259,11 @@ const CroatiaPie: React.FC = () => {
 
 
 
-      <svg ref={svgRef} className="w-full pt-10 lg:pt-0" />
+      <svg
+        ref={svgRef}
+        className="w-full pt-10 lg:pt-0"
+        style={{ overflow: "visible" }}
+      />
 
 
 
