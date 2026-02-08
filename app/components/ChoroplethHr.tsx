@@ -299,7 +299,7 @@ export default function ChoroplethHr() {
                             onUnhover={handleUnhover}
                         />
 
-                        <div >
+                        <div className="hidden sm:block">
                             <button
                                 onClick={() => setOpen(!open)}
                                 style={{
