@@ -291,7 +291,7 @@ export default function ChoroplethHr() {
                                 width: size?.width,
                                 height: (size?.width ?? 0) * 0.5,
                                 autosize: true,
-
+                                dragmode: isDesktop ? "pan" : false,
 
                             }}
                             config={{
