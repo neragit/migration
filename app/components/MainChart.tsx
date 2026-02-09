@@ -40,7 +40,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
 
     const margin = {
       top: isPortrait ? 80 : 20,
-      bottom: isPortrait ? 50 : 50,
+      bottom: isPortrait ? 20 : 50,
       left: isPortrait ? 60 : 60,
       right: isPortrait ? 0 : 0,
     };
