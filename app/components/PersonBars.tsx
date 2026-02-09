@@ -41,7 +41,7 @@ export default function PersonBars() {
     }
 
     const width = size.width * 1.2 + nudge;
-    const maxIconsPerRow = 50; // maximum number of icons we want in one row
+    const maxIconsPerRow = 50;
     const PEOPLE_UNIT = 1000;
     const gap = width / 500;
     const iconW = Math.min(10, width / (2 * maxIconsPerRow));

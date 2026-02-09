@@ -39,7 +39,7 @@ export default function Home() {
 
   const scrollTo = (id: string) =>
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
-  
+
 
   const sections = [
     { id: "start", label: "Početak" },
@@ -87,7 +87,7 @@ export default function Home() {
 
   return (
     <>
-
+      {/*
       {showLandscapeWarning && (
         <div
           id="landscape-warning"
@@ -112,6 +112,34 @@ export default function Home() {
           </button>
         </div>
       )}
+      */}
+
+
+      {showLandscapeWarning && (
+        <div
+          id="landscape-warning"
+          className="portrait:flex fixed inset-0 bg-white text-gray-800 text-lg justify-center items-center z-999 flex-col"
+        >
+          <div className="w-24 h-24 mb-4">
+            <Lottie
+              animationData={require("../public/rotate.json")}
+              loop={true}
+            />
+          </div>
+          <p className="mt-4 text-gray-800 text-center">
+            Omogućite rotaciju ekrana
+          </p>
+
+          <button
+            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            onClick={() => setShowLandscapeWarning(false)}
+            
+          >
+            U redu
+          </button>
+        </div>
+      )}
+
 
 
 
@@ -165,11 +193,11 @@ export default function Home() {
 
 
         <main
-          className={`flex-1 pl-12 min-w-0 max-w-full  text-gray-700 
+          className={`flex-1 pl-12 min-w-0 max-w-full overflow-x-hidden text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
-            portrait:pl-10 portrait:overflow lg:pl-52`}
-            id="start"
+            portrait:pl-10 lg:pl-52`}
+          id="start"
         >
 
 
@@ -312,7 +340,7 @@ export default function Home() {
             <CroatiaMap />
 
           </section>
-          
+
 
           <section className="section " id="pie">
 
