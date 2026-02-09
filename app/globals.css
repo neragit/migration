@@ -20,7 +20,7 @@
 }
 
 html {
-  scroll-padding-top: 10px; 
+  scroll-padding-top: 10px;
 }
 
 
@@ -85,7 +85,13 @@ a {
 
 
 
+.scrollbar-left {
+  direction: rtl;
+}
 
+.content-ltr {
+  direction: ltr;
+}
 
 
 /* ===== Global scrollbar for all scrollable elements ===== */

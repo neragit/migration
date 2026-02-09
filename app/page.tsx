@@ -135,7 +135,7 @@ export default function Home() {
 
 
             <nav
-              className={`sidebar   min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto
+              className={`sidebar   min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
                 landscape:translate-x-0  portrait:hidden
               transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} 
@@ -150,7 +150,7 @@ export default function Home() {
                 {sections.map((s) => (
                   <li
                     key={s.id}
-                    className={`mb-3 cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
+                    className={`mb-3 content-ltr  cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
                     onClick={() => scrollTo(s.id)}
                   >
                     {s.label}
