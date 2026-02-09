@@ -369,7 +369,7 @@ export default function Home() {
             </p>
 
             <div>
-              <Pie />
+              
             </div>
 
           </section>
