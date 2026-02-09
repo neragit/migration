@@ -42,7 +42,7 @@ export default function Mup() {
   const layout: Layout = size
     ? size.vw / size.vh < 1.6
       ? {
-        width: size.width*1.2,
+        width: size.width*1.3,
         height: size.width * 1.5, // taller in portrait
         iconSize: 5,
 
