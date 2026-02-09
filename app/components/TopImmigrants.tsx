@@ -19,14 +19,12 @@ interface TopImmigrantsProps {
   height?: number;
 }
 
-export default function TopImmigrants({ width = 700, height = 400 }: TopImmigrantsProps) {
+export default function TopImmigrants({ width = 700, height = 500 }: TopImmigrantsProps) {
+
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-const size = useResizeObserver(containerRef); // { width, height }
-
-
-  
+  const size = useResizeObserver(containerRef); // { width, height }
 
   const data: CountryData[] = [
     {
@@ -101,43 +99,29 @@ const size = useResizeObserver(containerRef); // { width, height }
     },
   ];
 
-  useEffect(() => {
-    const handleResize = () => {
-      const isMobile = window.innerWidth < 900;
-      console.log("Resized, isMobile:", isMobile, "window.innerWidth:", window.innerWidth);
-    };
-
-    handleResize(); // initial check
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
 
   useEffect(() => {
-    if (!data.length) return;
+    if (!size || !data.length) return;
 
-    const isMobile = window.innerWidth < 900;
-
-    const safeInsetTop = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-top')) || 0;
-  const safeInsetRight = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-right')) || 0;
-  const safeInsetBottom = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-bottom')) || 0;
-  const safeInsetLeft = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--safe-area-inset-left')) || 0;
-
-
+    let isPortrait = size.vw / size.vh < 1.7;
 
     const margin = {
-      top: isMobile ? 20 : 40,
-      right: isMobile ? 120 + safeInsetRight : 80,
-      bottom: isMobile ? 20 + safeInsetBottom : 50,
-      left: isMobile ? 10 : 60,
+      top: isPortrait ? 160 : 20,
+      bottom: isPortrait ? -20 : 50,
+      left: isPortrait ? 60 : 60,
+      right: isPortrait ? 0 : 0,
     };
 
+    let x = isPortrait // legend x
+      ? margin.left
+      : size.width + 30;
 
-    console.log("D3 effect, isMobile:", isMobile, "window.innerWidth:", window.innerWidth, margin);
+    let y = isPortrait // legend y
+      ? margin.top - 150
+      : margin.top;
 
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = size.width - margin.left - margin.right;
+    const innerHeight = size.height - margin.top - margin.bottom;
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -256,9 +240,11 @@ const size = useResizeObserver(containerRef); // { width, height }
       observer.observe(svgRef.current!);
     });
 
-    // Legend (same positioning logic as first chart)
+
     const legend = svg.append("g")
-      .attr("transform", `translate(${width - margin.right + 40}, ${margin.top})`);
+      .attr("class", "legend")
+      .attr("transform", `translate(${x}, ${y})`);
+
 
     data.forEach((c, i) => {
       const row = legend.append("g")
@@ -278,11 +264,14 @@ const size = useResizeObserver(containerRef); // { width, height }
         .text(c.country);
     });
 
-  }, [width, height]);
+
+  }, [size, width, height]);
 
   return (
     <>
-      <div style={{ width: "100%", maxWidth: `${width}px`, height: "auto" }}>
+      <div
+        ref={containerRef}
+        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto" }}>
         <svg
           ref={svgRef}
           width="100%"
@@ -290,13 +279,15 @@ const size = useResizeObserver(containerRef); // { width, height }
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
           style={{ display: "block", overflow: "visible" }}
-        />
+        ></svg>
       </div>
 
       <div
         ref={tooltipRef}
         className="tooltip"
-        style={{ position: "absolute", opacity: 0.9, display: "none", }}
+        style={{
+          position: "absolute"
+        }}
       />
     </>
   );

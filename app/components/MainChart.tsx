@@ -353,8 +353,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       <div
         ref={tooltipRef}
         className="tooltip"
-        style={{
-          position: "absolute",
+        style={{ position: "absolute"
         }}
       />
     </>
