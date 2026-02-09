@@ -323,7 +323,6 @@ export default function PersonBars() {
       .text("Useljenici");
   }
 
-
   useEffect(() => {
     if (!ref.current) return;
 
@@ -343,7 +342,6 @@ export default function PersonBars() {
       { root: null, threshold: 0.5 }
     );
 
-
     observer.observe(parent);
     return () => observer.disconnect();
 
@@ -359,7 +357,7 @@ export default function PersonBars() {
     if (!parent) return;
 
     drawChart(svgNode, parent);
-  }, [size]);
+  }, [size?.width]);
 
   return (
     <div style={{ position: "relative" }}>

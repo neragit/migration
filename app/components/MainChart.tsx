@@ -339,8 +339,8 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     );
 
     observer.observe(svgNode);
-
     return () => observer.disconnect();
+
   }, [size]);
 
   useEffect(() => {
@@ -352,7 +352,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     if (!parent) return;
 
     drawChart(svgNode, parent);
-  }, [size]);
+  }, [size?.width]);
 
 
   return (
