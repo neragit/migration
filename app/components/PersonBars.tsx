@@ -368,7 +368,7 @@ export default function PersonBars() {
   return (
     <div style={{ position: "relative" }}>
       <div ref={tooltipRef} className="tooltip" style={{ position: "absolute" }} />
-      <svg ref={ref} style={{ paddingTop: "30px", width: "100%", height: "auto" }} />
+      <svg ref={ref} style={{ paddingTop: "30px", width: "100%", height: "auto", overflow: "visible"}} />
     </div>
   );
 }
