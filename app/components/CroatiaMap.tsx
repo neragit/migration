@@ -110,18 +110,14 @@ export default function CroatiaMap() {
   const draw = () => {
     if (!size || !svgRef.current || !topoRef.current || !dataByYear[year]) return;
 
-
     const container = svgRef.current.parentElement!;
     const width = container.clientWidth;
     let height = size.width * 0.75; // default proportional
-
 
     if (size.width < 900) height = 300;
 
     const maxHeight = 600;
     if (height > maxHeight) height = maxHeight;
-
-
 
     const svg = d3.select(svgRef.current);
 

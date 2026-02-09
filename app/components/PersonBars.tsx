@@ -12,8 +12,7 @@ const data = [
 
 
 export default function PersonBars() {
-  
-  const [open, setOpen] = useState(false);
+
   const ref = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(ref);
@@ -343,6 +342,7 @@ export default function PersonBars() {
       },
       { root: null, threshold: 0.5 }
     );
+
 
     observer.observe(parent);
     return () => observer.disconnect();

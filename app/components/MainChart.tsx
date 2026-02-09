@@ -15,6 +15,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
   const tooltipRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(containerRef); // width, height
+  const hasAnimated = useRef(false);
 
 
   const migrationData = [
@@ -30,7 +31,9 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     { year: 2024, immigrants: 70391, emigrants: 38997 },
   ];
 
-  useEffect(() => {
+
+
+  function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !migrationData || migrationData.length === 0) return;
 
     const svg = d3.select(svgRef.current);
@@ -54,8 +57,6 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       ? margin.top - 70
       : margin.top;
 
-
-
     const innerWidth = size.width - margin.left - margin.right;
     const innerHeight = size.height - margin.top - margin.bottom;
 
@@ -71,9 +72,6 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
       .range([innerHeight, 0]);
 
-
-
-
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
     // Grid lines
@@ -83,7 +81,6 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
-
 
     // Axes
     const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
@@ -175,167 +172,190 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
         return tspan;
       });
 
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            line
-              .transition()
-              .duration(3000)
-              .delay(idx * 1000)
-              .attr("opacity", 0.2);
+      line
+        .transition()
+        .duration(3000)
+        .delay(idx * 1000)
+        .attr("opacity", 0.2);
 
-            tspans.forEach((tspan, i) => {
-              tspan
-                .transition()
-                .duration(3000)
-                .delay(idx * 1000 + 4000)
-                .style("opacity", 1);
-            });
+      tspans.forEach((tspan, i) => {
+        tspan
+          .transition()
+          .duration(3000)
+          .delay(idx * 1000 + 4000)
+          .style("opacity", 1);
+      });
 
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.5 }
-      );
+      // Line generators
+      const lineImmigrants = d3
+        .line<{ year: number; immigrants: number; emigrants: number }>()
+        .x((d) => xScale(d.year))
+        .y((d) => yScale(d.immigrants))
+        .curve(d3.curveMonotoneX);
 
-      observer.observe(svgRef.current!);
+      const lineEmigrants = d3
+        .line<{ year: number; immigrants: number; emigrants: number }>()
+        .x((d) => xScale(d.year))
+        .y((d) => yScale(d.emigrants))
+        .curve(d3.curveMonotoneX);
+
+      const tooltip = d3.select(tooltipRef.current);
+
+      const lines = [
+        { line: lineImmigrants, color: "#00a651", class: "dot-imm" },
+        { line: lineEmigrants, color: "#6a0dad", class: "dot-emg" },
+      ];
+
+      lines.forEach(({ line, color, class: cls }) => {
+        const path = g
+          .append("path")
+          .datum(migrationData)
+          .attr("fill", "none")
+          .attr("stroke", color)
+          .attr("stroke-width", 3)
+          .attr("d", line);
+
+        const totalLength = path.node()!.getTotalLength();
+        path.attr("stroke-dasharray", totalLength).attr("stroke-dashoffset", totalLength);
+
+        const circles = g
+          .selectAll(`.${cls}`)
+          .data(migrationData)
+          .enter()
+          .append("circle")
+          .attr("class", cls)
+          .attr("cx", (d) => xScale(d.year))
+          .attr("cy", (d) => (cls === "dot-imm" ? yScale(d.immigrants) : yScale(d.emigrants)))
+          .attr("r", 4)
+          .attr("fill", color)
+          .style("opacity", 0)
+          .on("mouseenter", (event, d) => {
+            const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
+            const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
+
+            tooltip
+              .style("display", "block")
+              .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
+              .style("left", `${event.pageX + 10}px`)
+              .style("top", `${event.pageY - 20}px`)
+              .style("opacity", 0.90);
+          })
+          .on("mousemove", (event) => {
+            tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
+          })
+          .on("mouseleave", () => {
+            tooltip.style("display", "none");
+          });
+
+        // Animate line, circles, and now x-tick labels on scroll
+        const observer = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              path.transition().duration(5000).ease(d3.easeCubic).attr("stroke-dashoffset", 0);
+
+              circles.transition().delay(4000).duration(1000).style("opacity", 1);
+
+              // Animate x-axis tick labels sequentially
+              xTicks.each((d, i, nodes) => {
+                d3.select(nodes[i])
+                  .transition()
+                  .delay(i * 500)
+                  .duration(3000)
+                  .style("opacity", 1);
+              });
+
+              observer.disconnect();
+            }
+          },
+          { threshold: 0.5 }
+        );
+
+        observer.observe(svgRef.current!);
+      });
+
+      let legend = svg.select<SVGGElement>(".legend");
+
+
+
+      if (legend.empty()) {
+        legend = svg.append("g").attr("class", "legend");
+
+        legend.append("circle")
+          .attr("class", "imm")
+          .attr("r", 6)
+          .attr("fill", "#00a651");
+
+        legend.append("text")
+          .attr("class", "imm-text")
+          .attr("x", 18)
+          .attr("y", 4)
+          .text("Imigranti")
+          .attr("font-size", "13px")
+          .attr("fill", "#555");
+
+        legend.append("circle")
+          .attr("class", "emg")
+          .attr("r", 6)
+          .attr("fill", "#6a0dad");
+
+        legend.append("text")
+          .attr("class", "emg-text")
+          .attr("x", 18)
+          .attr("y", 4)
+          .text("Emigranti")
+          .attr("font-size", "13px")
+          .attr("fill", "#555");
+      }
+
+      legend.attr("transform", `translate(${x}, ${y})`);
+
+      legend.select(".imm").attr("cx", 6).attr("cy", 6);
+      legend.select(".imm-text").attr("y", 10);
+
+      legend.select(".emg").attr("cx", 6).attr("cy", 26);
+      legend.select(".emg-text").attr("y", 30);
+
     });
 
-    // Line generators
-    const lineImmigrants = d3
-      .line<{ year: number; immigrants: number; emigrants: number }>()
-      .x((d) => xScale(d.year))
-      .y((d) => yScale(d.immigrants))
-      .curve(d3.curveMonotoneX);
+  }
 
-    const lineEmigrants = d3
-      .line<{ year: number; immigrants: number; emigrants: number }>()
-      .x((d) => xScale(d.year))
-      .y((d) => yScale(d.emigrants))
-      .curve(d3.curveMonotoneX);
+  useEffect(() => {
+    if (!size || !svgRef.current) return;
 
-    const tooltip = d3.select(tooltipRef.current);
+    const svgNode = svgRef.current;
+    const parent = svgNode.parentElement;
+    if (!parent) return;
 
-    const lines = [
-      { line: lineImmigrants, color: "#00a651", class: "dot-imm" },
-      { line: lineEmigrants, color: "#6a0dad", class: "dot-emg" },
-    ];
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          drawChart(svgNode, parent);
 
-    lines.forEach(({ line, color, class: cls }) => {
-      const path = g
-        .append("path")
-        .datum(migrationData)
-        .attr("fill", "none")
-        .attr("stroke", color)
-        .attr("stroke-width", 3)
-        .attr("d", line);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
 
-      const totalLength = path.node()!.getTotalLength();
-      path.attr("stroke-dasharray", totalLength).attr("stroke-dashoffset", totalLength);
+    observer.observe(svgNode);
 
-      const circles = g
-        .selectAll(`.${cls}`)
-        .data(migrationData)
-        .enter()
-        .append("circle")
-        .attr("class", cls)
-        .attr("cx", (d) => xScale(d.year))
-        .attr("cy", (d) => (cls === "dot-imm" ? yScale(d.immigrants) : yScale(d.emigrants)))
-        .attr("r", 4)
-        .attr("fill", color)
-        .style("opacity", 0)
-        .on("mouseenter", (event, d) => {
-          const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
-          const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
+    return () => observer.disconnect();
+  }, [size]);
 
-          tooltip
-            .style("display", "block")
-            .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY - 20}px`)
-            .style("opacity", 0.90);
-        })
-        .on("mousemove", (event) => {
-          tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
-        })
-        .on("mouseleave", () => {
-          tooltip.style("display", "none");
-        });
+  useEffect(() => {
+    if (!size || !svgRef.current) return;
+    if (!hasAnimated.current) return;
 
-      // Animate line, circles, and now x-tick labels on scroll
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) {
-            path.transition().duration(5000).ease(d3.easeCubic).attr("stroke-dashoffset", 0);
+    const svgNode = svgRef.current;
+    const parent = svgNode.parentElement;
+    if (!parent) return;
 
-            circles.transition().delay(4000).duration(1000).style("opacity", 1);
-
-            // Animate x-axis tick labels sequentially
-            xTicks.each((d, i, nodes) => {
-              d3.select(nodes[i])
-                .transition()
-                .delay(i * 500)
-                .duration(3000)
-                .style("opacity", 1);
-            });
-
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.5 }
-      );
-
-      observer.observe(svgRef.current!);
-    });
-
-    let legend = svg.select<SVGGElement>(".legend");
+    drawChart(svgNode, parent);
+  }, [size]);
 
 
-
-    if (legend.empty()) {
-      legend = svg.append("g").attr("class", "legend");
-
-      legend.append("circle")
-        .attr("class", "imm")
-        .attr("r", 6)
-        .attr("fill", "#00a651");
-
-      legend.append("text")
-        .attr("class", "imm-text")
-        .attr("x", 18)
-        .attr("y", 4)
-        .text("Imigranti")
-        .attr("font-size", "13px")
-        .attr("fill", "#555");
-
-      legend.append("circle")
-        .attr("class", "emg")
-        .attr("r", 6)
-        .attr("fill", "#6a0dad");
-
-      legend.append("text")
-        .attr("class", "emg-text")
-        .attr("x", 18)
-        .attr("y", 4)
-        .text("Emigranti")
-        .attr("font-size", "13px")
-        .attr("fill", "#555");
-    }
-
-    legend.attr("transform", `translate(${x}, ${y})`);
-
-    legend.select(".imm").attr("cx", 6).attr("cy", 6);
-    legend.select(".imm-text").attr("y", 10);
-
-    legend.select(".emg").attr("cx", 6).attr("cy", 26);
-    legend.select(".emg-text").attr("y", 30);
-
-
-
-  }, [size, width, height]);
-
-
- return (
+  return (
     <>
       <div
         ref={containerRef}
@@ -353,10 +373,10 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       <div
         ref={tooltipRef}
         className="tooltip"
-        style={{ position: "absolute"
+        style={{
+          position: "absolute"
         }}
       />
     </>
   );
 }
-
