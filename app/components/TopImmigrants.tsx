@@ -271,7 +271,7 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, aspectRatio: `${width} / ${height}`, }}>
+        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto"  }}>
         <svg
           ref={svgRef}
           width="100%"

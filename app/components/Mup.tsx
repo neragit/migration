@@ -43,7 +43,7 @@ export default function Mup() {
     ? size.vw / size.vh < 1.6
       ? {
         width: size.width*1.3,
-        height: size.width * 1.5, // taller in portrait
+        height: size.width * 1.7, // taller in portrait
         iconSize: 5,
 
         marginTop: 150,

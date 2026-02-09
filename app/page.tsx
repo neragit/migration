@@ -200,7 +200,7 @@ export default function Home() {
 
           </section>
 
-          <section className="section " id="dorling">
+          <section className="section mb-20" id="dorling">
 
             <h2>Tko odlazi i kamo ide?</h2>
 
