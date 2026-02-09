@@ -40,7 +40,7 @@ export default function Mup() {
   };
 
   const layout: Layout = size
-    ? size.vw / size.vh < 1.6
+    ? (size.vw / size.vh < 1.6) || size.width < 1000
       ? {
         width: size.width*1.3,
         height: size.width * 1.7, // taller in portrait
