@@ -136,7 +136,7 @@ export default function Home() {
 
             <nav
               className={`sidebar  pt-5 min-w-48 max-w-56 flex-col fixed  
-                landscape:h-screen  landscape:translate-x-0  portrait:hidden
+                landscape:translate-x-0  portrait:hidden
               transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} 
               lg:block 
