@@ -67,18 +67,7 @@ a {
 }
 
 
-@media (max-width: 900px) {
 
-  .main {
-    margin-right: 10px;
-    text-align: justify;
-  }
-
-  .tooltip {
-    min-width: 180px;
-  }
-
-}
 
 .scrollbar-left {
   direction: rtl;
@@ -114,4 +103,16 @@ a {
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 900px) {
+
+  .main {
+    text-align: justify;
+  }
+
+  .tooltip {
+    min-width: 180px;
+  }
+
 }
