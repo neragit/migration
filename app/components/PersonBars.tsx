@@ -18,6 +18,8 @@ export default function PersonBars() {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(ref);
 
+  let hasAnimated = false;
+
   useEffect(() => {
     if (!size || !ref.current) return;
 
@@ -25,7 +27,7 @@ export default function PersonBars() {
     const parent = svgNode.parentElement;
     if (!parent) return;
 
-    let hasAnimated = false;
+    
 
     const observer = new IntersectionObserver(
       (entries) => {
