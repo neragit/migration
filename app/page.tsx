@@ -135,7 +135,7 @@ export default function Home() {
 
 
             <nav
-              className={`sidebar  pt-5 min-w-48 max-w-56 flex-col fixed  overflow-y-auto
+              className={`sidebar  pt-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto
                 landscape:translate-x-0  portrait:hidden
               transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} 

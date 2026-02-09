@@ -344,7 +344,6 @@ export default function PersonBars() {
       { root: null, threshold: 0.5 }
     );
 
-
     observer.observe(parent);
     return () => observer.disconnect();
 
