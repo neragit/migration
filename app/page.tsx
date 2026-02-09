@@ -314,7 +314,7 @@ export default function Home() {
 
           </section>
 
-          <section className="section mb-20" id="pie">
+          <section className="section " id="pie">
 
             <h2>Stanovništvo Hrvatske</h2>
 

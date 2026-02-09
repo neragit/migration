@@ -107,7 +107,7 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
 
     const margin = {
       top: isPortrait ? 160 : 20,
-      bottom: isPortrait ? -20 : 50,
+      bottom: isPortrait ? -30 : 50,
       left: isPortrait ? 60 : 60,
       right: isPortrait ? 0 : 0,
     };
@@ -271,7 +271,7 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto" }}>
+        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, aspectRatio: `${width} / ${height}`, }}>
         <svg
           ref={svgRef}
           width="100%"
