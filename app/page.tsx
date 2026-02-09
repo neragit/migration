@@ -168,7 +168,7 @@ export default function Home() {
         <main
           className={`flex-1 pl-10 pr-5 min-w-0 text-gray-700 max-w-full 
             transition-all duration-100
-            ${sidebarVisible ? "ml-52" : "ml-5"}
+            ${sidebarVisible ? "pl-56" : "pl-5"}
             portrait:ml-0 portrait:overflow-x-hidden lg:ml-52`}
             id="start"
         >
