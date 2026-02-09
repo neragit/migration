@@ -47,9 +47,9 @@ export default function Mup() {
         iconSize: 5,
 
         marginTop: 150,
-        marginBottom: 250,
-        marginLeft: 30,
-        marginRight: 30,
+        marginBottom: 200,
+        marginLeft: 20,
+        marginRight: 20,
         isLandscape: false
       }
       : {

@@ -290,7 +290,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section pb-20" id="treemap">
+          <section className="section mb-20" id="treemap">
 
             <h2>Koje poslove obavljaju strani radnici?</h2>
 

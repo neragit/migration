@@ -283,8 +283,8 @@ export default function PersonBars() {
 
       root
         .append("line")
-        .attr("x1", centerGap - centerX - axisHalf)
-        .attr("x2", centerGap + centerX + axisHalf)
+        .attr("x1", 20 - centerX - axisHalf)
+        .attr("x2", 30 + centerX + axisHalf)
         .attr("y1", scaleY)
         .attr("y2", scaleY)
         .attr("stroke", "#ddd")
