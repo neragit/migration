@@ -91,6 +91,7 @@ a {
 
 .content-ltr {
   direction: ltr;
+  padding-left: 0.5rem;
 }
 
 
