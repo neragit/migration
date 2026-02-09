@@ -24,7 +24,8 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const size = useResizeObserver(containerRef); // { width, height }
+  const size = useResizeObserver(containerRef); // width, height
+  const hasAnimated = useRef(false);
 
   const data: CountryData[] = [
     {
@@ -100,7 +101,7 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
   ];
 
 
-  useEffect(() => {
+  function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !data.length) return;
 
     let isPortrait = size.vw / size.vh < 1.7;
@@ -262,10 +263,44 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
         .attr("font-size", "13px")
         .attr("fill", "#555")
         .text(c.country);
-    });
+   });
 
+  }
 
-  }, [size, width, height]);
+  useEffect(() => {
+    if (!size || !svgRef.current) return;
+
+    const svgNode = svgRef.current;
+    const parent = svgNode.parentElement;
+    if (!parent) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          drawChart(svgNode, parent);
+
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(svgNode);
+    return () => observer.disconnect();
+
+  }, [size]);
+
+  useEffect(() => {
+    if (!size || !svgRef.current) return;
+    if (!hasAnimated.current) return;
+
+    const svgNode = svgRef.current;
+    const parent = svgNode.parentElement;
+    if (!parent) return;
+
+    drawChart(svgNode, parent);
+  }, [size?.width]);
 
   return (
     <>
