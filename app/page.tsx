@@ -244,7 +244,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section pb-20" id="migration">
+          <section className="section " id="migration">
 
             <h2>
               U Hrvatskoj se mijenjaju trendovi
@@ -290,7 +290,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section pb-40" id="treemap">
+          <section className="section pb-20" id="treemap">
 
             <h2>Koje poslove obavljaju strani radnici?</h2>
 
@@ -314,7 +314,7 @@ export default function Home() {
 
           </section>
 
-          <section className="section " id="pie">
+          <section className="section pb-20" id="pie">
 
             <h2>Stanovništvo Hrvatske</h2>
 
@@ -418,7 +418,7 @@ export default function Home() {
 
           </section>
 
-          <section className="section mb-40" id="bars">
+          <section className="section mb-20" id="bars">
 
             <h2>Migracije Hrvata</h2>
 
