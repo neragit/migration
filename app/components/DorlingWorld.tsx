@@ -139,11 +139,12 @@ export default function DorlingWorld() {
       width: number;
       height: number;
       baseScale: number;
+      sizeRange: [number, number];
     };
 
     const layout: Layout = (() => {
       if (!size) {
-        return { width: 500, height: 250, baseScale: 200 };
+        return { width: 500, height: 250, baseScale: 200, sizeRange: [5, 65] };
       }
 
       let width = size.width * (size.width < 500 ? 0.7 : 0.9);
@@ -152,7 +153,8 @@ export default function DorlingWorld() {
       return {
         width,
         height: width * 0.5,
-        baseScale: Math.max(70, Math.min(260, width / 5))
+        baseScale: Math.max(70, Math.min(260, width / 5)),
+        sizeRange: [5, Math.max(10, Math.min(65, width / 8))],
       };
     })();
 
@@ -174,7 +176,7 @@ export default function DorlingWorld() {
     const maxPop = d3.max(data, d => d.total_pop) ?? 0;
     const sizeScale = d3.scaleSqrt()
       .domain([0, maxPop])
-      .range([5, 65]);
+      .range(layout.sizeRange);
 
 
     const countryData: AggregatedCountry[] = Object.values(
