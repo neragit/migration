@@ -136,15 +136,14 @@ export default function Home() {
 
             <nav
               className={`sidebar  pb-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
-                landscape:translate-x-0  portrait:hidden
+                landscape:translate-x-0  
+                portrait:hidden 
               transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} 
               lg:block 
               
               ` }
             >
-
-
 
               <ul>
                 {sections.map((s) => (
@@ -169,7 +168,7 @@ export default function Home() {
           className={`flex-1 pl-12 min-w-0 max-w-full  text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
-            portrait:ml-0 portrait:overflow-x-hidden lg:pl-52`}
+            portrait:pl-10 portrait:overflow lg:pl-52`}
             id="start"
         >
 
