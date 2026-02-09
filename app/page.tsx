@@ -133,7 +133,7 @@ export default function Home() {
           <button
             className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             onClick={() => setShowLandscapeWarning(false)}
-            
+
           >
             U redu
           </button>
@@ -192,10 +192,11 @@ export default function Home() {
 
 
         <main
-          className={`flex-1 pl-12 min-w-0 max-w-full  text-gray-700 
+          className={`flex-1 pl-12 min-w-0  text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
-            portrait:pl-10  lg:pl-52`}
+            portrait:pl-10  lg:pl-52
+            max-w-full `}
           id="start"
         >
 
