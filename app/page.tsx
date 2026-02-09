@@ -122,7 +122,7 @@ export default function Home() {
             <button
               className="
               relative text-sm text-slate-400 hover:text-slate-600 focus:outline-none
-              flex items-center gap-1 cursor-pointer pb-5
+              flex items-center gap-1 cursor-pointer pl-2 pb-5
                lg:hidden "
               onClick={() => setSidebarVisible(!sidebarVisible)}
             >
@@ -166,7 +166,7 @@ export default function Home() {
 
 
         <main
-          className={`flex-1 min-w-0 max-w-full  text-gray-700 
+          className={`flex-1 pl-10 min-w-0 max-w-full  text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
             portrait:ml-0 portrait:overflow-x-hidden lg:pl-52`}
