@@ -191,15 +191,13 @@ export default function Home() {
         )}
 
 
-
         <main
-          className={`flex-1 pl-12 min-w-0 max-w-full overflow-x-hidden text-gray-700 
+          className={`flex-1 pl-12 min-w-0 max-w-full overflow-hidden text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
-            portrait:pl-10 lg:pl-52`}
+            portrait:pl-10  lg:pl-52`}
           id="start"
         >
-
 
           <section className=" section !pb-5  flex gap-5 text-xs text-slate-400  " >
             <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
