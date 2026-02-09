@@ -418,7 +418,7 @@ export default function Home() {
 
           </section>
 
-          <section className="section pb-20" id="bars">
+          <section className="section mb-40" id="bars">
 
             <h2>Migracije Hrvata</h2>
 

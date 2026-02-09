@@ -62,7 +62,7 @@ export default function PersonBars() {
         nudge += (sidebar?.offsetWidth || 0) + 300;
       }
 
-      const width = size.width + nudge;
+      const width = size.width * 1.2 + nudge;
 
 
       const maxIconsPerRow = 50; // maximum number of icons we want in one row
