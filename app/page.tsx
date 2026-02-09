@@ -122,7 +122,7 @@ export default function Home() {
             <button
               className="
               relative text-sm text-slate-400 hover:text-slate-600 focus:outline-none
-              flex items-center gap-1 cursor-pointer pl-2 pb-5
+              flex items-center gap-1 cursor-pointer pl-4 pb-5
                lg:hidden "
               onClick={() => setSidebarVisible(!sidebarVisible)}
             >
@@ -135,7 +135,7 @@ export default function Home() {
 
 
             <nav
-              className={`sidebar   min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
+              className={`sidebar  pb-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
                 landscape:translate-x-0  portrait:hidden
               transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} 
@@ -150,7 +150,7 @@ export default function Home() {
                 {sections.map((s) => (
                   <li
                     key={s.id}
-                    className={`mb-3 content-ltr  cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
+                    className={`pb-3 content-ltr  cursor-pointer ${activeSection === s.id ? "font-semibold text-blue-600" : "text-gray-500"}`}
                     onClick={() => scrollTo(s.id)}
                   >
                     {s.label}
@@ -166,7 +166,7 @@ export default function Home() {
 
 
         <main
-          className={`flex-1 pl-10 min-w-0 max-w-full  text-gray-700 
+          className={`flex-1 pl-12 min-w-0 max-w-full  text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
             portrait:ml-0 portrait:overflow-x-hidden lg:pl-52`}
