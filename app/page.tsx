@@ -117,7 +117,7 @@ export default function Home() {
 
       <div className="flex mt-5">
         {!showLandscapeWarning && (
-          <div className="fixed left-5 z-50 portrait:hidden ">
+          <div className="fixed z-50 portrait:hidden ">
 
             <button
               className="
