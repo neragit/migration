@@ -192,10 +192,10 @@ export default function Home() {
 
 
         <main
-          className={`flex-1 min-w-0  text-gray-700 
+          className={`flex-1  min-w-0  text-gray-700 
             transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-5"}
-            portrait:pl-10  lg:pl-52
+            portrait:px-7  lg:pl-52
             max-w-full `}
           id="start"
         >
