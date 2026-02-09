@@ -71,7 +71,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
       .range([innerHeight, 0]);
 
-    
+
 
 
     const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
@@ -79,7 +79,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-innerHeight).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
@@ -339,7 +339,9 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `${width * 0.75}px`, height: "auto" }}>
+        className={`w-full max-w-[${width}px] min-w-80 h-auto`}
+      >
+
         <svg
           ref={svgRef}
           width="100%"
