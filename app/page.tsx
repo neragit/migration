@@ -169,7 +169,7 @@ export default function Home() {
           className={`flex-1 pl-10 pr-5 min-w-0 text-gray-700 max-w-full 
             transition-all duration-100
             ${sidebarVisible ? "ml-52" : "ml-5"}
-            portrait:ml-0 portrait:overflow-x-hidden lg:ml-52`}
+            portrait:ml-0  lg:ml-52`}
             id="start"
         >
 
@@ -363,7 +363,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="choropleth-cro">
+          <section className="section mb-10" id="choropleth-cro">
 
             <h2>Migranti prema podrijetlu</h2>
 
