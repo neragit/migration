@@ -18,7 +18,8 @@ export default function PersonBars() {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(ref);
 
-  let hasAnimated = false;
+const hasAnimated = useRef(false);
+
 
   useEffect(() => {
     if (!size || !ref.current) return;
@@ -32,8 +33,8 @@ export default function PersonBars() {
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting && !hasAnimated) {
-          hasAnimated = true;
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
           drawChart();
         }
       },
