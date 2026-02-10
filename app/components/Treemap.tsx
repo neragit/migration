@@ -229,7 +229,7 @@ const Treemap: React.FC = () => {
         g.selectAll('use')
           .transition()
           .duration(200)
-          .style('color', '#1DE9B6')      // temporary hover stroke
+          .style('color', '#00BFFF')      // temporary hover stroke
           .style('stroke-width', 7);      // optional thicker outline
       })
         .on('mouseleave', function () {
@@ -239,10 +239,6 @@ const Treemap: React.FC = () => {
             .style('color', 'white')        // revert stroke to original
             .style('stroke-width', 7);  // revert width
         });
-
-
-
-
 
       // Calculate the width of the current cell
       const cellWidth = d.x1 - d.x0;
@@ -394,7 +390,7 @@ const Treemap: React.FC = () => {
           className="tooltip"
           style={{
             position: "fixed",
-            left: Math.min(tooltip.x, window.innerWidth - 300),
+            left: Math.min(tooltip.x, window.innerWidth - 260),
             top: Math.min(tooltip.y, window.innerHeight - 70),
             opacity: tooltip.opacity,
             transition: "opacity 0.2s ease",
