@@ -387,7 +387,30 @@ export default function Home() {
           </section>
 
 
+          <section className="section mb-10" id="choropleth-cro">
 
+            <h2>Migranti prema podrijetlu</h2>
+
+            <p className="paragraph">
+              2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://ec.europa.eu/eurostat/web/migration-asylum/international-migration-citizenship/database"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Eurostat
+                </a>
+              </span>
+
+            </p>
+
+            <div >
+              < ChoroplethCro />
+            </div>
+
+          </section>
 
 
 
@@ -445,7 +468,30 @@ export default function Home() {
 
           </section>
 
+          <section className="section " id="choropleth-hr">
 
+            <h2>A kamo idu Hrvati?</h2>
+
+            <p className="paragraph">
+              U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/2025/hr/97255"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
+
+            </p>
+
+            <div >
+              < ChoroplethHr />
+            </div>
+
+          </section>
 
 
 
