@@ -152,7 +152,7 @@ const CroatiaPie: React.FC = () => {
                   <div>
                     <b>{d.data.group}</b>
                     <br />
-                    {d.data.count.toLocaleString()} osoba
+                    {d.data.count.toLocaleString('fr-FR')} osoba
                   </div>
                 ),
               });
@@ -275,8 +275,8 @@ const CroatiaPie: React.FC = () => {
             left: tooltip.x,
             background: "#fff",
             padding: "6px 8px",
-            border: "1px solid #ccc",
-            borderRadius: 4,
+
+
             fontSize: 12,
             pointerEvents: "none",
             opacity: 0.95,
