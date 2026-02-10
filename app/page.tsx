@@ -307,13 +307,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="map">
 
-            <h2>Odobreni zahtjevi po županijama</h2>
-
-            <CroatiaMap />
-
-          </section>
 
 
           

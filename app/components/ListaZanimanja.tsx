@@ -185,7 +185,7 @@ export default function OccupationCountyMap() {
                     w-96
                     min-w-60
 
-                    max-h-[80vh]
+                    max-h-[70vh]
                     lg:max-h-[60vh]
                     overflow-y-auto
                 "
