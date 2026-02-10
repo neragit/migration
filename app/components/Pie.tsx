@@ -84,7 +84,7 @@ const CroatiaPie: React.FC = () => {
       )
     );
 
-    let iconSize = size.vw < 600 ? 8 : 4;
+    let iconSize = size.vw < 400 ? 8 : 4;
 
 
     const g = svg
