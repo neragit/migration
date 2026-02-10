@@ -267,9 +267,7 @@ export default function Home() {
           </section>
 
 
-
-
-
+          
           <section className="section mb-20" id="hzz">
 
             <h2>HZZ – Radne dozvole i test tržišta rada</h2>
@@ -315,41 +313,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section " id="pie">
-
-            <h2>Stanovništvo Hrvatske</h2>
-
-            <p className="paragraph">
-              Strani radnici čine otprilike 4,5% ukupnog stanovništva Hrvatske u 2025. godini.
-              *U siječnju 2026. nije još dostupna precizna procjena ukupnog stanovništa za 2025. pa je u ovom slučaju korištena procjena ukupnog stanovništva iz prethodne godine.
-
-              <span> Izvori:{" "}
-                <a
-                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-                {" "}i{" "}
-                <a
-                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  MUP
-                </a>
-              </span>
-
-            </p>
-
-            <div>
-              <Pie />
-            </div>
-
-          </section>
-
-
+          
 
 
           <section className="section mb-10" id="choropleth-cro">
