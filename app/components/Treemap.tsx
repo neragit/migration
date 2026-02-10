@@ -382,7 +382,7 @@ const Treemap: React.FC = () => {
           className="tooltip"
           style={{
             position: "fixed",
-            left: Math.min(tooltip.x, window.innerWidth - 150),
+            left: Math.min(tooltip.x, window.innerWidth - 200),
             top: Math.min(tooltip.y, window.innerHeight - 150),
             opacity: tooltip.opacity,
             transition: "opacity 0.2s ease",
