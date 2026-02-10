@@ -359,7 +359,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto" }}>
+        className={`w-full max-w-[${width}px] portrait:max-w-[90vw] min-w-[450px] h-auto`}>
         <svg
           ref={svgRef}
           width="100%"
