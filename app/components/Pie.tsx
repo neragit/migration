@@ -76,7 +76,7 @@ const CroatiaPie: React.FC = () => {
     const perIcon = 6000;
 
     let radius = Math.max(140, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
-    let iconSize = size.vw < 600 ? 6 : 4;
+    let iconSize = size.vw < 600 ? 8 : 4;
 
 
     const g = svg
@@ -259,7 +259,7 @@ const CroatiaPie: React.FC = () => {
       <div className="pt-50 sm:pt-0" >
         <svg
           ref={svgRef}
-          className="w-full"
+          className="w-full max-h-[80vh]"
           style={{ overflow: "visible" }}
         />
 
