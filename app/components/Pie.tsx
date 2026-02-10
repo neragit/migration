@@ -75,7 +75,7 @@ const CroatiaPie: React.FC = () => {
 
     const perIcon = 6000;
 
-    let radius = Math.max(120, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
+    let radius = Math.max(140, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
     let iconSize = size.vw < 600 ? 6 : 4;
 
 
@@ -256,36 +256,34 @@ const CroatiaPie: React.FC = () => {
 
       </div>
 
+      <div className="pt-50 sm:pt-0" >
+        <svg
+          ref={svgRef}
+          className="w-full"
+          style={{ overflow: "visible" }}
+        />
 
+        {tooltip && (
+          <div
+            style={{
+              position: "fixed",
+              top: tooltip.y,
+              left: tooltip.x,
+              background: "#fff",
+              padding: "6px 8px",
+              fontSize: 12,
+              pointerEvents: "none",
+              opacity: 0.95,
+              zIndex: 1000,
+              userSelect: "none",
+            }}
+          >
+            {tooltip.content}
+          </div>
+        )}
 
-      <svg
-        ref={svgRef}
-        className="w-full pt-10 lg:pt-0"
-        style={{ overflow: "visible" }}
-      />
+      </div>
 
-
-
-      {tooltip && (
-        <div
-          style={{
-            position: "fixed",
-            top: tooltip.y,
-            left: tooltip.x,
-            background: "#fff",
-            padding: "6px 8px",
-
-
-            fontSize: 12,
-            pointerEvents: "none",
-            opacity: 0.95,
-            zIndex: 1000,
-            userSelect: "none",
-          }}
-        >
-          {tooltip.content}
-        </div>
-      )}
     </div>
   );
 };
