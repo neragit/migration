@@ -47,14 +47,14 @@ export default function PersonBars() {
     const gap = width / 500;
     const iconW = Math.min(10, width / (2 * maxIconsPerRow));
     const iconH = iconW * 2.5;
-    const viewportCenterX = window.innerWidth / 2 + nudge;
+    let viewportCenterX = window.innerWidth / 2 + nudge;
     const containerCenterX = parentRect.left + parentRect.width / 2;
 
     let offsetX = viewportCenterX - containerCenterX;
     let centerX = width / 2;
 
-      if (smallScreen && !sidebarVisible) {
-      offsetX = size.width / 2;
+      if (smallScreen) {
+      viewportCenterX = size.width / 2;
     }
 
     const svg = d3.select(svgNode);

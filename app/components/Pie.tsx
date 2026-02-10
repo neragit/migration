@@ -67,8 +67,8 @@ const CroatiaPie: React.FC = () => {
 
     let offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
 
-    if (smallScreen && !sidebarVisible) {
-      offsetX = size.width / 2;
+    if (smallScreen) {
+      viewportCenterX = size.width / 2;
     }
 
     let width = size.width;
