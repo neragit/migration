@@ -256,10 +256,10 @@ const CroatiaPie: React.FC = () => {
 
       </div>
 
-      <div className="pt-50 sm:pt-0" >
+      <div className="pt-20 sm:pt-0 max-h-[70vh]" >
         <svg
           ref={svgRef}
-          className="w-full max-h-[80vh]"
+          className="w-full "
           style={{ overflow: "visible" }}
         />
 
