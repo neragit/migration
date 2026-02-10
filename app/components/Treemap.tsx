@@ -394,7 +394,7 @@ const Treemap: React.FC = () => {
             top: Math.min(tooltip.y, window.innerHeight - 70),
             opacity: tooltip.opacity,
             transition: "opacity 0.2s ease",
-            overflow: "hidden"
+            overflow: "clip"
           }}
         >
           {tooltip.content}

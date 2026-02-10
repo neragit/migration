@@ -126,7 +126,7 @@ export default function Home() {
               loop={true}
             />
           </div>
-          <p className="mt-4 text-gray-800 text-center">
+          <p className="mt-2 text-gray-800 text-center">
             Omogućite rotaciju ekrana
           </p>
 
