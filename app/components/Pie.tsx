@@ -264,7 +264,7 @@ const CroatiaPie: React.FC = () => {
 
       </div>
 
-      <div className="portrait:pt-20 pt-0 pr-10  " >
+      <div className="portrait:pt-20 pt-0 portrait:pr-5  " >
         <svg
           ref={svgRef}
           className="w-full "
