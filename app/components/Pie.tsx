@@ -59,9 +59,13 @@ const CroatiaPie: React.FC = () => {
 
     let sidebarVisible = sidebar && sidebar.getBoundingClientRect().width > 0;
 
-    let viewportCenterX = size.vw / 2;
     let smallScreen = size.vw < 1000;
 
+    let viewportCenterX = size.vw / 2;
+
+    if (smallScreen && !sidebarVisible) {
+      viewportCenterX = size.width / 2;
+    }
 
     if (smallScreen && sidebarVisible) {
       viewportCenterX += (sidebar?.offsetWidth || 0) / 2; // nudge right
