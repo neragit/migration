@@ -275,8 +275,8 @@ export default function CroatiaMap() {
           className="tooltip"
           style={{
             position: "fixed",
-            top: tooltip.y,
-            left: tooltip.x,
+            left: Math.min(tooltip.x, window.innerWidth - 150),
+            top: Math.min(tooltip.y, window.innerHeight - 150),
             opacity: 0.90,
             transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out",
           }}
@@ -284,6 +284,8 @@ export default function CroatiaMap() {
           {tooltip.content}
         </div>
       )}
+
+      
     </div>
   );
 }
