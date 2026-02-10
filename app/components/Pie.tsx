@@ -73,11 +73,9 @@ const CroatiaPie: React.FC = () => {
     let height = size.width * 0.5;
 
 
-
-
     const perIcon = 6000;
 
-    let radius = Math.max(100, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
+    let radius = Math.max(120, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
     let iconSize = size.vw < 600 ? 6 : 4;
 
 
