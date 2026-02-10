@@ -197,7 +197,77 @@ export default function Home() {
           id="start"
         >
 
+          <section className=" section !pb-5  flex gap-5 text-xs text-slate-400  " >
+            <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
+            <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
+          </section>
 
+          <section className="section " >
+
+            <h1 className="mb-8 text-4xl sm:text-5xl font-bold leading-tight">
+              Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
+            </h1>
+
+            <p className="paragraph mb-5">
+              Ova je stranica nastala iz jednostavne znatiželje:
+              <b> što nam govore podaci?</b>
+            </p>
+
+            <p className="paragraph">
+              Cilj je pružiti uvid u podatke vezano uz migracije na jednom mjestu, bez
+              dramatičnih naslova, subjektivnih interpretacija i reklama.
+
+              Prikazani su najnoviji dostupni podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u siječnju 2026.
+
+            </p>
+
+          </section>
+
+          <section className="section mb-20" id="dorling">
+
+            <h2>Tko odlazi i kamo ide?</h2>
+
+            <p className="paragraph ">
+              Velike zemlje poput Indije i Kine, imaju i velik broj emigranata.
+              Osim ekonomskih razloga, do migracija često dolazi zbog ratova i konflikata, primjerice u Siriji i Ukrajini.
+              Ljudi najčešće odlaze u Sjedinjene Američke Države.
+            </p>
+
+            <span className="paragraph">
+              Veći kvadrat predstavlja <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
+            </span>
+
+            <div>
+              < DorlingWorld />
+            </div>
+
+
+            <ToggleDetails buttonText="Detalji">
+              <p className=" max-w-2xl xl:max-w-[950px] text-sm text-[#555]">
+                Detaljniji pregled migracija u svijetu:{" "}
+                <a href="https://worldmigrationreport.iom.int/msite/wmr-2024-interactive/" target="_blank" rel="noopener noreferrer" > IOM World Migration Report 2024 </a>
+
+                <br /><br />Izvor ukupnog broja stanovnika (najnoviji dostupni podaci 2024):{" "}
+                <a href="https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Population" target="_blank" rel="noopener noreferrer">UN World Population Prospects</a>
+
+                <br /><br />Broj imigranata predstavlja ukupan broj zabilježenih useljenika neke zemlje, a broj emigranata ukupan broj iseljenika (<em>migrant stock</em>).
+                Izvor broja migranata (najnoviji dostupni podaci 2023):{" "}
+                <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" rel="noopener noreferrer">UN International Migrant Stock</a>
+
+                <br /><br />GNI (bruto nacionalni dohodak) pokazuje ukupni dohodak koji stanovnici zemlje ostvaruju u određenom razdoblju, uključujući plaće, dobit poduzeća, kamate i prihode iz inozemstva.
+                GNI per capita dobije se dijeljenjem s brojem stanovnika i često se koristi za prikaz životnog standarda i razvijenosti zemlje.
+                <br /><br />Izvor GNI per capita i očekivane dobi (najnoviji dostupni podaci 2023):{" "}
+                <a href="https://hdr.undp.org/data-center/human-development-index#/indicies/HDI" target="_blank" rel="noopener noreferrer">UNDP Human Development Index</a>
+
+                <br /><br />Izvor glavne religije (najnoviji dostupni podaci 2020):{" "}
+                <a href="https://www.pewresearch.org/religion-datasets/" target="_blank" rel="noopener noreferrer">Pew Research Religion Datasets</a>
+              </p>
+            </ToggleDetails>
+
+          </section>
+
+
+          
 
 
 
