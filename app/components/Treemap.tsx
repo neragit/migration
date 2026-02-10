@@ -227,6 +227,24 @@ const Treemap: React.FC = () => {
       // Select the 'g' element with class 'icons' inside the current node
       const g = d3.select(this).select<SVGGElement>('g.icons');
 
+      g.on('mouseenter', function () {
+        d3.select(this)
+          .transition()
+          .duration(200)
+          .style('filter', `
+      drop-shadow(0 0 0 #4292c6)
+      drop-shadow(0 0 0 #4292c6)
+      drop-shadow(0 0 0 #4292c6)
+    `);
+      })
+        .on('mouseleave', function () {
+          d3.select(this)
+            .transition()
+            .duration(200)
+            .style('filter', 'none');
+        });
+
+
 
       // Calculate the width of the current cell
       const cellWidth = d.x1 - d.x0;
@@ -382,7 +400,7 @@ const Treemap: React.FC = () => {
           className="tooltip"
           style={{
             position: "fixed",
-            left: Math.min(tooltip.x, window.innerWidth - 250),
+            left: Math.min(tooltip.x, window.innerWidth - 300),
             top: Math.min(tooltip.y, window.innerHeight - 70),
             opacity: tooltip.opacity,
             transition: "opacity 0.2s ease",
