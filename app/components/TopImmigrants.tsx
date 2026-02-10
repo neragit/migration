@@ -306,7 +306,7 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
     <>
       <div
         ref={containerRef}
-        className={`w-full max-w-[${width}px] portrait:max-w-[90vw] min-w-[450px] h-auto`}>
+        className={`w-full max-w-[${width}px] min-w-[450px] portrait:max-w-[90vw] portrait portrait:min-w-0 h-auto`}>
         <svg
           ref={svgRef}
           width="100%"
