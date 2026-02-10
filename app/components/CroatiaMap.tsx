@@ -96,7 +96,7 @@ export default function CroatiaMap() {
     });
   }, []);
 
- 
+
   useEffect(() => {
     d3.json("/maps/zupanije.topojson").then((topology: any) => {
       topoRef.current = topojson.feature(
@@ -193,7 +193,7 @@ export default function CroatiaMap() {
     draw();
   }, [year, data, size]);
 
-  
+
   useEffect(() => {
     let lastScrollTime = 0;
     const cooldown = 50; // ms
@@ -262,10 +262,12 @@ export default function CroatiaMap() {
         </div>
       </div>
 
-      <svg
-        ref={svgRef}
-        className="block w-full h-auto pl-5 xl:pl-0 "
-      />
+      <div className="pl-10 xl:pl-0">
+        <svg
+          ref={svgRef}
+          className="block w-full h-auto"
+        />
+      </div>
 
 
       {tooltip && (
