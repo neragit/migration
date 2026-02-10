@@ -89,6 +89,13 @@ export default function DorlingWorld() {
 
   const [animateOnScroll, setAnimateOnScroll] = useState(false);
 
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    content: React.ReactNode;
+  } | null>(null);
+
+
   useEffect(() => {
     const handleScroll = () => {
       setAnimateOnScroll(true); // trigger once
@@ -311,93 +318,47 @@ export default function DorlingWorld() {
       .attr("fill-opacity", 0)
       .attr("transform", "scale(0.1)")
 
-
       .on("mouseover", (event, d) => {
-        d3.select(event.currentTarget)
-          .attr("stroke", "#ff00ff")
-
-
-
-        tooltip.transition().duration(200).style("opacity", 0.90);
-        const religionMap = {
-          "Christians": "Kršćanstvo",
-          "Muslims": "Islam",
-          "Unaffiliated": "Neopredjeljeni",
-          "Buddhists": "Budizam",
-          "Hindus": "Hinduizam",
-          "Jews": "Judaizam",
-          "Other_religions": "Ostali"
-        };
-
-        const major1Label =
-          d.major1 && religionMap[d.major1 as keyof typeof religionMap]
-            ? religionMap[d.major1 as keyof typeof religionMap]
-            : d.major1 ?? "";
-
-        let religionHtml = `${major1Label} ${d.major1_perc != null ? Math.round(d.major1_perc * 100) + "%" : ""
-          }`;
-
-        if (d.major2 && d.major2.trim() !== "") {
-          const major2Label =
-            religionMap[d.major2 as keyof typeof religionMap] ?? d.major2;
-
-          religionHtml += ` ${major2Label} ${d.major2_perc != null ? Math.round(d.major2_perc * 100) + "%" : ""
-            }`;
-        }
-
-
-        const migLabel =
-          mode === "destination" ? "Broj imigranata" : "Broj emigranata";
-
-        function formatMoney(value?: number | null): string {
-          if (typeof value !== "number" || !Number.isFinite(value)) return "";
-
-          if (value >= 1_000_000_000)
-            return `${(value / 1_000_000_000).toFixed(1)} mlrd.`;
-
-          if (value >= 1_000_000)
-            return `${(value / 1_000_000).toFixed(1)} mil.`;
-
-          return value.toString();
-        }
-
-
-        tooltip.html(`
-            <strong>${d.country_hr}</strong><br/>
-            Ukupno stanovnika: ${formatMoney(d.total_pop)} (2024)<br/>
-            ${migLabel}: ${formatMoney(d.total_mig)}<br/>
-            ${typeof d.gni === "number"
-            ? `GNI per capita: ${new Intl.NumberFormat("fr-FR").format(
-              Math.round(d.gni)
-            )} USD<br/>`
-            : ""}
-
-            ${d.remit !== null ? `Doznake: ${formatMoney(d.remit)} USD<br/>` : ""}
-            ${typeof d.life === "number"
-            ? `Očekivana dob: ${Math.round(d.life)} godina<br/>`
-            : ""}
-            ${typeof d.major1_perc === "number" ? `Glavna religija: ${religionHtml}` : ""}
-          `)
-
-          .style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY + 10) + "px");
-
+        const containerRect = containerRef.current!.getBoundingClientRect();
+        d3.select(event.currentTarget).attr("stroke", "#ff00ff");
+        const migLabel = mode === "destination" ? "Broj imigranata" : "Broj emigranata";
+        const religionMap = { "Christians": "Kršćanstvo", "Muslims": "Islam", "Unaffiliated": "Neopredjeljeni", "Buddhists": "Budizam", "Hindus": "Hinduizam", "Jews": "Judaizam", "Other_religions": "Ostali" };
+        let religionHtml = d.major1 ? (religionMap[d.major1 as keyof typeof religionMap] ?? d.major1) : "";
+        if (d.major1_perc != null) religionHtml += ` ${Math.round(d.major1_perc * 100)}%`;
+        if (d.major2) religionHtml += ` ${(religionMap[d.major2 as keyof typeof religionMap] ?? d.major2)} ${d.major2_perc != null ? Math.round(d.major2_perc * 100) + "%" : ""}`;
+        function formatMoney(value?: number | null) { if (!value) return ""; if (value >= 1e9) return (value / 1e9).toFixed(1) + " mlrd."; if (value >= 1e6) return (value / 1e6).toFixed(1) + " mil."; return value.toString(); }
+        setTooltip({
+          x: event.clientX - containerRect.left + 10,
+          y: event.clientY - containerRect.top + 10,
+          content: (
+            <div>
+              <strong>{d.country_hr}</strong><br />
+              Ukupno stanovnika: {formatMoney(d.total_pop)} (2024)<br />
+              {migLabel}: {formatMoney(d.total_mig)}<br />
+              {d.gni != null ? `GNI per capita: ${Math.round(d.gni)} USD` : ""}<br />
+              {d.remit != null ? `Doznake: ${formatMoney(d.remit)} USD` : ""}<br />
+              {d.life != null ? `Očekivana dob: ${Math.round(d.life)} godina` : ""}<br />
+              {d.major1_perc != null ? `Glavna religija: ${religionHtml}` : ""}
+            </div>
+          )
+        });
       })
-
-      .on("mousemove", (event) => {
-
-        const [x, y] = d3.pointer(event, containerRef.current); // relative to container
-        tooltip
-
-          .style("left", x + 10 + "px")
-          .style("top", y + 10 + "px");
+      .on("mousemove", event => {
+        const containerRect = containerRef.current!.getBoundingClientRect();
+        setTooltip(prev => prev
+          ? {
+            ...prev,
+            x: event.clientX - containerRect.left + 10,
+            y: event.clientY - containerRect.top + 10
+          }
+          : null
+        );
       })
-
-
       .on("mouseout", (event) => {
-        tooltip.transition().duration(200).style("opacity", 0);
         d3.select(event.currentTarget).attr("stroke", "#fde0dd");
+        setTooltip(null);
       });
+
 
     if (animateOnScroll && !animationDoneRef.current) {
       rects
@@ -458,6 +419,8 @@ export default function DorlingWorld() {
 
       </div>
 
+
+
       <div
         ref={containerRef}
         className="relative w-full flex justify-center  
@@ -466,12 +429,23 @@ export default function DorlingWorld() {
       >
         <svg ref={svgRef} />
 
-        <div ref={tooltipRef} className="tooltip"></div>
+
+        {tooltip && (
+          <div
+            className="tooltip"
+            style={{
+              position: "absolute",
+              left: tooltip.x,
+              top: tooltip.y,
+              whiteSpace: "nowrap",
+              opacity: "1",
+            }}
+          >
+            {tooltip.content}
+          </div>
+        )}
+
       </div>
-
-
     </div>
-
-
   );
 }
