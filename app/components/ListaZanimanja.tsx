@@ -259,11 +259,8 @@ export default function OccupationCountyMap() {
                 w-full
                 flex-1 min-w-0
 
-
-                
-                md:min-w-[300px]
-                md:max-h-[80vh]
-
+                md:min-w-70
+                md:max-h-[60vh]
                 "
             />
 
