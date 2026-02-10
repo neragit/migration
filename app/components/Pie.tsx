@@ -72,11 +72,13 @@ const CroatiaPie: React.FC = () => {
     let width = size.width;
     let height = size.width * 0.5;
 
-    let iconSize = Math.max(4, Math.min(height * (0.03 + 0.02 * Math.pow(size.width / 1200, 0.6)), 12));
+
+
 
     const perIcon = 6000;
 
     let radius = Math.max(100, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
+    let iconSize = size.vw < 600 ? 6 : 4;
 
 
     const g = svg
