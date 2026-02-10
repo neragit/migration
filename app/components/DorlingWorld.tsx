@@ -435,8 +435,14 @@ export default function DorlingWorld() {
             className="tooltip"
             style={{
               position: "absolute",
-              left: tooltip.x,
-              top: tooltip.y,
+              left: Math.min(
+                tooltip.x,
+                (containerRef.current?.clientWidth ?? 0) - 210 // container width - tooltip width
+              ),
+              top: Math.min(
+                tooltip.y,
+                (containerRef.current?.clientHeight ?? 0) - 150 // container height - tooltip height estimate
+              ),
               whiteSpace: "nowrap",
               opacity: "1",
             }}
