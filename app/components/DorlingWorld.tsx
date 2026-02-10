@@ -460,8 +460,8 @@ export default function DorlingWorld() {
                 tooltip.y,
                 (containerRef.current?.clientHeight ?? 0) - 150
               ),
-              opacity: tooltip.opacity, // use the state
-              transition: "opacity 0.2s ease", // smooth fade in/out
+              opacity: tooltip.opacity,
+              transition: "opacity 0.2s ease",
             }}
           >
             {tooltip.content}

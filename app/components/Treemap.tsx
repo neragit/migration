@@ -19,6 +19,7 @@ const Treemap: React.FC = () => {
     x: number;
     y: number;
     content: React.ReactNode;
+    opacity: number;
   } | null>(null);
 
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
@@ -319,6 +320,7 @@ const Treemap: React.FC = () => {
             Bruto plaća: {hovered.data.placa.toFixed(2)} EUR
           </div>
         ),
+        opacity: 0.9,
       });
 
     } else {
@@ -333,11 +335,11 @@ const Treemap: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width:  "100%", maxWidth: "800px" }}
+      style={{ position: "relative", width: "100%", maxWidth: "800px" }}
       onMouseMove={handleMouseMove}
       onMouseLeave={() => setTooltip(null)}
     >
-      
+
       <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "50px" }}>
         <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
           {years.map(y => (
@@ -380,14 +382,16 @@ const Treemap: React.FC = () => {
           className="tooltip"
           style={{
             position: "fixed",
-            top: tooltip.y,
-            left: tooltip.x,
-            opacity: "0.90",
+            left: Math.min(tooltip.x, window.innerWidth - 150),
+            top: Math.min(tooltip.y, window.innerHeight - 150),
+            opacity: tooltip.opacity,
+            transition: "opacity 0.2s ease",
           }}
         >
           {tooltip.content}
         </div>
       )}
+
     </div>
   );
 };
