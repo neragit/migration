@@ -386,7 +386,7 @@ export default function DorlingWorld() {
 
       .on("mousemove", (event) => {
 
-        const [x, y] = d3.pointer(event); // relative to the SVG
+        const [x, y] = d3.pointer(event, containerRef.current); // relative to container
         tooltip
 
           .style("left", x + 10 + "px")
@@ -460,7 +460,9 @@ export default function DorlingWorld() {
 
       <div
         ref={containerRef}
-        className="w-full flex justify-center  mt-20 mb-10 md:mt-10 md:mb-0 "
+        className="relative w-full flex justify-center  
+        mt-20 md:mt-10
+        mb-10 md:mb-0 "
       >
         <svg ref={svgRef} />
 
