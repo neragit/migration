@@ -65,12 +65,14 @@ const CroatiaPie: React.FC = () => {
       viewportCenterX += (sidebar?.offsetWidth || 0) / 2; // nudge right
     }
 
-    let offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
-
-    if (smallScreen) {
+      if (smallScreen) {
       viewportCenterX = size.width / 2;
     }
 
+
+    let offsetX = viewportCenterX - (parentRect.left + parentRect.width / 2);
+
+  
     let width = size.width;
     let height = size.width * 0.5;
 
