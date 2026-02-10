@@ -144,18 +144,15 @@ const Treemap: React.FC = () => {
             "d",
             "M17.877,187.566c-9.675,-3.049 -16.698,-12.099 -16.698,-22.775l0,-79.586c0,-13.176 10.697,-23.874 23.874,-23.874l47.748,0c13.176,0 23.874,10.697 23.874,23.874l0,79.586c0,10.19 -6.398,18.898 -15.394,22.321l0,79.215c0,8.748 -7.102,15.851 -15.851,15.851l-31.702,0c-8.748,0 -15.851,-7.102 -15.851,-15.851l0,-78.762Z"
           )
-          .attr("stroke", "white")
-          .attr("stroke-width", 2.36)
-          .attr("color", "currentColor");
+          .attr("stroke", "currentColor")
+          .attr("stroke-width", 7);
 
-        // Head
         symbol.append("circle")
           .attr("cx", 48.927)
           .attr("cy", 25.12)
           .attr("r", 23.941)
-          .attr("stroke", "white")
-          .attr("stroke-width", 2.36)
-          .attr("color", "currentColor");
+          .attr("stroke", "currentColor")
+          .attr("stroke-width", 7);
       }
     };
 
@@ -228,21 +225,22 @@ const Treemap: React.FC = () => {
       const g = d3.select(this).select<SVGGElement>('g.icons');
 
       g.on('mouseenter', function () {
-        d3.select(this)
+
+        g.selectAll('use')
           .transition()
           .duration(200)
-          .style('filter', `
-      drop-shadow(0 0 0 #4292c6)
-      drop-shadow(0 0 0 #4292c6)
-      drop-shadow(0 0 0 #4292c6)
-    `);
+          .style('color', '#1DE9B6')      // temporary hover stroke
+          .style('stroke-width', 7);      // optional thicker outline
       })
         .on('mouseleave', function () {
-          d3.select(this)
+          g.selectAll('use')
             .transition()
             .duration(200)
-            .style('filter', 'none');
+            .style('color', 'white')        // revert stroke to original
+            .style('stroke-width', 7);  // revert width
         });
+
+
 
 
 
@@ -264,87 +262,82 @@ const Treemap: React.FC = () => {
       // Actual number of icons to display (cannot exceed maxIcons)
       const iconCount = Math.min(maxIcons, desiredIcons);
 
-      // Bind the icon data to 'use' elements (one per icon)
+
       const icons = g.selectAll<SVGUseElement, number>('use')
-        .data(d3.range(iconCount));
+        .data(d3.range(iconCount), i => i);
+
 
       const iconsEnter = icons.enter()
         .append('use')
         .attr('href', '#treemap-icon')
         .style('fill', color(d.data.placa))
-        .style('opacity', 1);
-
-
-
-      iconsEnter.merge(icons)
-        .attr('transform', (i) => {
+        .style('color', 'white')  // initial stroke
+        .style('opacity', 0)      // fade-in
+        .attr('transform', (i) => { // set final position immediately
           const row = Math.floor(i / cols);
           const col = i % cols;
 
           const cellKey = d.data.zanimanje;
+          if (!iconPositionsRef.current.has(cellKey)) iconPositionsRef.current.set(cellKey, []);
 
-          if (!iconPositionsRef.current.has(cellKey)) {
-            iconPositionsRef.current.set(cellKey, []);
-          }
           const positions = iconPositionsRef.current.get(cellKey)!;
-
-          // Generate jitter only if this position doesn't exist yet
           if (!positions[i]) {
-            positions[i] = {
-              jx: (Math.random() - 0.5) * 20,
-              jy: (Math.random() - 0.5) * 20
-            };
+            positions[i] = { jx: (Math.random() - 0.5) * 20, jy: (Math.random() - 0.5) * 20 };
           }
-
           const { jx, jy } = positions[i];
 
           return `translate(${col * (iconSize + padding) + jx}, ${row * (iconSize + padding) + jy}) scale(${iconSize / 200})`;
         });
 
+      iconsEnter
+        .on('mouseenter', (event, i) => {
+          const { data } = d; // the node data
+          setTooltip({
+            x: event.clientX + 10,
+            y: event.clientY + 10,
+            content: (
+              <div>
+                <b>{data.zanimanje}</b>
+                <br />
+                Broj radnika: {new Intl.NumberFormat('fr-FR').format(data.broj)}
+                <br />
+                Bruto plaća: {data.placa.toFixed(2)} EUR
+              </div>
+            ),
+            opacity: 0.9,
+          });
+        })
+        .on('mousemove', (event) => {
+          setTooltip(prev => prev ? { ...prev, x: event.clientX + 10, y: event.clientY + 10 } : null);
+        })
+        .on('mouseleave', () => setTooltip(null));
 
-      icons.transition() // Only existing icons, not iconsEnter
-        .duration(600) // Smooth transition duration
-        .style('fill', color(d.data.placa)); // Gradually update color
 
-      icons.exit().transition().duration(600).style('opacity', 0).remove();
+      // OLD icons (update)
+      icons
+        .style('opacity', 1)   // make sure they’re fully visible
+        .style('fill', color(d.data.placa));
+
+      // NEW icons (enter)
+      iconsEnter
+        .transition()
+        .duration(600)
+        .style('opacity', 1)
+        .style('fill', color(d.data.placa));
+
+
+      icons.exit()
+        .transition()
+        .duration(600)
+        .style('opacity', 0)
+        .remove();
+
     });
 
 
   }, [filteredData, dimensions]);
 
 
-
-  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const rect = svgRef.current?.getBoundingClientRect();
-    if (!rect) return;
-
-    const mx = event.clientX - rect.left;
-    const my = event.clientY - rect.top;
-
-    const hovered = rects.find(r => mx >= r.x0 && mx <= r.x1 && my >= r.y0 && my <= r.y1);
-
-    if (hovered) {
-
-
-      setTooltip({
-        x: event.clientX + 10,
-        y: event.clientY + 10,
-        content: (
-          <div>
-            <b>{hovered.data.zanimanje}</b>
-            <br />
-            Broj radnika: {new Intl.NumberFormat('fr-FR').format(hovered.data.broj)}
-            <br />
-            Bruto plaća: {hovered.data.placa.toFixed(2)} EUR
-          </div>
-        ),
-        opacity: 0.9,
-      });
-
-    } else {
-      setTooltip(null);
-    }
-  };
 
   const currentStats = statsPerYear[selectedYear] ?? { totalBroj: 0, avgPlaca: 0 };
 
@@ -353,13 +346,13 @@ const Treemap: React.FC = () => {
   return (
     <div
       ref={containerRef}
-      style={{ position: "relative", width: "100%", maxWidth: "800px" }}
-      onMouseMove={handleMouseMove}
+      style={{ position: "relative", width: "100%", maxWidth: "800px", overflow: "visible" }}
+
       onMouseLeave={() => setTooltip(null)}
     >
 
-      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "50px" }}>
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" }}>
+      <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "50px", overflow: "visible" }}>
+        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", overflow: "visible" }}>
           {years.map(y => (
             <button
               key={y}
@@ -371,6 +364,7 @@ const Treemap: React.FC = () => {
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer",
+
               }}
             >
               {y}
