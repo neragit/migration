@@ -27,9 +27,6 @@ body {
   padding: 0;
   overflow-x: hidden;
   font-family: 'Mukta', sans-serif;
-
-  padding-right: env(safe-area-inset-right);
-
 }
 
 
