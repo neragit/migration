@@ -267,7 +267,10 @@ export default function Home() {
           </section>
 
 
-          
+
+
+
+
           <section className="section mb-20" id="hzz">
 
             <h2>HZZ – Radne dozvole i test tržišta rada</h2>
@@ -344,58 +347,7 @@ export default function Home() {
 
 
 
-          <section className="section " id="mup">
-
-            <h2>Tko radi i boravi u Hrvatskoj?</h2>
-
-            <p className="paragraph">
-              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. bilo podjednako osoba iz BiH i Nepala.
-              Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
-              U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina.
-
-              <span> Izvor:{" "}
-                <a
-                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  MUP
-                </a>
-              </span>
-
-            </p>
-
-            <div>
-              <Mup />
-            </div>
-
-          </section>
-
-          <section className="section mb-20" id="bars">
-
-            <h2>Migracije Hrvata</h2>
-
-            <p className="paragraph">
-              Najviše Hrvata odlazi 2022. nakon čega se broj smanjuje.
-              Otprilike 10 tisuća Hrvata svake godine dolazi u Hrvatsku – ovaj trend blago raste.
-
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
-
-            </p>
-
-            <div>
-              <PersonBars />
-            </div>
-
-          </section>
+          
 
           <section className="section " id="choropleth-hr">
 
