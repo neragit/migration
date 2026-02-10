@@ -267,11 +267,50 @@ export default function Home() {
           </section>
 
 
+          <section className="section " id="migration">
+
+            <h2>
+              U Hrvatskoj se mijenjaju trendovi
+            </h2>
+
+            <p className="paragraph">
+              Od 2022. godine Hrvatska bilježi više useljenika nego iseljenika.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
+            </p>
+
+            <MainChart />
+
+          </section>
 
 
 
+          <section className="section mb-20" id="hzz">
 
+            <h2>HZZ – Radne dozvole i test tržišta rada</h2>
+            <p className="paragraph mb-10">
+              2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
+              Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
+            </p>
+            <a className="inline-block mb-8 !text-2xl "
+              href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Iznimke za koje test <b className="text-green-800">nije potreban</b>
+            </a>
 
+            <ListaZanimanja />
+
+          </section>
 
 
           <section className="section mb-20" id="treemap">
@@ -290,30 +329,59 @@ export default function Home() {
           </section>
 
 
-       
+          <section className="section " id="map">
+
+            <h2>Odobreni zahtjevi po županijama</h2>
+
+            <CroatiaMap />
+
+          </section>
 
 
-          <section className="section mb-10" id="choropleth-cro">
+          <section className="section " id="pie">
 
-            <h2>Migranti prema podrijetlu</h2>
+            <h2>Stanovništvo Hrvatske</h2>
 
             <p className="paragraph">
-              2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
+              Strani radnici čine otprilike 4,5% ukupnog stanovništva Hrvatske u 2025. godini.
+              *U siječnju 2026. nije još dostupna precizna procjena ukupnog stanovništa za 2025. pa je u ovom slučaju korištena procjena ukupnog stanovništva iz prethodne godine.
 
-              <span> Izvor:{" "}
+              <span> Izvori:{" "}
                 <a
-                  href="https://ec.europa.eu/eurostat/web/migration-asylum/international-migration-citizenship/database"
+                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Eurostat
+                  DZS
+                </a>
+                {" "}i{" "}
+                <a
+                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  MUP
                 </a>
               </span>
 
             </p>
 
-            <div >
-              < ChoroplethCro />
+            <div>
+              <Pie />
+            </div>
+
+          </section>
+
+          <section className="section mb-20" id="top5">
+
+            <h2>Odakle dolazi najviše migranata?</h2>
+
+            <p className="paragraph">
+              Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
+            </p>
+
+            <div>
+              <TopImmigrants />
             </div>
 
           </section>
@@ -321,18 +389,47 @@ export default function Home() {
 
 
 
-          
 
-          <section className="section " id="choropleth-hr">
 
-            <h2>A kamo idu Hrvati?</h2>
+
+          <section className="section " id="mup">
+
+            <h2>Tko radi i boravi u Hrvatskoj?</h2>
 
             <p className="paragraph">
-              U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.
+              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. bilo podjednako osoba iz BiH i Nepala.
+              Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
+              U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina.
 
               <span> Izvor:{" "}
                 <a
-                  href="https://podaci.dzs.hr/2025/hr/97255"
+                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  MUP
+                </a>
+              </span>
+
+            </p>
+
+            <div>
+              <Mup />
+            </div>
+
+          </section>
+
+          <section className="section mb-20" id="bars">
+
+            <h2>Migracije Hrvata</h2>
+
+            <p className="paragraph">
+              Najviše Hrvata odlazi 2022. nakon čega se broj smanjuje.
+              Otprilike 10 tisuća Hrvata svake godine dolazi u Hrvatsku – ovaj trend blago raste.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -342,11 +439,13 @@ export default function Home() {
 
             </p>
 
-            <div >
-              < ChoroplethHr />
+            <div>
+              <PersonBars />
             </div>
 
           </section>
+
+
 
 
 
