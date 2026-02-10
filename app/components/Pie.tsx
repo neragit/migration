@@ -75,7 +75,15 @@ const CroatiaPie: React.FC = () => {
 
     const perIcon = 6000;
 
-    let radius = Math.max(140, Math.min(height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), 170));
+    let radius = Math.max(
+      60, // minimum
+      Math.min(
+        height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), // original width-based
+        window.innerHeight * 0.25, // phone landscape cap
+        170 // desktop cap
+      )
+    );
+
     let iconSize = size.vw < 600 ? 8 : 4;
 
 
@@ -256,7 +264,7 @@ const CroatiaPie: React.FC = () => {
 
       </div>
 
-      <div className="pt-20 pr-10 md:pt-0 " >
+      <div className="pt-20  lg:pt-0 pr-10  " >
         <svg
           ref={svgRef}
           className="w-full "
