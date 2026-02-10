@@ -271,24 +271,7 @@ export default function Home() {
 
 
 
-          <section className="section mb-20" id="hzz">
 
-            <h2>HZZ – Radne dozvole i test tržišta rada</h2>
-            <p className="paragraph mb-10">
-              2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
-              Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
-            </p>
-            <a className="inline-block mb-8 !text-2xl "
-              href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Iznimke za koje test <b className="text-green-800">nije potreban</b>
-            </a>
-
-            <ListaZanimanja />
-
-          </section>
 
 
           <section className="section mb-20" id="treemap">
@@ -307,7 +290,13 @@ export default function Home() {
           </section>
 
 
+          <section className="section " id="map">
 
+            <h2>Odobreni zahtjevi po županijama</h2>
+
+            <CroatiaMap />
+
+          </section>
 
 
           
