@@ -370,6 +370,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           preserveAspectRatio="xMidYMid meet"
           style={{
             width:  "100%", 
+            maxHeight: "90%",
             display: "block",
             overflow: "visible",
             border: "1px dashed blue"
