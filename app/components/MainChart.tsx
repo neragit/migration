@@ -233,39 +233,12 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
             const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
 
-            // Initial mouse-based position
-            let left = event.pageX + 10;
-            let top = event.pageY - 20;
-
-            // Clamp to viewport bounds
-            const tooltipWidth = 150;  // estimate or get dynamically
-            const tooltipHeight = 50;  // estimate or get dynamically
-
-            if (size) {
-              left = Math.min(left, size.vw - tooltipWidth - 10); // keep within right edge
-              top = Math.max(0, Math.min(top, size.vh - tooltipHeight - 10)); // keep within bottom edge
-            }
-
             tooltip
               .style("display", "block")
               .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${left}px`)
-              .style("top", `${top}px`)
-              .style("opacity", 0.9);
-          })
-          .on("mousemove", (event) => {
-            let left = event.pageX + 10;
-            let top = event.pageY - 20;
-
-            if (size) {
-              const tooltipWidth = 150;
-              const tooltipHeight = 50;
-
-              left = Math.min(left, size.vw - tooltipWidth - 10);
-              top = Math.max(0, Math.min(top, size.vh - tooltipHeight - 10));
-            }
-
-            tooltip.style("left", `${left}px`).style("top", `${top}px`);
+              .style("left", `${Math.min(event.pageX + 10, (containerRef.current?.clientWidth ?? 0) - 100)}px`)
+              .style("top", `${Math.min(event.pageY - 20, (containerRef.current?.clientHeight ?? 0) - 150)}px`)
+              .style("opacity", 0.90);
           })
           .on("mousemove", (event) => {
             tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);

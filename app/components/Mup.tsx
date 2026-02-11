@@ -488,7 +488,7 @@ export default function Mup() {
             position: "fixed",
             left: Math.min(
                 tooltip.x,
-                (containerRef.current?.clientWidth ?? 0) - 50
+                (containerRef.current?.clientWidth ?? 0) - 80
               ),
               top: Math.min(
                 tooltip.y,
