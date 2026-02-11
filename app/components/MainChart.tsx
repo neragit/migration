@@ -229,6 +229,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           .attr("r", 4)
           .attr("fill", color)
           .style("opacity", 0)
+
           .on("mouseenter", (event, d) => {
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
             const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
@@ -240,9 +241,11 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
               .style("top", `${Math.min(event.pageY - 10, (svgRef.current?.clientHeight ?? 0) - 150)}px`)
               .style("opacity", 0.90);
           })
+
           .on("mousemove", (event) => {
             tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
           })
+          
           .on("mouseleave", () => {
             tooltip.style("display", "none");
           });

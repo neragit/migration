@@ -492,7 +492,7 @@ export default function Mup() {
               ),
               top: Math.min(
                 tooltip.y,
-                (containerRef.current?.clientHeight ?? 0) - 150
+                (containerRef.current?.clientHeight ?? 0) - 10
               ),
             opacity: "0.9"
           }}
