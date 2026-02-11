@@ -238,7 +238,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
             tooltip
               .style("display", "block")
               .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${Math.min(event.pageX, size?.vw - 80)}px`)
+              .style("left", `${Math.min(event.pageX, size?.vw - 200)}px`)
               .style("top", `${Math.min(event.pageY, size?.vh  - 10)}px`)
               .style("opacity", 0.90);
           })
