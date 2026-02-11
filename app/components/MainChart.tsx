@@ -32,7 +32,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
   ];
 
 
-  const isPortrait = size ? size.vw / size.vh < 1.7 : true;
+  const moveLegend = size ? size.vw < 900 : true;
 
   function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !migrationData || migrationData.length === 0) return;
@@ -41,8 +41,8 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     svg.selectAll("*").remove();
 
     // Legend position inside the SVG
-    let x = isPortrait ? 0 : size.width + 70 ;
-    let y = isPortrait ? - 50 : 0;
+    let x = moveLegend ? 0 : size.width + 70 ;
+    let y = moveLegend ? - 50 : 0;
 
     // xScale
     const xScale = d3
@@ -358,9 +358,9 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           height: "auto",
           border: "2px solid red",
           boxSizing: "border-box",
-          paddingTop: isPortrait ? "5%" : "0",
-          paddingLeft: isPortrait ? "10%" : "5%",
-          paddingBottom: isPortrait ? "10%" : "15%",
+          paddingTop: moveLegend ? "5%" : "0",
+          paddingLeft: moveLegend ? "10%" : "5%",
+          paddingBottom: moveLegend ? "10%" : "15%",
 
         }}
       >
