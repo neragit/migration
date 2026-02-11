@@ -32,7 +32,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
   ];
 
 
-  const moveLegend = size ? size.vw < 900 : true;
+  const isPortrait = size ? size.vw / size.vh < 1.7 : true;
 
   function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !migrationData || migrationData.length === 0) return;
@@ -41,8 +41,8 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
     svg.selectAll("*").remove();
 
     // Legend position inside the SVG
-    let x = moveLegend ? 0 : size.width + 70 ;
-    let y = moveLegend ? - 50 : 0;
+    let x = isPortrait ? 0 : size.width + 70 ;
+    let y = isPortrait ? - 50 : 0;
 
     // xScale
     const xScale = d3
@@ -355,13 +355,12 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
         style={{
           width: "100%",
           maxWidth: `${width}px`,
-          height: "auto",
-          maxHeight: "80vh",
+          height: (size?.height ?? 0) < 400 ? "95vh" : "auto",
           border: "2px solid red",
           boxSizing: "border-box",
-          paddingTop: moveLegend ? "5%" : "0",
-          paddingLeft: moveLegend ? "10%" : "5%",
-          paddingBottom: moveLegend ? "10%" : "15%",
+          paddingTop: isPortrait ? "5%" : "0",
+          paddingLeft: isPortrait ? "10%" : "5%",
+          paddingBottom: isPortrait ? "10%" : "15%",
 
         }}
       >
@@ -370,7 +369,6 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
           style={{
-            width:  "100%", 
             height: "100%", 
             display: "block",
             overflow: "visible",
