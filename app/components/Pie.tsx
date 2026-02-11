@@ -133,26 +133,25 @@ const CroatiaPie: React.FC = () => {
       return [Math.cos(angle - Math.PI / 2) * r, Math.sin(angle - Math.PI / 2) * r];
     };
 
-    const arcGenerator = d3.arc<PieSlice>().innerRadius(0).outerRadius(radius);
+    const arcGenerator = d3.arc<d3.PieArcDatum<PieSlice>>()
+      .innerRadius(0)
+      .outerRadius(radius);
 
     g.selectAll(".slice-outline")
       .data(arcs)
       .enter()
       .append("path")
       .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
-      .attr("d", d => arcGenerator(d)!)
-
+      .attr("d", d => arcGenerator(d) ?? "")
       .attr("fill", "none")
       .attr("stroke", "none");
+
     // icon render
     [...arcs]
       .reverse()
       .forEach((d) => {
         const totalIcons = Math.floor(d.data.count / perIcon);
         const iconGroup = g.append("g");
-
-
-
 
         for (let i = totalIcons - 1; i >= 0; i--) {
           const [x, y] = randomPointInArc(d);
@@ -164,6 +163,7 @@ const CroatiaPie: React.FC = () => {
             .attr("transform", `translate(${x - iconSize * 5}, ${y - iconSize * 3}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
+
             .on("mousemove", (event) => {
               setTooltip({
                 x: event.clientX + 10,
@@ -180,11 +180,11 @@ const CroatiaPie: React.FC = () => {
                 .attr("stroke", color(d.data.group))
                 .attr("stroke-width",);
             })
+
             .on("mouseleave", () => {
-              // Hide tooltip
+
               setTooltip(null);
 
-              // Remove slice highlight
               g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
                 .attr("stroke", "none");
             });
@@ -203,7 +203,6 @@ const CroatiaPie: React.FC = () => {
     const handleWheel = (e: WheelEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-
 
       const lockScroll = rect.top < size.height && rect.top < 200;
       if (!lockScroll) return;
@@ -230,7 +229,6 @@ const CroatiaPie: React.FC = () => {
 
 
   const totalWorkers = dataByYear[selectedYear as keyof typeof dataByYear].stranci;
-
 
 
   return (
