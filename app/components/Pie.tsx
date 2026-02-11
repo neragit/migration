@@ -7,7 +7,9 @@ import useResizeObserver from "../hooks/useResizeObs"; // size
 interface PieSlice {
   group: string;
   count: number;
+  percentage?: number; // optional
 }
+
 
 const dataByYear = {
   2021: { procjena: 3862305, stranci: 81995 },
@@ -126,6 +128,14 @@ const CroatiaPie: React.FC = () => {
 
     const arcs = pie(data);
 
+    const total = d3.sum(data, d => d.count);
+    arcs.forEach(d => {
+      d.data.percentage = (d.data.count / total) * 100;
+    });
+
+    
+
+
     // helper
     const randomPointInArc = (d: d3.PieArcDatum<PieSlice>): [number, number] => {
       const angle = d.startAngle + Math.random() * (d.endAngle - d.startAngle);
@@ -136,6 +146,28 @@ const CroatiaPie: React.FC = () => {
     const arcGenerator = d3.arc<d3.PieArcDatum<PieSlice>>()
       .innerRadius(0)
       .outerRadius(radius);
+
+      arcs.forEach(d => {
+      const [x, y] = arcGenerator.centroid(d); // center of slice
+
+      const angle = (d.startAngle + d.endAngle) / 2 - Math.PI / 2;
+const labelOffset = 20; // distance from the outer edge of the pie
+const labelRadius = radius + labelOffset;
+
+const labelX = Math.cos(angle) * labelRadius;
+const labelY = Math.sin(angle) * labelRadius;
+
+
+      g.append("text")
+        .attr("x", labelX)
+        .attr("y", labelY)
+        .attr("text-anchor",  "start" )
+        .attr("alignment-baseline", "middle")
+        .style("font-size", "1.5rem")
+        .style("font-weight", "bold")
+        .attr("fill", color(d.data.group))
+        .text(`${d3.format(".1f")(d.data.count / total * 100)}%`);
+    });
 
     g.selectAll(".slice-outline")
       .data(arcs)
@@ -160,7 +192,7 @@ const CroatiaPie: React.FC = () => {
             .append("use")
             .attr("href", "#pie-icon")
             .attr("xlink:href", "#pie-icon")
-            .attr("transform", `translate(${x - iconSize * 5}, ${y - iconSize * 3}) scale(${iconSize / 100})`)
+            .attr("transform", `translate(${x}, ${y}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
 
