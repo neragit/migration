@@ -9,7 +9,7 @@ interface LineChartProps {
   height?: number;
 }
 
-export default function LineChart({ width = 700, height = 500 }: LineChartProps) {
+export default function LineChart({ width = 700, height = 450 }: LineChartProps) {
 
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -356,6 +356,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           width: "100%",
           maxWidth: `${width}px`,
           height: "auto",
+          maxHeight: "80%",
           border: "2px solid red",
           boxSizing: "border-box",
           paddingTop: moveLegend ? "5%" : "0",
@@ -370,7 +371,6 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           preserveAspectRatio="xMidYMid meet"
           style={{
             width:  "100%", 
-            maxHeight: "90%",
             display: "block",
             overflow: "visible",
             border: "1px dashed blue"
