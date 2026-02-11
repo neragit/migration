@@ -209,15 +209,20 @@ export default function Home() {
             </h1>
 
             <p className="paragraph mb-5">
-              Ova je stranica nastala iz jednostavne znatiželje:
-              <b> što nam govore podaci?</b>
+              
+              Tko migrira i kamo? Koliko je stranih radnika u Hrvatskoj, koje poslove obavljaju i kolike su im plaće? 
+              U kojim županijama ima najviše migranata?
+              Kako se mijenjaju trendovi? Kamo najčešće odlaze Hrvati i koliko se Hrvata godišnje vrati? 
+               
+              <b> Što nam govore službeni podaci? </b>
+
             </p>
 
             <p className="paragraph">
-              Cilj je pružiti uvid u podatke vezano uz migracije na jednom mjestu, bez
+              Cilj je pružiti uvid u migracije na jednom mjestu, bez
               dramatičnih naslova, subjektivnih interpretacija i reklama.
 
-              Prikazani su najnoviji službeni podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u siječnju 2026.
+              Prikazani su najnoviji podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u veljači 2026.
 
             </p>
 
@@ -278,7 +283,7 @@ export default function Home() {
 
               <span> Izvor:{" "}
                 <a
-                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -359,7 +364,7 @@ export default function Home() {
           </section>
 
 
-          <section className="section mb-30" id="pie">
+          <section className="section " id="pie">
 
             <h2>Stanovništvo Hrvatske</h2>
 
@@ -369,19 +374,21 @@ export default function Home() {
 
               <span> Izvori:{" "}
                 <a
-                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-                {" "}i{" "}
-                <a
                   href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   MUP
+                </a>
+
+                {" "}i{" "}
+
+                <a
+                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
                 </a>
               </span>
 
@@ -393,9 +400,34 @@ export default function Home() {
 
           </section>
 
-          <section className="section mb-20" id="top5">
+          <section className="section mb-10" id="choropleth-cro">
 
             <h2>Odakle dolazi najviše migranata?</h2>
+
+            <p className="paragraph">
+              2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://ec.europa.eu/eurostat/databrowser/view/migr_imm7ctb/default/table?lang=en&category=migr.migr_cit.migr_immi"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Eurostat
+                </a>
+              </span>
+
+            </p>
+
+            <div >
+              < ChoroplethCro />
+            </div>
+
+          </section>
+
+          <section className="section mb-20" id="top5">
+
+            <h2>Migranti prema podrijetlu</h2>
 
             <p className="paragraph">
               Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
@@ -418,42 +450,19 @@ export default function Home() {
           </section>
 
 
-          <section className="section mb-10" id="choropleth-cro">
-
-            <h2>Migranti prema podrijetlu</h2>
-
-            <p className="paragraph">
-              2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
-
-              <span> Izvor:{" "}
-                <a
-                  href="https://ec.europa.eu/eurostat/web/migration-asylum/international-migration-citizenship/database"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Eurostat
-                </a>
-              </span>
-
-            </p>
-
-            <div >
-              < ChoroplethCro />
-            </div>
-
-          </section>
+          
 
 
 
 
           <section className="section " id="mup">
 
-            <h2>Tko radi i boravi u Hrvatskoj?</h2>
+            <h2>Najčešći stranci u Hrvatskoj</h2>
 
             <p className="paragraph">
-              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. bilo podjednako osoba iz BiH i Nepala.
+              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. evidentirano podjednako osoba iz BiH i Nepala.
               Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
-              U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina.
+              U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina. 
 
               <span> Izvor:{" "}
                 <a
@@ -461,7 +470,7 @@ export default function Home() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  MUP
+                  MUP Top 10 državljanstva po godini
                 </a>
               </span>
 
@@ -501,7 +510,7 @@ export default function Home() {
 
           <section className="section " id="choropleth-hr">
 
-            <h2>A kamo idu Hrvati?</h2>
+            <h2>Kamo idu Hrvati?</h2>
 
             <p className="paragraph">
               U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.

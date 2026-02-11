@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../hooks/useResizeObs";
 
@@ -17,6 +17,14 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
   const size = useResizeObserver(containerRef); // width, height
   const hasAnimated = useRef(false);
 
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    label: string;
+    formattedValue: string;
+    opacity: number;
+    year: number;
+  } | null>(null);
 
   const migrationData = [
     { year: 2015, immigrants: 11706, emigrants: 29651 },
@@ -41,8 +49,8 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
     svg.selectAll("*").remove();
 
     // Legend position inside the SVG
-    let x = isPortrait ? 0 : size.width + 70;
-    let y = isPortrait ? - 50 : 0;
+    let x = isPortrait ? 0 : size.width + 100;
+    let y = isPortrait ? - 70 : 0;
 
     // xScale
     const xScale = d3
@@ -198,7 +206,8 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           .attr("fill", "none")
           .attr("stroke", color)
           .attr("stroke-width", 3)
-          .attr("d", line);
+          .attr("d", line)
+          .style("pointer-events", "none");
 
         const totalLength = path.node()!.getTotalLength();
         path.attr("stroke-dasharray", totalLength).attr("stroke-dashoffset", totalLength);
@@ -214,35 +223,71 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           .attr("r", 4)
           .attr("fill", color)
           .style("opacity", 0)
+          .style("pointer-events", "none")
 
+
+        const hoverCircles = g
+          .selectAll(`.hover-${cls}`)
+          .data(migrationData)
+          .enter()
+          .append("circle")
+          .attr("class", `hover-${cls}`)
+          .attr("cx", (d) => xScale(d.year))
+          .attr("cy", (d) => (cls === "dot-imm" ? yScale(d.immigrants) : yScale(d.emigrants)))
+          .attr("r", 12)                 // bigger invisible hover radius
+          .attr("fill", "transparent")    // invisible
 
           .on("mouseenter", (event, d) => {
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
             const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
 
-            console.log("EVENT PAGE X vs svgRef:", event.pageX, svgRef.current?.clientWidth);
-            console.log("EVENT PAGE X/Y:", event.pageX, event.pageY);
-            console.log("EVENT CLIENT X/Y:", event.clientX, event.clientY);
-            console.log("SVG SIZE:", svgRef.current?.clientWidth, svgRef.current?.clientHeight);
-            console.log("CONTAINER SIZE:", size?.vw, size?.vh);
-            console.log("WINDOW:", window.innerWidth, window.innerHeight);
+            const svgWrapper = svgRef.current?.parentElement;
+            const wrapperRect = svgWrapper?.getBoundingClientRect();
+            if (!wrapperRect) return;
 
-            tooltip
-              .style("display", "block")
-              .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${Math.min(event.pageX + 10, (svgRef.current?.clientWidth ?? 0) - 100)}px`)
-              .style("top", `${Math.min(event.pageY + 10, (svgRef.current?.clientHeight ?? 0) - 10)}px`)
+            const tooltipWidth = 70;
+            const tooltipHeight = 40;
+            const padding = 10;
 
-              .style("opacity", 0.90);
+            let left = event.clientX - wrapperRect.left + padding;
+            let top = event.clientY - wrapperRect.top + padding;
+
+            if (left + tooltipWidth > wrapperRect.width) {
+              left = wrapperRect.width - tooltipWidth - padding;
+            }
+            if (top + tooltipHeight > wrapperRect.height) {
+              top = event.clientY - wrapperRect.top - tooltipHeight - padding;
+            }
+
+            // Add highlight line
+            g.selectAll(".highlight-line").remove();
+            g.append("line")
+              .attr("class", "highlight-line")
+              .attr("x1", xScale(d.year))
+              .attr("x2", xScale(d.year))
+              .attr("y1", 0)
+              .attr("y2", height)
+              .attr("stroke", "#ccc")
+              .attr("stroke-width", 2)
+              .attr("stroke-dasharray", "4,4")
+              .attr("opacity", 0.5)
+              .attr("pointer-events", "none");
+
+            setTooltip({
+              x: left,
+              y: top,
+              label,
+              formattedValue: new Intl.NumberFormat('fr-FR').format(value),
+              year: d.year,
+              opacity: 0.9
+            });
           })
-
-          .on("mousemove", (event) => {
-            tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
-          })
-
           .on("mouseleave", () => {
-            tooltip.style("display", "none");
+            g.selectAll(".highlight-line").remove();
+            setTooltip(null);
           });
+
+
 
         // Animate line, circles, and now x-tick labels on scroll
         const observer = new IntersectionObserver(
@@ -353,21 +398,19 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
 
 
   return (
-    <>
-      <div
-        ref={containerRef}
-        style={{
-          width: "100%",
-          maxWidth: `${width}px`,
-          height: (size?.height ?? 0) < 400 && !isPortrait ? "100vh" : "auto",
-          border: "2px solid red",
-          boxSizing: "border-box",
-          paddingTop: isPortrait ? "5%" : "0",
-          paddingLeft: isPortrait ? "10%" : "5%",
-          paddingBottom: isPortrait ? "10%" : "15%",
-
-        }}
-      >
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        maxWidth: `${width}px`,
+        height: (size?.height ?? 0) < 400 && !isPortrait ? "100vh" : "auto",
+        paddingTop: isPortrait ? "5%" : "0",
+        paddingLeft: isPortrait ? "10%" : "5%",
+        paddingBottom: isPortrait ? "10%" : "15%",
+        position: "relative"
+      }}
+    >
+      <div style={{ position: "relative", overflow: "visible" }}>
         <svg
           ref={svgRef}
           viewBox={`0 0 ${width} ${height}`}
@@ -375,19 +418,32 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           style={{
             height: "100%",
             display: "block",
-            overflow: "visible",
-            border: "1px dashed blue"
+            overflow: "visible"
           }}
         ></svg>
-      </div>
 
-      <div
-        ref={tooltipRef}
-        className="tooltip"
-        style={{
-          position: "absolute",
-        }}
-      />
-    </>
+        {tooltip && (
+          <div
+            className="tooltip"
+            style={{
+              position: "absolute",
+              left: Math.min(
+                tooltip.x,
+                (containerRef.current?.clientWidth ?? 0) - 10
+              ),
+              top: Math.min(
+                tooltip.y,
+                (containerRef.current?.clientHeight ?? 0) - 10
+              ),
+              opacity: tooltip.opacity,
+              transition: "opacity 0.2s ease",
+            }}
+          >
+            <b>{tooltip.label}</b>
+            <br />{tooltip.year}: {tooltip.formattedValue}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

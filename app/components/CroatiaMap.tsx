@@ -76,7 +76,7 @@ export default function CroatiaMap() {
 
   const totalYear = dataByYear[year]
     ? Object.values(dataByYear[year]).reduce(
-      (sum, v) => sum + v.pos + v.neg,
+      (sum, v) => sum + v.pos,
       0
     )
     : 0;
@@ -270,7 +270,7 @@ export default function CroatiaMap() {
         </div>
         <div className="text-2xl text-gray-800 ">
 
-          {formatNumber(totalYear)}<b> radnika</b>
+          {formatNumber(totalYear)}<b> izdanih dozvola</b>
         </div>
       </div>
 

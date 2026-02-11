@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../hooks/useResizeObs";
 
@@ -14,18 +14,26 @@ interface CountryData {
   values: DataPoint[];
 }
 
-interface TopImmigrantsProps {
+interface MultiLineChartProps {
   width?: number;
   height?: number;
 }
 
-export default function TopImmigrants({ width = 700, height = 500 }: TopImmigrantsProps) {
+export default function MultiLineChart({ width = 700, height = 450 }: MultiLineChartProps) {
 
   const svgRef = useRef<SVGSVGElement>(null);
-  const tooltipRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const size = useResizeObserver(containerRef); // width, height
+  const size = useResizeObserver(containerRef);
   const hasAnimated = useRef(false);
+
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    label: string;
+    formattedValue: string;
+    opacity: number;
+    year: number;
+  } | null>(null);
 
   const data: CountryData[] = [
     {
@@ -100,73 +108,52 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
     },
   ];
 
+  const isPortrait = size ? size.vw / size.vh < 1.7 : true;
 
   function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !data.length) return;
 
-    let isPortrait = size.vw / size.vh < 1.7;
-
-    const margin = {
-      top: isPortrait ? 160 : 20,
-      bottom: isPortrait ? -30 : 50,
-      left: isPortrait ? 60 : 60,
-      right: isPortrait ? 0 : 0,
-    };
-
-    let x = isPortrait // legend x
-      ? margin.left
-      : size.width + 30;
-
-    let y = isPortrait // legend y
-      ? margin.top - 150
-      : margin.top;
-
-    const innerWidth = size.width - margin.left - margin.right;
-    const innerHeight = size.height - margin.top - margin.bottom;
-
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    const g = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
+    // Legend position inside the SVG
+    let x = isPortrait ? 0 : size.width + 100;
+    let y = isPortrait ? -150 : 0;
 
+    // xScale
     const years = data[0].values.map(d => d.year);
-    const xScale = d3.scaleLinear()
+    const xScale = d3
+      .scaleLinear()
       .domain(d3.extent(years) as [number, number])
-      .range([0, innerWidth]);
+      .range([0, width]);
 
+    // yScale
     const maxY = d3.max(data, c => d3.max(c.values, d => d.value)) || 0;
-    const yScale = d3.scaleLinear()
+    const yScale = d3
+      .scaleLinear()
       .domain([0, maxY * 1.1])
-      .range([innerHeight, 0]);
+      .range([height, 0]);
 
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       .domain(data.map(d => d.country));
 
-    // Grid
+    const g = svg.append("g").attr("transform", `translate(0,0)`);
+
+    // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-500).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
 
-    const xAxis = d3.axisBottom(xScale)
-      .tickFormat(d3.format("d"))
-      .tickSize(0)
-      .tickPadding(20)
-      .ticks(5);
-
-
-    const yAxis = d3.axisLeft(yScale)
-      .tickFormat(d3.format("d"))
-      .tickSize(0)
-      .tickPadding(20)
-      .ticks(6);
-
+    // Axes
+    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
+    const yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
 
     g.append("g")
-      .attr("transform", `translate(0,${innerHeight})`)
+      .attr("class", "x-axis")
+      .attr("transform", `translate(0, ${height})`)
       .call(xAxis)
       .select(".domain")
       .attr("stroke", "#eee");
@@ -176,12 +163,17 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
       .select(".domain")
       .attr("stroke", "#eee");
 
-    g.selectAll(".tick text")
+    // Make tick labels hidden initially
+    const xTicks = g.selectAll(".x-axis .tick text")
+      .style("opacity", 0)
       .attr("fill", "#555")
-      .attr("font-family", "Mukta, sans-serif")
-      .attr("font-size", "12px");
+      .attr("font-size", "12px")
+      .attr("font-family", "Mukta, sans-serif");
 
-    const tooltip = d3.select(tooltipRef.current);
+    g.selectAll(".tick text:not(.x-axis .tick text)")
+      .attr("fill", "#555")
+      .attr("font-size", "12px")
+      .attr("font-family", "Mukta, sans-serif");
 
     const lineGen = d3.line<DataPoint>()
       .x(d => xScale(d.year))
@@ -190,81 +182,156 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
 
     data.forEach((countryData, idx) => {
       const color = colorScale(countryData.country) as string;
+      const cls = `line-${idx}`;
 
-      const path = g.append("path")
+      const path = g
+        .append("path")
         .datum(countryData.values)
         .attr("fill", "none")
         .attr("stroke", color)
         .attr("stroke-width", 3)
-        .attr("d", lineGen);
+        .attr("d", lineGen)
+        .style("pointer-events", "none");
 
       const totalLength = path.node()!.getTotalLength();
-      path.attr("stroke-dasharray", totalLength)
-        .attr("stroke-dashoffset", totalLength);
+      path.attr("stroke-dasharray", totalLength).attr("stroke-dashoffset", totalLength);
 
-      const circles = g.selectAll(`.circle-${idx}`)
+      const circles = g
+        .selectAll(`.${cls}`)
         .data(countryData.values)
         .enter()
         .append("circle")
-        .attr("class", `circle-${idx}`)
+        .attr("class", cls)
         .attr("cx", d => xScale(d.year))
         .attr("cy", d => yScale(d.value))
-        .attr("r", 5)
+        .attr("r", 4)
         .attr("fill", color)
         .style("opacity", 0)
-        .on("mouseenter", (event, d) => {
-          tooltip
-            .style("display", "block")
-            .html(
-              `<strong>${countryData.country}</strong><br/>
-               Godina: ${d.year}<br/>
-               Broj imigranata: ${new Intl.NumberFormat("fr-FR").format(d.value)}`
-            )
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY - 30}px`);
-        })
-        .on("mousemove", event => {
-          tooltip
-            .style("left", `${event.pageX + 10}px`)
-            .style("top", `${event.pageY - 30}px`);
-        })
-        .on("mouseleave", () => tooltip.style("display", "none"));
+        .style("pointer-events", "none");
 
-      const observer = new IntersectionObserver(([entry]) => {
-        if (entry.isIntersecting) {
-          path.transition().duration(3000).attr("stroke-dashoffset", 0);
-          circles.transition().delay(2500).duration(1000).style("opacity", 1);
-          observer.disconnect();
-        }
-      }, { threshold: 0.5 });
+      const hoverCircles = g
+        .selectAll(`.hover-${cls}`)
+        .data(countryData.values)
+        .enter()
+        .append("circle")
+        .attr("class", `hover-${cls}`)
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScale(d.value))
+        .attr("r", 12)
+        .attr("fill", "transparent")
+        .on("mouseenter", (event, d) => {
+          const svgWrapper = svgRef.current?.parentElement;
+          const wrapperRect = svgWrapper?.getBoundingClientRect();
+          if (!wrapperRect) return;
+
+          const tooltipWidth = 70;
+          const tooltipHeight = 10;
+          const padding = 10;
+
+          let left = event.clientX - wrapperRect.left + padding;
+          let top = event.clientY - wrapperRect.top + padding;
+
+          if (left + tooltipWidth > wrapperRect.width) {
+            left = wrapperRect.width - tooltipWidth - padding;
+          }
+          if (top + tooltipHeight > wrapperRect.height) {
+            top = event.clientY - wrapperRect.top - tooltipHeight - padding;
+          }
+
+          // Add highlight line
+          g.selectAll(".highlight-line").remove();
+          g.append("line")
+            .attr("class", "highlight-line")
+            .attr("x1", xScale(d.year))
+            .attr("x2", xScale(d.year))
+            .attr("y1", 0)
+            .attr("y2", height)
+            .attr("stroke", "#ccc")
+            .attr("stroke-width", 2)
+            .attr("stroke-dasharray", "4,4")
+            .attr("opacity", 0.5)
+            .attr("pointer-events", "none");
+
+          setTooltip({
+            x: left,
+            y: top,
+            label: countryData.country,
+            formattedValue: new Intl.NumberFormat('fr-FR').format(d.value),
+            year: d.year,
+            opacity: 0.9
+          });
+        })
+        .on("mousemove", (event) => {
+          const svgWrapper = svgRef.current?.parentElement;
+          const wrapperRect = svgWrapper?.getBoundingClientRect();
+          if (!wrapperRect) return;
+
+          const tooltipWidth = 70;
+          let left = event.clientX - wrapperRect.left + 10;
+
+          if (left + tooltipWidth > wrapperRect.width) {
+            left = wrapperRect.width - tooltipWidth - 10;
+          }
+
+          setTooltip(prev => prev ? {
+            ...prev,
+            x: left,
+            y: event.clientY - wrapperRect.top + 10
+          } : null);
+        })
+        .on("mouseleave", () => {
+          g.selectAll(".highlight-line").remove();
+          setTooltip(null);
+        });
+
+      // Animate line, circles, and x-tick labels on scroll
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            path.transition().duration(5000).ease(d3.easeCubic).attr("stroke-dashoffset", 0);
+            circles.transition().delay(4000).duration(1000).style("opacity", 1);
+
+            xTicks.each((d, i, nodes) => {
+              d3.select(nodes[i])
+                .transition()
+                .delay(i * 500)
+                .duration(3000)
+                .style("opacity", 1);
+            });
+
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.5 }
+      );
 
       observer.observe(svgRef.current!);
     });
 
+    // Legend
+    let legend = svg.select<SVGGElement>(".legend");
 
-    const legend = svg.append("g")
-      .attr("class", "legend")
-      .attr("transform", `translate(${x}, ${y})`);
+    if (legend.empty()) {
+      legend = svg.append("g").attr("class", "legend");
 
+      data.forEach((countryData, i) => {
+        const row = legend.append("g")
+          .attr("transform", `translate(0, ${i * 20})`);
 
-    data.forEach((c, i) => {
-      const row = legend.append("g")
-        .attr("transform", `translate(0, ${i * 20})`);
+        row.append("circle")
+          .attr("r", 6)
+          .attr("fill", colorScale(countryData.country) as string);
 
-      row.append("circle")
-        .attr("cx", 6)
-        .attr("cy", 6)
-        .attr("r", 6)
-        .attr("fill", colorScale(c.country) as string);
+        row.append("text")
+          .attr("x", 18)
+          .attr("y", 4)
+          .text(countryData.country)
+          .attr("font-size", "13px")
+          .attr("fill", "#555");
+      });
+    }
 
-      row.append("text")
-        .attr("x", 18)
-        .attr("y", 10)
-        .attr("font-size", "13px")
-        .attr("fill", "#555")
-        .text(c.country);
-   });
-
+    legend.attr("transform", `translate(${x}, ${y})`);
   }
 
   useEffect(() => {
@@ -279,7 +346,6 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
         if (entry.isIntersecting && !hasAnimated.current) {
           hasAnimated.current = true;
           drawChart(svgNode, parent);
-
           observer.disconnect();
         }
       },
@@ -288,7 +354,6 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
 
     observer.observe(svgNode);
     return () => observer.disconnect();
-
   }, [size]);
 
   useEffect(() => {
@@ -303,27 +368,52 @@ export default function TopImmigrants({ width = 700, height = 500 }: TopImmigran
   }, [size?.width]);
 
   return (
-    <>
-      <div
-        ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto" }}>
+    <div
+      ref={containerRef}
+      style={{
+        width: "100%",
+        maxWidth: `${width}px`,
+        height: (size?.height ?? 0) < 400 && !isPortrait ? "100vh" : "auto",
+        paddingTop: isPortrait ? "15%" : "0",
+        paddingLeft: isPortrait ? "10%" : "5%",
+        paddingBottom: isPortrait ? "10%" : "15%",
+        position: "relative"
+      }}
+    >
+      <div style={{ position: "relative", overflow: "visible" }}>
         <svg
           ref={svgRef}
-          width="100%"
-          height="100%"
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
-          style={{ display: "block", overflow: "visible" }}
+          style={{
+            height: "100%",
+            display: "block",
+            overflow: "visible"
+          }}
         ></svg>
-      </div>
 
-      <div
-        ref={tooltipRef}
-        className="tooltip"
-        style={{
-          position: "absolute"
-        }}
-      />
-    </>
+        {tooltip && (
+          <div
+            className="tooltip"
+            style={{
+              position: "absolute",
+              left: Math.min(
+                tooltip.x,
+                (containerRef.current?.clientWidth ?? 0) - 10
+              ),
+              top: Math.min(
+                tooltip.y,
+                (containerRef.current?.clientHeight ?? 0) - 10
+              ),
+              opacity: tooltip.opacity,
+              transition: "opacity 0.2s ease",
+            }}
+          >
+            <b>{tooltip.label}</b>
+            <br />{tooltip.year}: {tooltip.formattedValue}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }

@@ -27,6 +27,8 @@ export default function Mup() {
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
+
+
   type Layout = {
     width: number;
     height: number;
@@ -39,10 +41,12 @@ export default function Mup() {
     isLandscape: Boolean;
   };
 
+
+
   const layout: Layout = size
     ? (size.vw / size.vh < 1.6) || size.width < 600
       ? {
-        width: size.width*1.3,
+        width: size.width * 1.3,
         height: size.width * 1.7, // taller in portrait
         iconSize: 5,
 
@@ -99,8 +103,13 @@ export default function Mup() {
   // Store constant node positions
   const nodesRef = useRef<Record<string, { x: number; y: number }>>({});
 
+  const totalYear = React.useMemo(() => {
+    return data.reduce((sum, d) => sum + ((d[selectedYear] as number) || 0), 0);
+  }, [data, selectedYear]);
 
-  
+
+
+
   useEffect(() => {
     d3.csv("/data/mup_top10.csv").then(rawData => {
       const parsed: CountryData[] = rawData.map(row => {
@@ -306,7 +315,7 @@ export default function Mup() {
     });
 
 
-    
+
     let labelsLayer = svg.select<SVGGElement>(".labels-layer");
     if (labelsLayer.empty()) labelsLayer = svg.append("g").attr("class", "labels-layer");
 
@@ -314,7 +323,7 @@ export default function Mup() {
       .data(nodes, d => d.data.country);
 
 
-      
+
     labels.exit().remove();
 
     labels.enter()
@@ -429,7 +438,7 @@ export default function Mup() {
       .data(nodes, d => d.data.country)
       .attr("transform", d => `translate(${d.x},${d.y})`);
 
-      
+
     svg.select(".labels-layer")
       .selectAll<SVGTextElement, any>("text")
       .data(nodes, d => d.data.country)
@@ -443,24 +452,41 @@ export default function Mup() {
   return (
     <div ref={containerRef} style={{ width: "100%", height: "auto" }}>
 
-      <div style={{ display: "flex", gap: 6 }}>
-        {years.map(y => (
-          <button
-            key={y}
-            onClick={() => setSelectedYear(y)}
-            style={{
-              padding: "4px 10px",
-              background: selectedYear === y ? "#4e79a7" : "#eee",
-              color: selectedYear === y ? "#fff" : "#000",
-              border: "none",
-              borderRadius: 4,
-              cursor: "pointer",
-              zIndex: 50
-            }}
-          >
-            {y}
-          </button>
-        ))}
+      <div
+        style={{
+          display: "flex",
+          gap: "20px",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+
+        }}
+      >
+
+        <div style={{ display: "flex", gap: 6 }}>
+          {years.map(y => (
+            <button
+              key={y}
+              onClick={() => setSelectedYear(y)}
+              style={{
+                padding: "4px 10px",
+                background: selectedYear === y ? "#4e79a7" : "#eee",
+                color: selectedYear === y ? "#fff" : "#000",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+                zIndex: 50
+              }}
+            >
+              {y}
+            </button>
+          ))}
+        </div>
+
+        <div className="text-2xl text-[#333333]">
+          {new Intl.NumberFormat('fr-FR').format(totalYear)} <b>stranih radnika</b>
+        </div>
+
       </div>
 
       <svg
@@ -481,19 +507,21 @@ export default function Mup() {
       />
 
 
+
+
       {tooltip && (
         <div
           className="tooltip"
           style={{
             position: "fixed",
             left: Math.min(
-                tooltip.x,
-                (containerRef.current?.clientWidth ?? 0) - 80
-              ),
-              top: Math.min(
-                tooltip.y,
-                (containerRef.current?.clientHeight ?? 0) - 10
-              ),
+              tooltip.x,
+              (containerRef.current?.clientWidth ?? 0) - 80
+            ),
+            top: Math.min(
+              tooltip.y,
+              (containerRef.current?.clientHeight ?? 0) - 10
+            ),
             opacity: "0.9"
           }}
         >
