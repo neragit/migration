@@ -229,6 +229,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           .attr("r", 4)
           .attr("fill", color)
           .style("opacity", 0)
+          
 
           .on("mouseenter", (event, d) => {
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
@@ -237,15 +238,15 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
             tooltip
               .style("display", "block")
               .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${Math.min(event.pageX, (svgRef.current?.clientWidth ?? 0) - 150)}px`)
-              .style("top", `${Math.min(event.pageY - 10, (svgRef.current?.clientHeight ?? 0) - 150)}px`)
+              .style("left", `${Math.min(event.pageX, size?.vw - 80)}px`)
+              .style("top", `${Math.min(event.pageY, size?.vh  - 10)}px`)
               .style("opacity", 0.90);
           })
 
           .on("mousemove", (event) => {
             tooltip.style("left", `${event.pageX + 10}px`).style("top", `${event.pageY - 20}px`);
           })
-          
+
           .on("mouseleave", () => {
             tooltip.style("display", "none");
           });
