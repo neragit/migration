@@ -355,7 +355,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
         style={{
           width: "100%",
           maxWidth: `${width}px`,
-          height: (size?.height ?? 0) < 400 ? "95vh" : "auto",
+          height: (size?.height ?? 0) < 400 && !isPortrait ? "100vh" : "auto",
           border: "2px solid red",
           boxSizing: "border-box",
           paddingTop: isPortrait ? "5%" : "0",
