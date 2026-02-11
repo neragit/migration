@@ -53,8 +53,8 @@ export default function Mup() {
         isLandscape: false
       }
       : {
-        width: size.width,
-        height: size.width * 0.6, // landscape is wider
+        width: size.width < 800 ? size.width * 1.2 : size.width,
+        height: size.width < 800 ? size.width * 0.5 : size.width * 0.6, // landscape is wider
         iconSize: 5,
 
         marginTop: 0,

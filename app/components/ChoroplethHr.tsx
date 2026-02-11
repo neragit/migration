@@ -40,9 +40,6 @@ export default function ChoroplethHr() {
     ];
 
 
-
-
-    // Decide whether to apply the desktop hack
     const isDesktop = size ? size.width > 768 : true; // fallback to desktop if size unknown
 
     useEffect(() => {
@@ -67,8 +64,6 @@ export default function ChoroplethHr() {
     }, []);
 
 
-
-    // Tooltip follow
     useEffect(() => {
         const tooltip = d3.select(".tooltip");
         const moveHandler = (e: MouseEvent) => {
@@ -116,7 +111,6 @@ export default function ChoroplethHr() {
     }, [csvData, selectedMode]);
 
 
-    // Hover handlers
     const handleHover = (event: any) => {
         const tooltip = d3.select(".tooltip");
         if (!event.points || event.points.length === 0) return;
@@ -133,7 +127,7 @@ export default function ChoroplethHr() {
         d3.select(".tooltip").style("opacity", 0);
     };
 
-    // Observe when map is fully visible
+
     useEffect(() => {
         if (!containerRef.current) return;
 
@@ -176,7 +170,7 @@ export default function ChoroplethHr() {
                 setselectedMode(modes[currentIndex - 1]);
                 lastScrollTime = now;
             }
-            // Otherwise: do NOT prevent default → lets the user scroll past the map
+            // Otherwise: do NOT prevent default = lets the user scroll past the map
         };
 
         window.addEventListener("wheel", handleWheel, { passive: false });
@@ -244,18 +238,9 @@ export default function ChoroplethHr() {
 
             </div>
 
-            <div
-                ref={containerRef}
-                className="
-    relative
-    w-full
-    h-full
-    top-0
-    z-10
+            <div ref={containerRef}
+                className=" relative w-full h-full top-0 z-10 " >
 
-
-  "
-            >
                 {isClient && (
                     <>
                         <Plot
