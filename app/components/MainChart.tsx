@@ -42,7 +42,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
 
     // Legend position inside the SVG
     let x = isPortrait ? 0 : size.width + 70 ;
-    let y = isPortrait ? - 30 : 0;
+    let y = isPortrait ? - 50 : 0;
 
     // xScale
     const xScale = d3
@@ -98,7 +98,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     const events = [
       {
         year: 2020,
-        yOffset: height * 0.53,
+        yOffset: height * 0.55,
         labels: [
           { text: "COVID-19 i ograničenja kretanja" },
           {
@@ -109,12 +109,12 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       },
       {
         year: 2022,
-        yOffset: height * 0.18,
+        yOffset: height * 0.22,
         labels: [{ text: "Rat u Ukrajini" }],
       },
       {
         year: 2023,
-        yOffset: height * 0.05,
+        yOffset: height * 0.08,
         labels: [{ text: "Uveden EURO" }],
       },
     ];
@@ -358,6 +358,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           height: "auto",
           border: "2px solid red",
           boxSizing: "border-box",
+          paddingTop: isPortrait ? "5%" : "0",
           paddingLeft: isPortrait ? "10%" : "5%",
           paddingBottom: isPortrait ? "10%" : "15%",
 
