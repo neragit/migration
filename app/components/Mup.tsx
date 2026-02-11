@@ -32,10 +32,10 @@ export default function Mup() {
     height: number;
     iconSize: number;
 
-    marginTop: number;
-    marginBottom: number;
-    marginLeft: number;
-    marginRight: number;
+    paddingTop: number;
+    paddingBottom: number;
+    paddingLeft: number;
+    paddingRight: number;
     isLandscape: Boolean;
   };
 
@@ -46,10 +46,10 @@ export default function Mup() {
         height: size.width * 1.7, // taller in portrait
         iconSize: 5,
 
-        marginTop: 150,
-        marginBottom: 200,
-        marginLeft: 20,
-        marginRight: 20,
+        paddingTop: 150,
+        paddingBottom: 200,
+        paddingLeft: 20,
+        paddingRight: 20,
         isLandscape: false
       }
       : {
@@ -57,13 +57,13 @@ export default function Mup() {
         height: size.width * 0.6, // landscape is wider
         iconSize: 5,
 
-        marginTop: 0,
-        marginBottom: 10,
-        marginLeft: size.width < 800 ? 20 : 0,
-        marginRight: 0,
+        paddingTop: 0,
+        paddingBottom: 10,
+        paddingLeft: size.width < 800 ? 20 : 0,
+        paddingRight: 0,
         isLandscape: true
       }
-    : { width: 500, height: 300, iconSize: 5, marginTop: 0, marginBottom: 0, marginLeft: 0, marginRight: 0, isLandscape: true };
+    : { width: 500, height: 300, iconSize: 5, paddingTop: 0, paddingBottom: 0, paddingLeft: 0, paddingRight: 0, isLandscape: true };
 
 
   const regionRanges: Record<string, [number, number]> = {
@@ -476,10 +476,10 @@ export default function Mup() {
           width: "90%",
           height: "auto",
 
-          marginTop: layout.marginTop,
-          marginBottom: layout.marginBottom,
-          marginLeft: layout.marginLeft,
-          marginRight: layout.marginRight,
+          paddingTop: layout.paddingTop,
+          paddingBottom: layout.paddingBottom,
+          paddingLeft: layout.paddingLeft,
+          paddingRight: layout.paddingRight,
           display: "block",
           overflow: "visible"
         }}
