@@ -47,7 +47,7 @@ export default function Mup() {
         iconSize: 5,
 
         paddingTop: 150,
-        paddingBottom: 200,
+        paddingBottom: 150,
         paddingLeft: 20,
         paddingRight: 20,
         isLandscape: false
@@ -220,7 +220,6 @@ export default function Mup() {
       .data(nodes, d => d.data.country);
 
     groups.exit()
-      .transition().duration(500)
       .style("opacity", 0)
       .remove();
 
@@ -230,7 +229,7 @@ export default function Mup() {
       .attr("transform", d => `translate(${d.x},${d.y})`)
       .style("opacity", 0);
 
-    enterGroups.transition().duration(500)
+    enterGroups
       .style("opacity", 1);
 
     const allGroups = enterGroups.merge(groups);
@@ -428,16 +427,12 @@ export default function Mup() {
 
     svg.selectAll<SVGGElement, any>("g.country-group")
       .data(nodes, d => d.data.country)
-      .transition()
-      .duration(600)
       .attr("transform", d => `translate(${d.x},${d.y})`);
 
       
     svg.select(".labels-layer")
       .selectAll<SVGTextElement, any>("text")
       .data(nodes, d => d.data.country)
-      .transition()
-      .duration(600)
       .attr("x", d => d.x)
       .attr("y", d => d.y);
 
@@ -491,9 +486,15 @@ export default function Mup() {
           className="tooltip"
           style={{
             position: "fixed",
-            top: tooltip.y,
-            left: tooltip.x,
-            opacity: "0.90"
+            left: Math.min(
+                tooltip.x,
+                (containerRef.current?.clientWidth ?? 0) - 210
+              ),
+              top: Math.min(
+                tooltip.y,
+                (containerRef.current?.clientHeight ?? 0) - 150
+              ),
+            opacity: "0.9"
           }}
         >
           {tooltip.content}
