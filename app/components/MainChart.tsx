@@ -356,7 +356,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           width: "100%",
           maxWidth: `${width}px`,
           height: "auto",
-          maxHeight: "80%",
+          maxHeight: "80vh",
           border: "2px solid red",
           boxSizing: "border-box",
           paddingTop: moveLegend ? "5%" : "0",
