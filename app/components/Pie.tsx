@@ -72,19 +72,18 @@ const CroatiaPie: React.FC = () => {
     let width = size.width;
     let height = size.width * 0.5;
 
-
-    const perIcon = 6000;
-
-    let radius = Math.max(
-      120, // minimum
-      Math.min(
+    let radius = size.vw > 1000 ? window.innerHeight * 0.25
+    : Math.max(
+      120, // min
+      Math.min( // max
         height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), // original width-based
-        window.innerHeight * 0.2, // phone landscape cap
-        170 // desktop cap
+        window.innerHeight * 0.2 //  landscape cap
       )
     );
 
     let iconSize = size.vw < 400 ? 8 : 4;
+
+    const perIcon = 6000;
 
 
     const g = svg
@@ -264,7 +263,7 @@ const CroatiaPie: React.FC = () => {
 
       </div>
 
-      <div className="portrait:pt-20 pt-0 portrait:pr-5  " >
+      <div className="portrait:pt-20 portrait:pr-5  " >
         <svg
           ref={svgRef}
           className="w-full "
@@ -272,18 +271,13 @@ const CroatiaPie: React.FC = () => {
         />
 
         {tooltip && (
-          <div
-            style={{
+          <div className="tooltip"
+          style={{
               position: "fixed",
               top: tooltip.y,
               left: tooltip.x,
-              background: "#fff",
-              padding: "6px 8px",
-              fontSize: 12,
-              pointerEvents: "none",
-              opacity: 0.95,
-              zIndex: 1000,
-              userSelect: "none",
+              opacity: 0.9,
+              transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out"
             }}
           >
             {tooltip.content}

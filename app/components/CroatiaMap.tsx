@@ -277,7 +277,7 @@ export default function CroatiaMap() {
             position: "fixed",
             left: Math.min(tooltip.x, window.innerWidth - 150),
             top: Math.min(tooltip.y, window.innerHeight - 150),
-            opacity: 0.90,
+            opacity: 0.9,
             transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out",
           }}
         >
