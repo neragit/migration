@@ -182,11 +182,12 @@ const CroatiaPie: React.FC = () => {
         for (let i = totalIcons - 1; i >= 0; i--) {
           const [x, y] = randomPointInArc(d);
 
+
           iconGroup
             .append("use")
             .attr("href", "#pie-icon")
             .attr("xlink:href", "#pie-icon")
-            .attr("transform", `translate(${x}, ${y}) scale(${iconSize / 100})`)
+            .attr("transform", `translate(${x - iconSize* (size?.vw > 800 ? 5 : 1.5)}, ${y - iconSize*(size?.vw > 800 ? 3 : 1)}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
             .style("pointer-events", "none");
