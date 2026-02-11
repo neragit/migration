@@ -133,7 +133,7 @@ const CroatiaPie: React.FC = () => {
       d.data.percentage = (d.data.count / total) * 100;
     });
 
-    
+
 
 
     // helper
@@ -147,21 +147,22 @@ const CroatiaPie: React.FC = () => {
       .innerRadius(0)
       .outerRadius(radius);
 
-      arcs.forEach(d => {
-      const [x, y] = arcGenerator.centroid(d); // center of slice
+    arcs.forEach(d => {
+  // angle bisector of the slice
+  const angle = (d.startAngle + d.endAngle) / 2 - Math.PI / 2;
 
-      const angle = (d.startAngle + d.endAngle) / 2 - Math.PI / 2;
-const labelOffset = 20; // distance from the outer edge of the pie
-const labelRadius = radius + labelOffset;
+  // label distance: fixed from the center
+  const labelDistance = radius + 20; // 20px beyond the pie radius
 
-const labelX = Math.cos(angle) * labelRadius;
-const labelY = Math.sin(angle) * labelRadius;
+  // compute label coordinates
+  const labelX = Math.cos(angle) * labelDistance;
+  const labelY = Math.sin(angle) * labelDistance;
 
 
       g.append("text")
         .attr("x", labelX)
         .attr("y", labelY)
-        .attr("text-anchor",  "start" )
+         .attr("text-anchor", Math.cos(angle) > 0 ? "start" : "end")
         .attr("alignment-baseline", "middle")
         .style("font-size", "1.5rem")
         .style("font-weight", "bold")
@@ -210,7 +211,7 @@ const labelY = Math.sin(angle) * labelRadius;
               });
               g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
                 .attr("stroke", color(d.data.group))
-                .attr("stroke-width",);
+                .attr("stroke-width", 3);
             })
 
             .on("mouseleave", () => {
