@@ -217,7 +217,7 @@ export default function Home() {
               Cilj je pružiti uvid u podatke vezano uz migracije na jednom mjestu, bez
               dramatičnih naslova, subjektivnih interpretacija i reklama.
 
-              Prikazani su najnoviji dostupni podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u siječnju 2026.
+              Prikazani su najnoviji službeni podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u siječnju 2026.
 
             </p>
 
@@ -299,8 +299,19 @@ export default function Home() {
             <p className="paragraph mb-10">
               2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
               Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://narodne-novine.nn.hr/eli/sluzbeni/2020/133/2520/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Zakon o strancima, NN 133/2020
+                </a>
+              </span>
+
             </p>
-            <a className="inline-block mb-8 !text-2xl "
+            <a className="inline-block  mb-8 !text-2xl "
               href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
               target="_blank"
               rel="noopener noreferrer"
@@ -319,6 +330,16 @@ export default function Home() {
 
             <p className="paragraph">
               Svaka prikazana osoba predstavlja <b>650 radnika</b>, a tamnija boja pokazuje <b>višu prosječnu plaću</b> po zanimanju.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://www.hzz.hr/statistika/statistika-usluga-test-trzista-rada-i-radne-dozvole//"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  HZZ
+                </a>
+              </span>
             </p>
 
             <div className="mt-10">
@@ -378,6 +399,16 @@ export default function Home() {
 
             <p className="paragraph">
               Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  DZS
+                </a>
+              </span>
             </p>
 
             <div>

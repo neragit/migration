@@ -73,13 +73,13 @@ const CroatiaPie: React.FC = () => {
     let height = size.width * 0.5;
 
     let radius = size.vw > 1000 ? window.innerHeight * 0.25
-    : Math.max(
-      120, // min
-      Math.min( // max
-        height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), // original width-based
-        window.innerHeight * 0.2 //  landscape cap
-      )
-    );
+      : Math.max(
+        120, // min
+        Math.min( // max
+          height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), // original width-based
+          window.innerHeight * 0.2 //  landscape cap
+        )
+      );
 
     let iconSize = size.vw < 400 ? 8 : 4;
 
@@ -133,12 +133,25 @@ const CroatiaPie: React.FC = () => {
       return [Math.cos(angle - Math.PI / 2) * r, Math.sin(angle - Math.PI / 2) * r];
     };
 
+    const arcGenerator = d3.arc<PieSlice>().innerRadius(0).outerRadius(radius);
+
+    g.selectAll(".slice-outline")
+      .data(arcs)
+      .enter()
+      .append("path")
+      .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
+      .attr("d", arcGenerator)
+      .attr("fill", "none")
+      .attr("stroke", "none");
     // icon render
     [...arcs]
       .reverse()
       .forEach((d) => {
         const totalIcons = Math.floor(d.data.count / perIcon);
         const iconGroup = g.append("g");
+
+
+
 
         for (let i = totalIcons - 1; i >= 0; i--) {
           const [x, y] = randomPointInArc(d);
@@ -147,7 +160,7 @@ const CroatiaPie: React.FC = () => {
             .append("use")
             .attr("href", "#pie-icon")
             .attr("xlink:href", "#pie-icon")
-            .attr("transform", `translate(${x}, ${y}) scale(${iconSize / 100})`)
+            .attr("transform", `translate(${x - iconSize * 5}, ${y - iconSize * 3}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
             .on("mousemove", (event) => {
@@ -162,9 +175,20 @@ const CroatiaPie: React.FC = () => {
                   </div>
                 ),
               });
+              g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
+                .attr("stroke", color(d.data.group))
+                .attr("stroke-width",);
             })
-            .on("mouseleave", () => setTooltip(null));
+            .on("mouseleave", () => {
+              // Hide tooltip
+              setTooltip(null);
+
+              // Remove slice highlight
+              g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
+                .attr("stroke", "none");
+            });
         }
+
       });
   }, [size, selectedYear]);
 
@@ -205,6 +229,8 @@ const CroatiaPie: React.FC = () => {
 
 
   const totalWorkers = dataByYear[selectedYear as keyof typeof dataByYear].stranci;
+
+
 
   return (
     <div
@@ -272,7 +298,7 @@ const CroatiaPie: React.FC = () => {
 
         {tooltip && (
           <div className="tooltip"
-          style={{
+            style={{
               position: "fixed",
               top: tooltip.y,
               left: tooltip.x,

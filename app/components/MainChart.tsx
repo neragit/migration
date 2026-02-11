@@ -41,7 +41,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
     svg.selectAll("*").remove();
 
     // Legend position inside the SVG
-    let x = isPortrait ? 0 : size.width + 70 ;
+    let x = isPortrait ? 0 : size.width + 70;
     let y = isPortrait ? - 50 : 0;
 
     // xScale
@@ -220,15 +220,19 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
             const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
 
+            console.log("EVENT PAGE X vs svgRef:", event.pageX, svgRef.current?.clientWidth);
             console.log("EVENT PAGE X/Y:", event.pageX, event.pageY);
+            console.log("EVENT CLIENT X/Y:", event.clientX, event.clientY);
             console.log("SVG SIZE:", svgRef.current?.clientWidth, svgRef.current?.clientHeight);
             console.log("CONTAINER SIZE:", size?.vw, size?.vh);
+            console.log("WINDOW:", window.innerWidth, window.innerHeight);
 
             tooltip
               .style("display", "block")
               .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${Math.min(event.pageX + 10, size?.vw - 100)}px`)
-              .style("top", `${Math.min(event.pageY + 10, size?.vh - 10)}px`)
+              .style("left", `${Math.min(event.pageX + 10, (svgRef.current?.clientWidth ?? 0) - 100)}px`)
+              .style("top", `${Math.min(event.pageY + 10, (svgRef.current?.clientHeight ?? 0) - 10)}px`)
+
               .style("opacity", 0.90);
           })
 
@@ -369,7 +373,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
           style={{
-            height: "100%", 
+            height: "100%",
             display: "block",
             overflow: "visible",
             border: "1px dashed blue"

@@ -153,7 +153,6 @@ export default function CroatiaMap() {
       .attr("stroke", "#fff")
       .attr("stroke-width", 0.6)
       .merge(paths as any)
-
       .attr("d", path)
       .attr("fill", d => {
         const name = d.properties?.name?.toUpperCase();
@@ -161,13 +160,18 @@ export default function CroatiaMap() {
         const v = selectedData[name];
         return v ? color(v.pos) : "#eee";
       })
-
       .on("mousemove", (event, d) => {
         const name = d.properties?.name;
         if (!name) return;
 
         const v = selectedData[name.toUpperCase()];
         if (!v) return;
+
+        // highlight
+        d3.select(event.currentTarget)
+          .attr("stroke", "#39FF14")
+          .attr("stroke-width", 1)
+          .raise();
 
         setTooltip({
           x: event.clientX + 10,
@@ -183,7 +187,15 @@ export default function CroatiaMap() {
           ),
         });
       })
-      .on("mouseleave", () => setTooltip(null));
+      .on("mouseleave", (event) => {
+        // Reset stroke on mouse leave
+        d3.select(event.currentTarget)
+          .attr("stroke", "#fff")
+          .attr("stroke-width", 0.6);
+
+        setTooltip(null);
+      });
+
 
 
     paths.exit().remove();
@@ -285,7 +297,7 @@ export default function CroatiaMap() {
         </div>
       )}
 
-      
+
     </div>
   );
 }
