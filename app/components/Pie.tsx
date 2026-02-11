@@ -79,7 +79,7 @@ const CroatiaPie: React.FC = () => {
       120, // minimum
       Math.min(
         height * (0.3 + 0.25 * Math.pow(size.width / 1200, 0.6)), // original width-based
-        window.innerHeight * 0.25, // phone landscape cap
+        window.innerHeight * 0.2, // phone landscape cap
         170 // desktop cap
       )
     );
