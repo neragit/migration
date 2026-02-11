@@ -140,7 +140,8 @@ const CroatiaPie: React.FC = () => {
       .enter()
       .append("path")
       .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
-      .attr("d", arcGenerator)
+      .attr("d", d => arcGenerator(d)!)
+
       .attr("fill", "none")
       .attr("stroke", "none");
     // icon render
