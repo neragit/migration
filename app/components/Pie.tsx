@@ -148,21 +148,21 @@ const CroatiaPie: React.FC = () => {
       .outerRadius(radius);
 
     arcs.forEach(d => {
-  // angle bisector of the slice
-  const angle = (d.startAngle + d.endAngle) / 2 - Math.PI / 2;
+      // angle bisector of the slice
+      const angle = (d.startAngle + d.endAngle) / 2 - Math.PI / 2;
 
-  // label distance: fixed from the center
-  const labelDistance = radius + 20; // 20px beyond the pie radius
+      // label distance: fixed from the center
+      const labelDistance = radius + 20; // 20px beyond the pie radius
 
-  // compute label coordinates
-  const labelX = Math.cos(angle) * labelDistance;
-  const labelY = Math.sin(angle) * labelDistance;
+      // compute label coordinates
+      const labelX = Math.cos(angle) * labelDistance;
+      const labelY = Math.sin(angle) * labelDistance;
 
 
       g.append("text")
         .attr("x", labelX)
         .attr("y", labelY)
-         .attr("text-anchor", Math.cos(angle) > 0 ? "start" : "end")
+        .attr("text-anchor", Math.cos(angle) > 0 ? "start" : "end")
         .attr("alignment-baseline", "middle")
         .style("font-size", "1.5rem")
         .style("font-weight", "bold")
@@ -170,14 +170,7 @@ const CroatiaPie: React.FC = () => {
         .text(`${d3.format(".1f")(d.data.count / total * 100)}%`);
     });
 
-    g.selectAll(".slice-outline")
-      .data(arcs)
-      .enter()
-      .append("path")
-      .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
-      .attr("d", d => arcGenerator(d) ?? "")
-      .attr("fill", "none")
-      .attr("stroke", "none");
+
 
     // icon render
     [...arcs]
@@ -196,8 +189,19 @@ const CroatiaPie: React.FC = () => {
             .attr("transform", `translate(${x}, ${y}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
+            .style("pointer-events", "none");
 
-            .on("mousemove", (event) => {
+        }
+
+        // create slice paths and attach tooltip events
+          g.selectAll(".slice-outline")
+            .data(arcs)
+            .enter()
+            .append("path")
+            .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
+            .attr("d", d => arcGenerator(d) ?? "")
+            .attr("fill", "transparent") // important: path captures mouse events
+            .on("mousemove", (event, d) => {
               setTooltip({
                 x: event.clientX + 10,
                 y: event.clientY + 10,
@@ -209,19 +213,15 @@ const CroatiaPie: React.FC = () => {
                   </div>
                 ),
               });
-              g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
+              d3.select(event.currentTarget)
                 .attr("stroke", color(d.data.group))
                 .attr("stroke-width", 3);
             })
-
-            .on("mouseleave", () => {
-
+            .on("mouseleave", (event, d) => {
               setTooltip(null);
-
-              g.select(`.slice-${d.data.group.replace(/\s+/g, "-")}`)
+              d3.select(event.currentTarget)
                 .attr("stroke", "none");
             });
-        }
 
       });
   }, [size, selectedYear]);
