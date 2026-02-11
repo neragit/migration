@@ -32,6 +32,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
   ];
 
 
+  const isPortrait = size ? size.vw / size.vh < 1.7 : true;
 
   function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
     if (!size || !migrationData || migrationData.length === 0) return;
@@ -39,45 +40,29 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
 
-    let isPortrait = size.vw / size.vh < 1.7;
-
-    const margin = {
-      top: isPortrait ? 80 : 20,
-      bottom: isPortrait ? 20 : 50,
-      left: isPortrait ? 60 : 60,
-      right: isPortrait ? 0 : 0,
-    };
-
-
-    let x = isPortrait // legend x
-      ? margin.left
-      : size.width + 30;
-
-    let y = isPortrait // legend y
-      ? margin.top - 70
-      : margin.top;
-
-    const innerWidth = size.width - margin.left - margin.right;
-    const innerHeight = size.height - margin.top - margin.bottom;
+    // Legend position inside the SVG
+    let x = isPortrait ? 0 : size.width + 70 ;
+    let y = isPortrait ? - 30 : 0;
 
     // xScale
     const xScale = d3
       .scaleLinear()
       .domain(d3.extent(migrationData, (d) => d.year) as [number, number])
-      .range([0, innerWidth]);
+      .range([0, width]);
 
     // yScale
     const yScale = d3
       .scaleLinear()
       .domain([0, d3.max(migrationData, (d) => Math.max(d.immigrants, d.emigrants))! * 1.1])
-      .range([innerHeight, 0]);
+      .range([height, 0]);
 
-    const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
+    const g = svg.append("g").attr("transform", `translate(0,0)`);
+
 
     // Grid lines
     g.append("g")
       .attr("class", "grid")
-      .call(d3.axisLeft(yScale).tickSize(-innerWidth).tickFormat(() => ""))
+      .call(d3.axisLeft(yScale).tickSize(-500).tickFormat(() => ""))
       .attr("stroke-opacity", 0.05)
       .selectAll("line")
       .attr("stroke", "#888");
@@ -88,7 +73,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
 
     const xAxisGroup = g.append("g")
       .attr("class", "x-axis")
-      .attr("transform", `translate(0,${innerHeight})`)
+      .attr("transform", `translate(0, ${height})`)
       .call(xAxis)
       .select(".domain")
       .attr("stroke", "#eee");
@@ -113,7 +98,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     const events = [
       {
         year: 2020,
-        yOffset: innerHeight * 0.53,
+        yOffset: height * 0.53,
         labels: [
           { text: "COVID-19 i ograničenja kretanja" },
           {
@@ -124,12 +109,12 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
       },
       {
         year: 2022,
-        yOffset: innerHeight * 0.18,
+        yOffset: height * 0.18,
         labels: [{ text: "Rat u Ukrajini" }],
       },
       {
         year: 2023,
-        yOffset: innerHeight * 0.05,
+        yOffset: height * 0.05,
         labels: [{ text: "Uveden EURO" }],
       },
     ];
@@ -144,7 +129,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
         .attr("x1", xScale(event.year))
         .attr("x2", xScale(event.year))
         .attr("y1", 0)
-        .attr("y2", innerHeight)
+        .attr("y2", height)
         .attr("stroke", "#666")
         .attr("stroke-width", 1)
         .attr("stroke-dasharray", "4,4")
@@ -229,17 +214,21 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
           .attr("r", 4)
           .attr("fill", color)
           .style("opacity", 0)
-          
+
 
           .on("mouseenter", (event, d) => {
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
             const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
 
+            console.log("EVENT PAGE X/Y:", event.pageX, event.pageY);
+            console.log("SVG SIZE:", svgRef.current?.clientWidth, svgRef.current?.clientHeight);
+            console.log("CONTAINER SIZE:", size?.vw, size?.vh);
+
             tooltip
               .style("display", "block")
               .html(`<b>${label}:</b> ${new Intl.NumberFormat('fr-FR').format(value)}`)
-              .style("left", `${Math.min(event.pageX + 10, window.innerWidth - 200)}px`)
-              .style("top", `${Math.min(event.pageY + 10, window.innerHeight  - 10)}px`)
+              .style("left", `${Math.min(event.pageX + 10, size?.vw - 100)}px`)
+              .style("top", `${Math.min(event.pageY + 10, size?.vh - 10)}px`)
               .style("opacity", 0.90);
           })
 
@@ -363,14 +352,27 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
     <>
       <div
         ref={containerRef}
-        style={{ width: "100%", maxWidth: `${width}px`, minWidth: `450px`, height: "auto" }}>
+        style={{
+          width: "100%",
+          maxWidth: `${width}px`,
+          height: "auto",
+          border: "2px solid red",
+          boxSizing: "border-box",
+          paddingLeft: isPortrait ? "10%" : "5%",
+          paddingBottom: isPortrait ? "10%" : "15%",
+
+        }}
+      >
         <svg
           ref={svgRef}
-          width="100%"
-          height="100%"
           viewBox={`0 0 ${width} ${height}`}
           preserveAspectRatio="xMidYMid meet"
-          style={{ display: "block", overflow: "visible" }}
+          style={{
+            width:  "100%", 
+            display: "block",
+            overflow: "visible",
+            border: "1px dashed blue"
+          }}
         ></svg>
       </div>
 
@@ -378,7 +380,7 @@ export default function LineChart({ width = 700, height = 500 }: LineChartProps)
         ref={tooltipRef}
         className="tooltip"
         style={{
-          position: "absolute"
+          position: "absolute",
         }}
       />
     </>
