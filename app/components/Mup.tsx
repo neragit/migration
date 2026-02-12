@@ -514,14 +514,8 @@ export default function Mup() {
           className="tooltip"
           style={{
             position: "fixed",
-            left: Math.min(
-              tooltip.x,
-              (containerRef.current?.clientWidth ?? 0) - 80
-            ),
-            top: Math.min(
-              tooltip.y,
-              (containerRef.current?.clientHeight ?? 0) - 10
-            ),
+            left: Math.min(tooltip.x, (size?.vw ?? 0) - 80),
+            top: Math.min(tooltip.y, (size?.vh ?? 0) - 10),
             opacity: "0.9"
           }}
         >

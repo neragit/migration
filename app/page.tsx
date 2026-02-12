@@ -17,6 +17,10 @@ import Mup from "./components/Mup";
 import Pie from "./components/Pie";
 import ToggleDetails from "./components/Details";
 import PersonBars from "./components/PersonBars";
+import BubbleChart from "./components/BubbleChart";
+import CorrelationPlot from "./components/CorrelationPlot";
+import CorrContainer from "./components/CorrContainer";
+
 
 export default function Home() {
 
@@ -53,7 +57,9 @@ export default function Home() {
     { id: "choropleth-cro", label: "Godišnji dolasci" },
     { id: "mup", label: "Godišnje stanje" },
     { id: "bars", label: "Migracije Hrvata" },
-    { id: "choropleth-hr", label: "Hrvati u inozemstvu" }
+    { id: "choropleth-hr", label: "Hrvati u inozemstvu" },
+    { id: "big-data", label: "Big data" }
+    
 
   ];
 
@@ -87,6 +93,9 @@ export default function Home() {
 
   return (
     <>
+
+    <script src="http://localhost:8097"></script>
+
       {/*
       {showLandscapeWarning && (
         <div
@@ -533,6 +542,55 @@ export default function Home() {
 
           </section>
 
+          <section className="section " id="big-data">
+
+            <h2>Big data</h2>
+
+            <p className="paragraph">
+              Meta ads
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/2025/hr/97255"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Meta
+                </a>
+              </span>
+
+            </p>
+
+            <div >
+              < BubbleChart />
+            </div>
+
+          </section>
+
+<section className="section " id="corr">
+
+            <h2>Big data</h2>
+
+            <p className="paragraph">
+              Meta ads
+
+              <span> Izvor:{" "}
+                <a
+                  href="https://podaci.dzs.hr/2025/hr/97255"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Meta
+                </a>
+              </span>
+
+            </p>
+
+            <div >
+              < CorrContainer />
+            </div>
+
+          </section>
 
 
 

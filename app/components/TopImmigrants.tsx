@@ -108,6 +108,8 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
     },
   ];
 
+
+
   const isPortrait = size ? size.vw / size.vh < 1.7 : true;
 
   function drawChart(svgNode: SVGSVGElement, parent: HTMLElement) {
@@ -134,6 +136,15 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
       .domain([0, maxY * 1.1])
       .range([height, 0]);
 
+    const totalsPerYear = years.map(year => {
+      const total = data.reduce((sum, country) => {
+        const val = country.values.find(d => d.year === year)?.value || 0;
+        return sum + val;
+      }, 0);
+      return { year, total };
+    });
+
+
     const colorScale = d3.scaleOrdinal(d3.schemeCategory10)
       .domain(data.map(d => d.country));
 
@@ -148,8 +159,8 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
       .attr("stroke", "#888");
 
     // Axes
-    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
-    const yAxis = d3.axisLeft(yScale).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
+    const xAxis = d3.axisBottom(xScale).tickValues(years).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
+    const yAxis = d3.axisLeft(yScale).ticks(6).tickFormat(d3.format("d")).tickSize(0).tickPadding(20);
 
     g.append("g")
       .attr("class", "x-axis")
@@ -174,6 +185,34 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
       .attr("fill", "#555")
       .attr("font-size", "12px")
       .attr("font-family", "Mukta, sans-serif");
+const totalLabels = g.append("g")
+  .attr("class", "total-labels")
+  .attr("transform", `translate(0, ${height})`) // below x-axis
+  .selectAll("text")
+  .data(totalsPerYear)
+  .enter()
+  .append("text")
+  .attr("x", d => xScale(d.year))
+  .attr("y", 60) // distance below x-axis
+  .attr("text-anchor", "middle")
+  .attr("fill", "#555")
+  .attr("font-family", "Mukta, sans-serif")
+  .attr("font-weight", "bold")
+  .attr("font-size", "16px")
+  .style("opacity", 0) // initially invisible
+  .each(function(d) {
+    const el = d3.select(this);
+    el.append("tspan")
+      .attr("x", xScale(d.year))
+      .attr("dy", "0em") // first line, numeric value
+      .text(d.total.toLocaleString('fr-FR'));
+    el.append("tspan")
+      .attr("x", xScale(d.year))
+      .attr("dy", "1.2em") // second line, slightly below
+      .text("ukupno");
+  });
+
+
 
     const lineGen = d3.line<DataPoint>()
       .x(d => xScale(d.year))
@@ -252,6 +291,9 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
             .attr("opacity", 0.5)
             .attr("pointer-events", "none");
 
+            totalLabels.style("opacity", lbl => lbl.year === d.year ? 1 : 0);
+
+
           setTooltip({
             x: left,
             y: top,
@@ -273,6 +315,8 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
             left = wrapperRect.width - tooltipWidth - 10;
           }
 
+          
+
           setTooltip(prev => prev ? {
             ...prev,
             x: left,
@@ -281,6 +325,8 @@ export default function MultiLineChart({ width = 700, height = 450 }: MultiLineC
         })
         .on("mouseleave", () => {
           g.selectAll(".highlight-line").remove();
+          totalLabels.style("opacity", 0);
+
           setTooltip(null);
         });
 
