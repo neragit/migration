@@ -1,52 +1,38 @@
-'use client';
+//app/components/MetaContainer.tsx
 
-import { useState, useEffect } from 'react';
-
-//these components need this data but in page when i call MetaContainer.tsx only MetaPlot if fetched
+import { createClient } from '@supabase/supabase-js';
 import MetaPlot from './MetaPlot';
-import MetaBarsAPI from './MetaBarsAPI';
 
 interface LangData {
   lang: string;
   code: string;
   residents: number;
-  apiReachMin: number;
-  apiReachMax: number;
-  apiReachAvg: number;
-  country: 'N/A',
+  api_reach_min: number;
+  api_reach_max: number;
+  api_reach_avg: number;
+  country: 'N/A';
 }
 
-export default function MetaPlotContainer() {
 
-  const [data, setData] = useState<LangData[] | null>(null);
-  const [loading, setLoading] = useState(true);
+export default async function MetaPlotContainer() {
+  const supabase = createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_KEY!
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch('/api/api-reach');
-        const apiData: LangData[] = await res.json();
+  const { data, error } = await supabase
+    .from<'cro_lang_data', LangData>('cro_lang_data')
+    .select('*')
+    .order('snapshot_time', { ascending: false });
 
-        console.log('api API data:', apiData);
+  if (error) {
+    console.error('Supabase fetch error:', error);
+    return <div>Error fetching data</div>;
+  }
 
-        setData(apiData);
-        setLoading(false);
-      } catch (err) {
-        console.error('Error fetching api reach:', err);
-        setData([]);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
-    // Optional: refresh once per day
-    const interval = setInterval(fetchData, 1000 * 60 * 60 * 24);
-    return () => clearInterval(interval);
-  }, []);
-
-  if (loading) return <div>Loading chart...</div>;
-  if (!data || data.length === 0) return <div>No data available</div>;
+  if (!data || data.length === 0) {
+    return <div>No data available</div>;
+  }
 
   return <MetaPlot data={data} />;
 }

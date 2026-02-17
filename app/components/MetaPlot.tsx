@@ -5,14 +5,18 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import useResizeObserver from "../hooks/useResizeObs";
 
+
 interface LangData {
   lang: string;
   residents: number;
-  apiReachMin: number;
-  apiReachMax: number;
-  apiReachAvg: number;
+  api_reach_min: number;
+  api_reach_max: number;
+  api_reach_avg: number;
   country: string;
 }
+
+
+
 interface Props {
   data: LangData[];
 }
@@ -79,8 +83,8 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     return <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>No data available</div>;
   }
 
-  // Filter data: exclude outliers (apiReachAvg <= 0)
-  const filteredData = data.filter(d => d.apiReachAvg > 0);
+  // Filter data: exclude outliers (api_reach_avg <= 0)
+  const filteredData = data.filter(d => d.api_reach_avg > 0);
 
   // Merge MetaManager data with LangData
   const mmMap = new Map(defaultData.map(d => [d.lang, d]));
@@ -89,9 +93,9 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     return {
       lang: d.lang,
       residents: d.residents,
-      apiReachAvg: d.apiReachAvg,
-      apiReachMin: d.apiReachMin,
-      apiReachMax: d.apiReachMax,
+      api_reach_avg: d.api_reach_avg,
+      api_reach_min: d.api_reach_min,
+      api_reach_max: d.api_reach_max,
       adsAvg: mm?.adsAvg ?? 0,
       adsMin: mm?.adsMin ?? 0,
       adsMax: mm?.adsMax ?? 0,
@@ -117,7 +121,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     const padding = { top: 30, right: 30, bottom: 30, left: 60 };
 
     const xMax = d3.max(filteredData, d => d.residents) ?? 0;
-    const yMax = d3.max(filteredData, d => d.apiReachAvg) ?? 0;
+    const yMax = d3.max(filteredData, d => d.api_reach_avg) ?? 0;
     const maxDomain = Math.max(xMax, yMax) * 1.1;
 
     const plotWidth = width - padding.left - padding.right;
@@ -185,7 +189,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
       .data(filteredData)
       .join('circle')
       .attr('cx', d => xScale(d.residents))
-      .attr('cy', d => yScale(d.apiReachAvg))
+      .attr('cy', d => yScale(d.api_reach_avg))
       .attr('r', 5)
       .attr('fill', '#1f77b4')
       .attr('opacity', 0.8)
@@ -194,7 +198,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
         tooltip.html(`
           <b>${d.lang}</b><br/>
           <b><span style="color:#ff7f0e;">MUP:</span></b> ${d.residents.toLocaleString('fr-FR')}<br/>
-          <b><span style="color:#1976D2;">Meta API:</span></b>  ${d.apiReachAvg.toLocaleString('fr-FR')}<br/>
+          <b><span style="color:#1976D2;">Meta API:</span></b>  ${d.api_reach_avg.toLocaleString('fr-FR')}<br/>
           <b>Moguće podrijetlo:</b> ${rangeData?.country || 'N/A'}
         `)
           .style('opacity', 1)
@@ -213,8 +217,8 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
 
 
     const xMean = d3.mean(filteredData, d => d.residents)!;
-    const yMean = d3.mean(filteredData, d => d.apiReachAvg)!;
-    const numerator = d3.sum(filteredData, d => (d.residents - xMean) * (d.apiReachAvg - yMean));
+    const yMean = d3.mean(filteredData, d => d.api_reach_avg)!;
+    const numerator = d3.sum(filteredData, d => (d.residents - xMean) * (d.api_reach_avg - yMean));
     const denominator = d3.sum(filteredData, d => Math.pow(d.residents - xMean, 2));
     const slope = numerator / denominator;
     const intercept = yMean - slope * xMean;
@@ -222,13 +226,13 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     const xMin = d3.min(filteredData, d => d.residents)!;
     const xMaxVal = d3.max(filteredData, d => d.residents)!;
     const regressionLine = [
-      { residents: xMin, apiReachAvg: slope * xMin + intercept },
-      { residents: xMaxVal, apiReachAvg: slope * xMaxVal + intercept }
+      { residents: xMin, api_reach_avg: slope * xMin + intercept },
+      { residents: xMaxVal, api_reach_avg: slope * xMaxVal + intercept }
     ];
 
-    const line = d3.line<{ residents: number; apiReachAvg: number }>()
+    const line = d3.line<{ residents: number; api_reach_avg: number }>()
       .x(d => xScale(d.residents))
-      .y(d => yScale(d.apiReachAvg));
+      .y(d => yScale(d.api_reach_avg));
 
     svg.append('path')
       .datum(regressionLine)
@@ -242,7 +246,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
       .join('line')
       .attr('class', 'residual')
       .attr('x1', d => xScale(d.residents))
-      .attr('y1', d => yScale(d.apiReachAvg))
+      .attr('y1', d => yScale(d.api_reach_avg))
       .attr('x2', d => xScale(d.residents))
       .attr('y2', d => yScale(slope * d.residents + intercept))
       .attr('stroke', '#ffa500')
@@ -253,7 +257,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
 
     const r = numerator / Math.sqrt(
       d3.sum(filteredData, d => Math.pow(d.residents - xMean, 2)) *
-      d3.sum(filteredData, d => Math.pow(d.apiReachAvg - yMean, 2))
+      d3.sum(filteredData, d => Math.pow(d.api_reach_avg - yMean, 2))
     );
 
     svg.append('text')
@@ -272,7 +276,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
       .attr('class', 'label')
       .attr('font-size', '10px')
       .attr('x', d => xScale(d.residents) + 10)
-      .attr('y', d => yScale(d.apiReachAvg) + 2)
+      .attr('y', d => yScale(d.api_reach_avg) + 2)
       .attr('pointer-events', 'none')
       .text(d => d.lang);
 
@@ -300,7 +304,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
   // X scale for values (horizontal)
   const xMax = Math.max(
     d3.max(barsData, d => d.residents) ?? 0,
-    d3.max(barsData, d => d.apiReachAvg ?? 0) ?? 0,
+    d3.max(barsData, d => d.api_reach_avg ?? 0) ?? 0,
     d3.max(barsData, d => d.adsAvg ?? 0) ?? 0
   ) * 1.1;
 
@@ -320,7 +324,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     tooltip.html(`
       <b>${d.lang}</b><br/>
       <b><span style="color:#ff7f0e;">MUP:</span></b> ${d.residents.toLocaleString('fr-FR')}<br/>
-      <b><span style="color:#1976D2;">Meta API:</span></b> ${d.apiReachAvg?.toLocaleString('fr-FR')} (${d.apiReachMin?.toLocaleString('fr-FR')} - ${d.apiReachMax?.toLocaleString('fr-FR')})<br/>
+      <b><span style="color:#1976D2;">Meta API:</span></b> ${d.api_reach_avg?.toLocaleString('fr-FR')} (${d.api_reach_min?.toLocaleString('fr-FR')} - ${d.api_reach_max?.toLocaleString('fr-FR')})<br/>
       <b><span style="color:#63B3ED;">MetaManager:</span></b> ${d.adsAvg.toLocaleString('fr-FR')} (${d.adsMin.toLocaleString('fr-FR')} - ${d.adsMax.toLocaleString('fr-FR')})<br/>
       <b>Moguće podrijetlo:</b> ${d.country}
     `)
@@ -360,7 +364,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
     .on('mouseout', hideTooltip);
 
   svg.selectAll('rect.apireach')
-    .data(barsData.filter(d => d.apiReachAvg !== null))
+    .data(barsData.filter(d => d.api_reach_avg !== null))
     .join('rect')
     .attr('class', 'apireach')
     .attr('x', padding.left)
@@ -368,7 +372,7 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
       const band = yScale.bandwidth();
       return (yScale(d.lang) ?? 0) + spacing * band + mupHeightRatio * band + spacing * band;
     })
-    .attr('width', d => xScale(d.apiReachAvg!) - padding.left)
+    .attr('width', d => xScale(d.api_reach_avg!) - padding.left)
     .attr('height', d => apiHeightRatio * yScale.bandwidth())
     .attr('fill', '#1976D2')
     .attr('opacity', 0.8)
@@ -395,11 +399,11 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
 
   // --- Whiskers ---
   svg.selectAll('line.whisker')
-    .data(barsData.filter(d => d.apiReachMin && d.apiReachMax))
+    .data(barsData.filter(d => d.api_reach_min && d.api_reach_max))
     .join('line')
     .attr('class', 'whisker')
-    .attr('x1', d => xScale(d.apiReachMin!))
-    .attr('x2', d => xScale(d.apiReachMax!))
+    .attr('x1', d => xScale(d.api_reach_min!))
+    .attr('x2', d => xScale(d.api_reach_max!))
     .attr('y1', d => (yScale(d.lang) ?? 0) + spacing * yScale.bandwidth() + mupHeightRatio * yScale.bandwidth() + spacing * yScale.bandwidth() + apiHeightRatio * yScale.bandwidth() / 2)
     .attr('y2', d => (yScale(d.lang) ?? 0) + spacing * yScale.bandwidth() + mupHeightRatio * yScale.bandwidth() + spacing * yScale.bandwidth() + apiHeightRatio * yScale.bandwidth() / 2)
     .attr('stroke', '#1976D2')
