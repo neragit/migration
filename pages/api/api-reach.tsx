@@ -1,5 +1,7 @@
 // pages/api/api-reach.tsx
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { createClient } from '@supabase/supabase-js'
+
 
 interface LangData {
   code: string;
@@ -52,6 +54,11 @@ const localeMap: { [key: string]: number } = {
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LangData[]>) {
+
+  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}`) {
+    return res.status(401).end('Unauthorized');
+  }
+
   try {
 
     console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
@@ -63,12 +70,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     const results: LangData[] = [];
 
-    for (const lang of languages) {
+    const supabase = createClient(
+      process.env.SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_KEY!
+    )
 
-      const testSpec = { geo_locations: { countries: ["HR"] } };
-      const testUrl = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodeURIComponent(
-        JSON.stringify(testSpec)
-      )}`;
+
+    for (const lang of languages) {
 
       const locale = localeMap[lang.code];
       const targetingSpec = {
@@ -86,6 +94,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
+
+
 
       const data = await response.json();
 
@@ -123,7 +133,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         apiReachAvg: avgReach,
       });
 
+
+
+
     }
+
+    const { error } = await supabase
+      .from('cro_lang_data')
+      .insert(
+        results.map(lang => ({
+          code: lang.code,
+          lang: lang.lang,
+          residents: lang.residents,
+          api_reach_min: lang.apiReachMin,
+          api_reach_max: lang.apiReachMax,
+          api_reach_avg: lang.apiReachAvg,
+          snapshot_time: new Date()
+        }))
+      );
+
+    if (error) console.error('Supabase insert error:', error);
 
     console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
 
