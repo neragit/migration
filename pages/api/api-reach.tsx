@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 interface LangData {
-  code: string; 
+  code: string;
   lang: string;
   residents: number;
   apiReachMin: number;
@@ -50,8 +50,16 @@ const localeMap: { [key: string]: number } = {
 };
 
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LangData[]>) {
   try {
+
+    console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
+    console.log("AD_ACCOUNT_ID exists:", !!process.env.AD_ACCOUNT_ID);
+
+    if (!process.env.MARKETING_API_TOKEN || !process.env.AD_ACCOUNT_ID) {
+      throw new Error("Missing environment variables in Vercel");
+    }
 
     const results: LangData[] = [];
 
@@ -75,12 +83,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       console.log('Sending targeting spec for', lang.lang, JSON.stringify(targetingSpec, null, 2));
       console.log('api API URL:', url);
 
-
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        console.error("Facebook API error:", data);
+      }
+
 
       // Log the raw response from Facebook
 
@@ -103,16 +115,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       console.log(`Calculated avg apiReach for ${lang.lang}: ${avgReach}`);
 
       results.push({
-  code: lang.code,
-  lang: lang.lang,
-  residents: lang.residents,
-  apiReachMin: lower,
-  apiReachMax: upper,
-  apiReachAvg: avgReach,
-});
+        code: lang.code,
+        lang: lang.lang,
+        residents: lang.residents,
+        apiReachMin: lower,
+        apiReachMax: upper,
+        apiReachAvg: avgReach,
+      });
 
     }
 
+    console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
 
     res.status(200).json(results);
   } catch (err) {

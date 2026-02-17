@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Mukta } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 
 const mukta = Mukta({
   variable: "--font-mukta",
