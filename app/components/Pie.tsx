@@ -33,7 +33,7 @@ const CroatiaPie: React.FC = () => {
     y: number;
     content: React.ReactNode;
   } | null>(null);
-  const [selectedYear, setSelectedYear] = useState(years[0]);
+  const [year, setYear] = useState(years[0]);
 
   const createPieData = (year: number): PieSlice[] => {
     const yearData = dataByYear[year as keyof typeof dataByYear]; // Type-safe
@@ -48,7 +48,7 @@ const CroatiaPie: React.FC = () => {
   useEffect(() => {
     if (!size || !svgRef.current) return;
 
-    const data = createPieData(selectedYear);
+    const data = createPieData(year);
 
     const svg = d3.select(svgRef.current);
     svg.selectAll("*").remove();
@@ -83,7 +83,7 @@ const CroatiaPie: React.FC = () => {
         )
       );
 
-    let iconSize = size.vw < 400 ? 8 : 4;
+    let iconSize = size.vw < 600 ? 8 : 4;
 
     const perIcon = 6000;
 
@@ -187,7 +187,7 @@ const CroatiaPie: React.FC = () => {
             .append("use")
             .attr("href", "#pie-icon")
             .attr("xlink:href", "#pie-icon")
-            .attr("transform", `translate(${x - iconSize* (size?.vw > 800 ? 5 : 1.5)}, ${y - iconSize*(size?.vw > 800 ? 3 : 1)}) scale(${iconSize / 100})`)
+            .attr("transform", `translate(${x - iconSize * (size?.vw > 800 ? 5 : 1.5)}, ${y - iconSize * (size?.vw > 800 ? 3 : 1)}) scale(${iconSize / 100})`)
             .attr("fill", color(d.data.group))
             .style("opacity", 0.95)
             .style("pointer-events", "none");
@@ -195,37 +195,46 @@ const CroatiaPie: React.FC = () => {
         }
 
         // create slice paths and attach tooltip events
-          g.selectAll(".slice-outline")
-            .data(arcs)
-            .enter()
-            .append("path")
-            .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
-            .attr("d", d => arcGenerator(d) ?? "")
-            .attr("fill", "transparent") // important: path captures mouse events
-            .on("mousemove", (event, d) => {
-              setTooltip({
-                x: event.clientX + 10,
-                y: event.clientY + 10,
-                content: (
-                  <div>
-                    <b>{d.data.group}</b>
-                    <br />
-                    {d.data.count.toLocaleString('fr-FR')} osoba
-                  </div>
-                ),
-              });
-              d3.select(event.currentTarget)
-                .attr("stroke", color(d.data.group))
-                .attr("stroke-width", 3);
-            })
-            .on("mouseleave", (event, d) => {
-              setTooltip(null);
-              d3.select(event.currentTarget)
-                .attr("stroke", "none");
+        g.selectAll(".slice-outline")
+          .data(arcs)
+          .enter()
+          .append("path")
+          .attr("class", (d) => `slice-outline slice-${d.data.group.replace(/\s+/g, "-")}`)
+          .attr("d", d => arcGenerator(d) ?? "")
+          .attr("fill", "transparent") // important: path captures mouse events
+          .on("mousemove", (event, d) => {
+            setTooltip({
+              x: event.clientX + 10,
+              y: event.clientY + 10,
+              content: (
+                <div>
+                  <b>{d.data.group}</b>
+                  <br />
+                  {d.data.count.toLocaleString('fr-FR')} osoba
+                </div>
+              ),
             });
+            d3.select(event.currentTarget)
+              .attr("stroke", color(d.data.group))
+              .attr("stroke-width", 3);
+          })
+          .on("mouseleave", (event, d) => {
+            setTooltip(null);
+            d3.select(event.currentTarget)
+              .attr("stroke", "none");
+          });
+          
+          
 
       });
-  }, [size, selectedYear]);
+
+      
+svg.on("mouseleave", () => {
+  setTooltip(null);
+
+  });
+      
+  }, [size, year]);
 
 
   useEffect(() => {
@@ -244,26 +253,27 @@ const CroatiaPie: React.FC = () => {
       const now = Date.now();
       if (now - lastScrollTime < cooldown) return;
 
-      const currentIndex = years.indexOf(selectedYear);
+      const currentIndex = years.indexOf(year);
 
       if (e.deltaY > 0 && currentIndex < years.length - 1) {
         e.preventDefault();
-        setSelectedYear(years[currentIndex + 1]);
+        setYear(years[currentIndex + 1]);
         lastScrollTime = now;
       } else if (e.deltaY < 0 && currentIndex > 0) {
         e.preventDefault();
-        setSelectedYear(years[currentIndex - 1]);
+        setYear(years[currentIndex - 1]);
         lastScrollTime = now;
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [size, selectedYear]);
+  }, [size, year]);
 
 
-  const totalWorkers = dataByYear[selectedYear as keyof typeof dataByYear].stranci;
+  const totalWorkers = dataByYear[year as keyof typeof dataByYear].stranci;
 
+  
 
   return (
     <div
@@ -277,52 +287,33 @@ const CroatiaPie: React.FC = () => {
       }}
     >
 
-      <div
-        style={{
-          display: "flex",
-          gap: "20px",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
+      <div className="flex flex-wrap justify-between items-start gap-5 mb-2 lg:mb-0">       
 
-        }}
-      >
-
-        <div
-          style={{
-            display: "flex",
-            gap: 6,
-            flexWrap: "wrap",
-          }}
-        >
+        <div className="flex flex-wrap gap-1.5 ">
           {years.map((y) => (
             <button
               key={y}
-              onClick={() => setSelectedYear(y)}
-              style={{
-                padding: "6px 12px",
-                backgroundColor: y === selectedYear ? "#4292c6" : "#eee",
-                color: y === selectedYear ? "white" : "black",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer",
-                transition: "background-color 0.3s ease",
-              }}
-              aria-pressed={y === selectedYear}
+              aria-pressed={y === year}
               type="button"
+              onClick={() => setYear(y)}
+              className="button"
+              style={{
+                backgroundColor: y === year ? "#4292c6" : "#eee",
+                color: y === year ? "white" : "black",
+              }}
             >
               {y}
             </button>
           ))}
         </div>
 
-        <div className="lg:mr-[300px] text-2xl text-[#333333]">
+        <div className="text-2xl text-[#333333]">
           {new Intl.NumberFormat('fr-FR').format(totalWorkers)} <b>stranih radnika</b>
         </div>
 
       </div>
 
-      <div className="portrait:pt-20 portrait:pr-5  " >
+      <div className="pt-20 portrait:pr-5  " >
         <svg
           ref={svgRef}
           className="w-full "

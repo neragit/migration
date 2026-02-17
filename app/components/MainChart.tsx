@@ -103,6 +103,67 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
       .attr("font-size", "12px")
       .attr("font-family", "Mukta, sans-serif");
 
+       // -------- CLIPPED AREAS --------
+
+       const uid = Math.random().toString(36).slice(2);
+    const clipImmId = `clip-imm-${uid}`;
+    const clipEmgId = `clip-emg-${uid}`;
+    const defs = svg.append("defs");
+
+    const areaImm = d3.area<typeof migrationData[0]>()
+      .x(d => xScale(d.year))
+      .y0(height)
+      .y1(d => yScale(d.immigrants))
+      .curve(d3.curveMonotoneX);
+
+    const areaEmg = d3.area<typeof migrationData[0]>()
+      .x(d => xScale(d.year))
+      .y0(height)
+      .y1(d => yScale(d.emigrants))
+      .curve(d3.curveMonotoneX);
+
+    defs.append("clipPath")
+      .attr("id", clipImmId)
+      .append("path")
+      .datum(migrationData)
+      .attr(
+        "d",
+        d3.area<typeof migrationData[0]>()
+          .x(d => xScale(d.year))
+          .y0(d => yScale(d.emigrants))
+          .y1(0)
+          .curve(d3.curveMonotoneX)
+      );
+
+    defs.append("clipPath")
+      .attr("id", clipEmgId)
+      .append("path")
+      .datum(migrationData)
+      .attr(
+        "d",
+        d3.area<typeof migrationData[0]>()
+          .x(d => xScale(d.year))
+          .y0(d => yScale(d.immigrants))
+          .y1(0)
+          .curve(d3.curveMonotoneX)
+      );
+
+    const fillGroup = g.append("g");
+
+    const fillImm = fillGroup.append("path")
+      .datum(migrationData)
+      .attr("d", areaImm)
+      .attr("fill", "#00a651")
+      .attr("opacity", 0)
+      .attr("clip-path", `url(#${clipImmId})`);
+
+    const fillEmg = fillGroup.append("path")
+      .datum(migrationData)
+      .attr("d", areaEmg)
+      .attr("fill", "#6a0dad")
+      .attr("opacity", 0)
+      .attr("clip-path", `url(#${clipEmgId})`);
+
     const events = [
       {
         year: 2020,
@@ -123,7 +184,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
       {
         year: 2023,
         yOffset: height * 0.08,
-        labels: [{ text: "Uveden EURO" }],
+        labels: [{ text: "EURO" }],
       },
     ];
 
@@ -239,7 +300,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
 
           .on("mouseenter", (event, d) => {
             const value = cls === "dot-imm" ? d.immigrants : d.emigrants;
-            const label = cls === "dot-imm" ? "Imigranti" : "Emigranti";
+            const label = cls === "dot-imm" ? "Useljenici" : "Iseljenici";
 
             const svgWrapper = svgRef.current?.parentElement;
             const wrapperRect = svgWrapper?.getBoundingClientRect();
@@ -306,6 +367,18 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
                   .style("opacity", 1);
               });
 
+              fillImm.transition()
+          .delay(5500)
+          .duration(1200)
+          .ease(d3.easeCubicOut)
+          .attr("opacity", 0.1);
+
+        fillEmg.transition()
+          .delay(5500)
+          .duration(1200)
+          .ease(d3.easeCubicOut)
+          .attr("opacity", 0.1);
+
               observer.disconnect();
             }
           },
@@ -331,7 +404,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           .attr("class", "imm-text")
           .attr("x", 18)
           .attr("y", 4)
-          .text("Imigranti")
+          .text("Useljenici")
           .attr("font-size", "13px")
           .attr("fill", "#555");
 
@@ -344,7 +417,7 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
           .attr("class", "emg-text")
           .attr("x", 18)
           .attr("y", 4)
-          .text("Emigranti")
+          .text("Iseljenici")
           .attr("font-size", "13px")
           .attr("fill", "#555");
       }
@@ -440,7 +513,8 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
             }}
           >
             <b>{tooltip.label}</b>
-            <br />{tooltip.year}: {tooltip.formattedValue}
+            <br />
+            <b>{tooltip.year}:</b> {tooltip.formattedValue}
           </div>
         )}
       </div>

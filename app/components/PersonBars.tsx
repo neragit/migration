@@ -214,8 +214,8 @@ export default function PersonBars() {
                 .style("display", "block")
                 .style("opacity", 1)
                 .html(`<b>${d.year}</b><br>${isImigranti
-                  ? `Useljenici: ${d.Imigranti.toLocaleString("fr-FR")}`
-                  : `Iseljenici: ${d.Emigranti.toLocaleString("fr-FR")}`
+                  ? `<b>Useljenici:</b> ${d.Imigranti.toLocaleString("fr-FR")}`
+                  : `<b>Iseljenici:</b> ${d.Emigranti.toLocaleString("fr-FR")}`
                   }`)
                 .style("left", `${event.clientX - containerRect.left + 10}px`)
                 .style("top", `${event.clientY - containerRect.top + 10}px`);
@@ -286,8 +286,8 @@ export default function PersonBars() {
         .attr("y", scaleY + 15)
         .attr("text-anchor", "middle")
         .attr("fill", "#ddd")
-        .attr("font-size", 10)
-        .text(i * step);
+        .attr("font-size", 12)
+        .text((i * step).toLocaleString('fr-FR'));
 
       root
         .append("text")
@@ -295,8 +295,8 @@ export default function PersonBars() {
         .attr("y", scaleY + 15)
         .attr("text-anchor", "middle")
         .attr("fill", "#ddd")
-        .attr("font-size", 10)
-        .text(i * step);
+        .attr("font-size", 12)
+        .text((i * step).toLocaleString('fr-FR'));
     }
 
     const labelY = margin.top + 2; // from top
@@ -357,7 +357,7 @@ export default function PersonBars() {
     if (!parent) return;
 
     drawChart(svgNode, parent);
-  }, [size?.width]);
+  }, [size?.vw]);
 
   return (
     <div style={{ position: "relative" }}>

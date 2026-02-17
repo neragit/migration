@@ -195,7 +195,7 @@ const totalLabels = g.append("g")
   .attr("x", d => xScale(d.year))
   .attr("y", 60) // distance below x-axis
   .attr("text-anchor", "middle")
-  .attr("fill", "#555")
+  .attr("fill", "#ccc")
   .attr("font-family", "Mukta, sans-serif")
   .attr("font-weight", "bold")
   .attr("font-size", "16px")
@@ -206,6 +206,7 @@ const totalLabels = g.append("g")
       .attr("x", xScale(d.year))
       .attr("dy", "0em") // first line, numeric value
       .text(d.total.toLocaleString('fr-FR'));
+      
     el.append("tspan")
       .attr("x", xScale(d.year))
       .attr("dy", "1.2em") // second line, slightly below
@@ -456,7 +457,8 @@ const totalLabels = g.append("g")
             }}
           >
             <b>{tooltip.label}</b>
-            <br />{tooltip.year}: {tooltip.formattedValue}
+            <br />
+            <b>{tooltip.year}:</b> {tooltip.formattedValue}
           </div>
         )}
       </div>

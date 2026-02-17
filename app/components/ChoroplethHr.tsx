@@ -12,10 +12,22 @@ import { ChevronUp } from "lucide-react";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-export default function ChoroplethHr() {
+
+type Props = {
+  sidebarVisible: boolean;
+};
+
+export default function ChoroplethHr({ sidebarVisible }: Props) {
+
+
 
     const [open, setOpen] = useState(false);
-
+    const [tooltip, setTooltip] = useState<{
+        x: number;
+        y: number;
+        country: string;
+        value: number;
+    } | null>(null);
 
     const [csvData, setCsvData] = useState<any[]>([]);
     const [selectedMode, setselectedMode] = useState("Iseljenici");
@@ -45,32 +57,6 @@ export default function ChoroplethHr() {
     useEffect(() => {
         setIsClient(true);
         d3.csv("/data/choropleth_dzs.csv").then(setCsvData);
-    }, []);
-
-    useEffect(() => {
-        const tooltip = d3
-            .select("body")
-            .append("div")
-            .attr("class", "tooltip")
-            .style("position", "absolute")
-            .style("pointer-events", "none")
-            .style("opacity", 0)
-
-        const cleanup = (): void => {
-            tooltip.remove();
-        };
-
-        return cleanup;
-    }, []);
-
-
-    useEffect(() => {
-        const tooltip = d3.select(".tooltip");
-        const moveHandler = (e: MouseEvent) => {
-            tooltip.style("left", e.pageX + 10 + "px").style("top", e.pageY + 10 + "px");
-        };
-        document.addEventListener("mousemove", moveHandler);
-        return () => document.removeEventListener("mousemove", moveHandler);
     }, []);
 
     const allCountryISO3 = allCountries.map((c) => c.cca3);
@@ -112,19 +98,28 @@ export default function ChoroplethHr() {
 
 
     const handleHover = (event: any) => {
-        const tooltip = d3.select(".tooltip");
         if (!event.points || event.points.length === 0) return;
         const pt = event.points[0];
         const code = pt.location;
         const dataEntry = dataMap.get(code);
         if (!dataEntry) return;
-        tooltip
-            .html(`<b>${dataEntry.country_name}</b><br>${new Intl.NumberFormat('fr-FR').format(dataEntry.value)}`)
-            .style("opacity", 0.90);
+
+        setTooltip({
+            x: event.event.clientX + 10,
+            y: event.event.clientY + 10,
+            country: dataEntry.country_name,
+            value: dataEntry.value,
+        });
     };
 
     const handleUnhover = () => {
-        d3.select(".tooltip").style("opacity", 0);
+        setTooltip(null);
+    };
+
+    const handleMouseMove = (e: React.MouseEvent) => {
+        if (tooltip) {
+            setTooltip(prev => prev ? { ...prev, x: e.clientX + 10, y: e.clientY + 10 } : null);
+        }
     };
 
 
@@ -199,7 +194,7 @@ export default function ChoroplethHr() {
                 marginBottom: "10px",
             }}>
 
-                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                <div className="flex flex-wrap gap-1.5">
                     {modes.map((mode) => (
                         <label key={mode} style={{ display: "inline-block" }}>
                             <input
@@ -210,12 +205,10 @@ export default function ChoroplethHr() {
                                 onChange={() => setselectedMode(mode)}
                                 style={{ display: "none" }}
                             />
-                            <span
+                            <span className="button"
                                 style={{
                                     display: "inline-block",
-                                    padding: "5px 10px",
-                                    borderRadius: "4px",
-                                    cursor: "pointer",
+
                                     backgroundColor:
                                         selectedMode === mode
                                             ? mode === "Iseljenici"
@@ -238,8 +231,9 @@ export default function ChoroplethHr() {
 
             </div>
 
-            <div ref={containerRef}
-                className=" relative w-full h-full top-0 z-10 " >
+            <div ref={containerRef} className={`relative top-0 z-10 justify-center 
+       ${sidebarVisible ? " ml-[-80]  " : "ml-0  "} w-[95vw] lg:ml-[-60]  portrait:w-screen portrait:ml-0 `}
+       onMouseMove={handleMouseMove}>
 
                 {isClient && (
                     <>
@@ -283,7 +277,7 @@ export default function ChoroplethHr() {
                                 responsive: true,
                                 displaylogo: false,
                                 scrollZoom: false,
-                                modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
+                                displayModeBar: false,
                             }}
                             onHover={handleHover}
                             onUnhover={handleUnhover}
@@ -384,6 +378,24 @@ export default function ChoroplethHr() {
                     </>
                 )}
             </div>
+
+            {tooltip && (
+                <div
+                    className="tooltip"
+                    style={{
+                        position: "fixed",
+                        left: Math.min(tooltip.x, window.innerWidth - 150),
+                        top: Math.min(tooltip.y, window.innerHeight - 150),
+                        opacity: 0.9,
+                        transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out",
+                    }}
+                >
+                    <b>{tooltip.country}</b>
+                    <br />
+                    {new Intl.NumberFormat('fr-FR').format(tooltip.value)}
+                </div>
+            )}
+
         </div>
     );
 }

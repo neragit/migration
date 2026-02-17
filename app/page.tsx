@@ -17,9 +17,10 @@ import Mup from "./components/Mup";
 import Pie from "./components/Pie";
 import ToggleDetails from "./components/Details";
 import PersonBars from "./components/PersonBars";
-import BubbleChart from "./components/BubbleChart";
-import CorrelationPlot from "./components/CorrelationPlot";
-import CorrContainer from "./components/CorrContainer";
+
+import GroupedBars from "./components/GroupedBars";
+import StackedBars from "./components/StackedBars";
+
 
 
 export default function Home() {
@@ -52,14 +53,14 @@ export default function Home() {
     { id: "hzz", label: "Radne dozvole" },
     { id: "treemap", label: "Tražena zanimanja" },
     { id: "map", label: "Županije" },
-    { id: "pie", label: "Udio stranih radnika" },
-    { id: "top5", label: "Najčešći imigranti" },
+    { id: "zaposlenje", label: "Vrsta zaposlenja" },
+    { id: "usporedba", label: "Usporedba podataka" },
     { id: "choropleth-cro", label: "Godišnji dolasci" },
+    { id: "top5", label: "Najčešći imigranti" },
     { id: "mup", label: "Godišnje stanje" },
+    { id: "pie", label: "Udio stranih radnika" },
     { id: "bars", label: "Migracije Hrvata" },
-    { id: "choropleth-hr", label: "Hrvati u inozemstvu" },
-    { id: "big-data", label: "Big data" }
-    
+    { id: "choropleth-hr", label: "Hrvati u inozemstvu" }
 
   ];
 
@@ -75,7 +76,7 @@ export default function Home() {
       // Loop from bottom to top so last section reached is active
       for (let i = sectionIds.length - 1; i >= 0; i--) {
         const section = document.getElementById(sectionIds[i]);
-        if (section && scrollY >= section.offsetTop) {
+        if (section && scrollY >= section.offsetTop - 50) {
           current = sectionIds[i];
           break;
         }
@@ -94,7 +95,7 @@ export default function Home() {
   return (
     <>
 
-    <script src="http://localhost:8097"></script>
+      <script src="http://localhost:8097"></script>
 
       {/*
       {showLandscapeWarning && (
@@ -113,7 +114,7 @@ export default function Home() {
           </p>
 
           <button
-            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="button mt-5 text-white bg-blue-600 hover:bg-blue-700"
             onClick={() => setShowLandscapeWarning(false)}
             
           >
@@ -122,7 +123,6 @@ export default function Home() {
         </div>
       )}
       */}
-
 
       {showLandscapeWarning && (
         <div
@@ -140,7 +140,7 @@ export default function Home() {
           </p>
 
           <button
-            className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="button mt-5 text-white bg-blue-600 hover:bg-blue-700"
             onClick={() => setShowLandscapeWarning(false)}
 
           >
@@ -149,18 +149,16 @@ export default function Home() {
         </div>
       )}
 
+      {/*CONTENT*/}
 
-
-
-      <div className="flex mt-5">
+      <div className="flex mt-20">
         {!showLandscapeWarning && (
-          <div className="fixed z-50 portrait:hidden ">
+          <div className="fixed z-50 pt-3 portrait:hidden ">
 
             <button
-              className="
-              relative text-sm text-slate-400 hover:text-slate-600 focus:outline-none
-              flex items-center gap-1 cursor-pointer pl-4 pb-5
-               lg:hidden "
+              className="relative text-sm text-slate-400 hover:text-slate-600 focus:outline-none
+              flex items-center gap-1 cursor-pointer  pl-4 pb-5
+              xl:hidden "
               onClick={() => setSidebarVisible(!sidebarVisible)}
             >
               {sidebarVisible ? (
@@ -171,17 +169,11 @@ export default function Home() {
             </button>
 
 
-            <nav
-              className={`sidebar  pb-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
-                landscape:translate-x-0  
-                portrait:hidden 
-              transition-transform duration-300 
-              ${sidebarVisible ? "block" : "hidden"} 
-              lg:block 
-              
-              ` }
+            <aside
+              className={`sidebar pb-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
+                landscape:translate-x-0 portrait:hidden transition-transform duration-300 
+              ${sidebarVisible ? "block" : "hidden"} xl:block `}
             >
-
               <ul>
                 {sections.map((s) => (
                   <li
@@ -193,408 +185,441 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-
-            </nav>
+            </aside>
           </div>
         )}
 
 
-        <main
-          className={`flex-1  min-w-0  text-gray-700 transition-all duration-100
-            ${sidebarVisible ? "pl-60" : "pl-10"} lg:pl-52 pr-10 xl:pr-0
-            portrait:px-7  portrait:overflow-x-clip`}
-          id="start"
-        >
+        <main className={`flex-1 min-w-0 px-5  text-gray-700 flex justify-center transition-all duration-100
+            ${sidebarVisible ? "pl-60" : "pl-10"} xl:pl-7 portrait:px-5 overflow-visible `} id="start" >
 
-          <section className=" section !pb-5  flex gap-5 text-xs text-slate-400  " >
-            <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
-            <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
-          </section>
+          <div className="w-full max-w-4xl">
 
-          <section className="section " >
+            <section className="section " >
 
-            <h1 className="mb-8 text-4xl sm:text-5xl font-bold leading-tight">
-              Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
-            </h1>
+              <h1 className="mb-8 text-4xl sm:text-5xl font-bold leading-tight">
+                Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
+              </h1>
 
-            <p className="paragraph mb-5">
-              
-              Tko migrira i kamo? Koliko je stranih radnika u Hrvatskoj, koje poslove obavljaju i kolike su im plaće? 
-              U kojim županijama ima najviše migranata?
-              Kako se mijenjaju trendovi? Kamo najčešće odlaze Hrvati i koliko se Hrvata godišnje vrati? 
-               
-              <b> Što nam govore službeni podaci? </b>
+              <p className="paragraph mb-5">
 
-            </p>
+                Tko migrira i kamo? Koliko je stranih radnika u Hrvatskoj, koje poslove obavljaju i kolike su im plaće?
+                U kojim županijama ima najviše migranata?
+                Kako se mijenjaju trendovi? Kamo najčešće odlaze Hrvati i koliko se Hrvata godišnje vrati?
 
-            <p className="paragraph">
-              Cilj je pružiti uvid u migracije na jednom mjestu, bez
-              dramatičnih naslova, subjektivnih interpretacija i reklama.
+                <b> Što nam govore službeni podaci? </b>
 
-              Prikazani su najnoviji podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u veljači 2026.
-
-            </p>
-
-          </section>
-
-          <section className="section mb-20" id="dorling">
-
-            <h2>Tko odlazi i kamo ide?</h2>
-
-            <p className="paragraph ">
-              Velike zemlje poput Indije i Kine, imaju i velik broj emigranata.
-              Osim ekonomskih razloga, do migracija često dolazi zbog ratova i konflikata, primjerice u Siriji i Ukrajini.
-              Ljudi najčešće odlaze u Sjedinjene Američke Države.
-            </p>
-
-            <span className="paragraph">
-              Veći kvadrat predstavlja <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
-            </span>
-
-            <div>
-              < DorlingWorld />
-            </div>
-
-
-            <ToggleDetails buttonText="Detalji">
-              <p className=" max-w-2xl xl:max-w-[950px] text-sm text-[#555]">
-                Detaljniji pregled migracija u svijetu:{" "}
-                <a href="https://worldmigrationreport.iom.int/msite/wmr-2024-interactive/" target="_blank" rel="noopener noreferrer" > IOM World Migration Report 2024 </a>
-
-                <br /><br />Izvor ukupnog broja stanovnika (najnoviji dostupni podaci 2024):{" "}
-                <a href="https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Population" target="_blank" rel="noopener noreferrer">UN World Population Prospects</a>
-
-                <br /><br />Broj imigranata predstavlja ukupan broj zabilježenih useljenika neke zemlje, a broj emigranata ukupan broj iseljenika (<em>migrant stock</em>).
-                Izvor broja migranata (najnoviji dostupni podaci 2023):{" "}
-                <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" rel="noopener noreferrer">UN International Migrant Stock</a>
-
-                <br /><br />GNI (bruto nacionalni dohodak) pokazuje ukupni dohodak koji stanovnici zemlje ostvaruju u određenom razdoblju, uključujući plaće, dobit poduzeća, kamate i prihode iz inozemstva.
-                GNI per capita dobije se dijeljenjem s brojem stanovnika i često se koristi za prikaz životnog standarda i razvijenosti zemlje.
-                <br /><br />Izvor GNI per capita i očekivane dobi (najnoviji dostupni podaci 2023):{" "}
-                <a href="https://hdr.undp.org/data-center/human-development-index#/indicies/HDI" target="_blank" rel="noopener noreferrer">UNDP Human Development Index</a>
-
-                <br /><br />Izvor glavne religije (najnoviji dostupni podaci 2020):{" "}
-                <a href="https://www.pewresearch.org/religion-datasets/" target="_blank" rel="noopener noreferrer">Pew Research Religion Datasets</a>
               </p>
-            </ToggleDetails>
 
-          </section>
+              <p className="paragraph mb-5">
 
+                Cilj je pružiti uvid u migracije na jednom mjestu, bez
+                dramatičnih naslova, subjektivnih interpretacija i reklama.
 
-          <section className="section " id="migration">
+                Prikazani su najnoviji podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u veljači 2026.
 
-            <h2>
-              U Hrvatskoj se mijenjaju trendovi
-            </h2>
+              </p>
 
-            <p className="paragraph">
-              Od 2022. godine Hrvatska bilježi više useljenika nego iseljenika.
+            </section>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
-            </p>
+            <section className="section mb-20" id="dorling">
 
-            <MainChart />
+              <h2>Tko odlazi i kamo ide?</h2>
 
-          </section>
+              <p className="paragraph ">
+                Velike zemlje poput Indije i Kine, imaju i velik broj emigranata.
+                Osim ekonomskih razloga, do migracija često dolazi zbog ratova i konflikata, primjerice u Siriji i Ukrajini.
+                Ljudi najčešće odlaze u Sjedinjene Američke Države.
+              </p>
 
-
-
-          <section className="section mb-20" id="hzz">
-
-            <h2>HZZ – Radne dozvole i test tržišta rada</h2>
-            <p className="paragraph mb-10">
-              2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
-              Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
-
-              <span> Izvor:{" "}
-                <a
-                  href="https://narodne-novine.nn.hr/eli/sluzbeni/2020/133/2520/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Zakon o strancima, NN 133/2020
-                </a>
+              <span className="paragraph">
+                Veći kvadrat predstavlja <b>više stanovnika</b>, a tamnija boja pokazuje <b>više migranata</b>.
               </span>
 
-            </p>
-            <a className="inline-block  mb-8 !text-2xl "
-              href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Iznimke za koje test <b className="text-green-800">nije potreban</b>
-            </a>
+              <div>
+                <DorlingWorld sidebarVisible={sidebarVisible} />
 
-            <ListaZanimanja />
+              </div>
 
-          </section>
 
+              <ToggleDetails buttonText="Detalji">
+                <p className=" max-w-2xl xl:max-w-[950px] text-sm text-[#555]">
+                  Detaljniji pregled migracija u svijetu:{" "}
+                  <a href="https://worldmigrationreport.iom.int/msite/wmr-2024-interactive/" target="_blank" rel="noopener noreferrer" > IOM World Migration Report 2024 </a>
 
-          <section className="section mb-20" id="treemap">
+                  <br /><br />Izvor ukupnog broja stanovnika (najnoviji dostupni podaci 2024):{" "}
+                  <a href="https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Population" target="_blank" rel="noopener noreferrer">UN World Population Prospects</a>
 
-            <h2>Koje poslove obavljaju strani radnici?</h2>
+                  <br /><br />Broj imigranata predstavlja ukupan broj zabilježenih useljenika neke zemlje, a broj emigranata ukupan broj iseljenika (<em>migrant stock</em>).
+                  Izvor broja migranata (najnoviji dostupni podaci 2023):{" "}
+                  <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" rel="noopener noreferrer">UN International Migrant Stock</a>
 
-            <p className="paragraph">
-              Svaka prikazana osoba predstavlja <b>650 radnika</b>, a tamnija boja pokazuje <b>višu prosječnu plaću</b> po zanimanju.
+                  <br /><br />GNI (bruto nacionalni dohodak) pokazuje ukupni dohodak koji stanovnici zemlje ostvaruju u određenom razdoblju, uključujući plaće, dobit poduzeća, kamate i prihode iz inozemstva.
+                  GNI per capita dobije se dijeljenjem s brojem stanovnika i često se koristi za prikaz životnog standarda i razvijenosti zemlje.
+                  <br /><br />Izvor GNI per capita i očekivane dobi (najnoviji dostupni podaci 2023):{" "}
+                  <a href="https://hdr.undp.org/data-center/human-development-index#/indicies/HDI" target="_blank" rel="noopener noreferrer">UNDP Human Development Index</a>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://www.hzz.hr/statistika/statistika-usluga-test-trzista-rada-i-radne-dozvole//"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  HZZ
-                </a>
-              </span>
-            </p>
+                  <br /><br />Izvor glavne religije (najnoviji dostupni podaci 2020):{" "}
+                  <a href="https://www.pewresearch.org/religion-datasets/" target="_blank" rel="noopener noreferrer">Pew Research Religion Datasets</a>
+                </p>
+              </ToggleDetails>
 
-            <div className="mt-10">
-              <Treemap />
-            </div>
+            </section>
 
 
-          </section>
+            <section className="section " id="migration">
 
+              <h2>
+                U Hrvatskoj se mijenjaju trendovi
+              </h2>
 
-          <section className="section " id="map">
+              <p className="paragraph">
+                Od 2022. godine Hrvatska bilježi više useljenika nego iseljenika.
 
-            <h2>Odobreni zahtjevi po županijama</h2>
+                <span> Izvor:{" "}
+                  <a
+                    href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DZS
+                  </a>
+                </span>
+              </p>
 
-            <CroatiaMap />
+              <MainChart />
 
-          </section>
+            </section>
 
 
-          <section className="section " id="pie">
 
-            <h2>Stanovništvo Hrvatske</h2>
+            <section className="section mb-20" id="hzz">
 
-            <p className="paragraph">
-              Strani radnici čine otprilike 4,5% ukupnog stanovništva Hrvatske u 2025. godini.
-              *U siječnju 2026. nije još dostupna precizna procjena ukupnog stanovništa za 2025. pa je u ovom slučaju korištena procjena ukupnog stanovništva iz prethodne godine.
+              <h2>Radne dozvole i test tržišta rada</h2>
+              <p className="paragraph mb-10">
+                2020. godine vlada uvodi test tržišta rada, koji je osmišljen kao zamjena za kvotni sustav.
+                Hrvatski zavod za zapošljavanje provodi test i donosi mišljenje o zahtjevu poslodavca.
 
-              <span> Izvori:{" "}
-                <a
-                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  MUP
-                </a>
+                <span> Izvor:{" "}
+                  <a
+                    href="https://narodne-novine.nn.hr/eli/sluzbeni/2020/133/2520/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Zakon o strancima, NN 133/2020
+                  </a>
+                </span>
 
-                {" "}i{" "}
+              </p>
+              <a className="inline-block  mb-8 !text-2xl "
+                href="https://www.hzz.hr/usluge/radne-dozvole-za-zaposljavanje-stranaca-i-test-trzista-rada/?tab=dokumenti"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Iznimke za koje test <b className="text-green-800">nije potreban</b>
+              </a>
 
-                <a
-                  href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
+              <ListaZanimanja />
 
-            </p>
+            </section>
 
-            <div>
-              <Pie />
-            </div>
 
-          </section>
+            <section className="section mb-20" id="treemap">
 
-          <section className="section mb-10" id="choropleth-cro">
+              <h2>Koje poslove obavljaju strani radnici?</h2>
 
-            <h2>Odakle dolazi najviše migranata?</h2>
+              <p className="paragraph">
+                Svaka prikazana osoba predstavlja <b>650 radnika</b>, a tamnija boja pokazuje <b>višu prosječnu plaću</b> po zanimanju.
 
-            <p className="paragraph">
-              2022. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
+                <span> Izvor:{" "}
+                  <a
+                    href="https://www.hzz.hr/statistika/statistika-usluga-test-trzista-rada-i-radne-dozvole//"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    HZZ
+                  </a>
+                </span>
+              </p>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://ec.europa.eu/eurostat/databrowser/view/migr_imm7ctb/default/table?lang=en&category=migr.migr_cit.migr_immi"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Eurostat
-                </a>
-              </span>
+              <div className="mt-10">
+                <Treemap />
+              </div>
 
-            </p>
 
-            <div >
-              < ChoroplethCro />
-            </div>
+            </section>
 
-          </section>
 
-          <section className="section mb-20" id="top5">
+            <section className="section " id="map">
 
-            <h2>Migranti prema podrijetlu</h2>
+              <h2>Odobreni zahtjevi po županijama</h2>
 
-            <p className="paragraph">
-              Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
+              <p className="paragraph">
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
-            </p>
+                <span> Izvor:{" "}
 
-            <div>
-              <TopImmigrants />
-            </div>
+                  <a
+                    href="https://www.hzz.hr/statistika/statistika-usluga-test-trzista-rada-i-radne-dozvole/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    HZZ
+                  </a>
+                </span>
+              </p>
 
-          </section>
+              <CroatiaMap />
 
+            </section>
 
-          
 
+            <section className="section " id="zaposlenje">
 
+              <h2>Pregled prema zaposlenju i županijama</h2>
 
+              <p className="paragraph">
+                U ožujku 2025. godine, produženo je maksimalno trajanje radnih i boravišnih dozvola kako bi se pojednostavili administrativni postupci.
+                U skladu s tim, u 2025. pada broj novih zaposlenja, a raste broj produljenja.
 
-          <section className="section " id="mup">
 
-            <h2>Najčešći stranci u Hrvatskoj</h2>
+                <span> Izvor:{" "}
 
-            <p className="paragraph">
-              Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. evidentirano podjednako osoba iz BiH i Nepala.
-              Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
-              U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina. 
+                  <a
+                    href="https://narodne-novine.nn.hr/eli/sluzbeni/2025/40/545"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Zakon o strancima, NN 40/2025
+                  </a>
+                </span>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  MUP Top 10 državljanstva po godini
-                </a>
-              </span>
+              </p>
 
-            </p>
+              <div>
+                <StackedBars />
+              </div>
 
-            <div>
-              <Mup />
-            </div>
 
-          </section>
 
-          <section className="section mb-20" id="bars">
+            </section>
 
-            <h2>Migracije Hrvata</h2>
 
-            <p className="paragraph">
-              Najviše Hrvata odlazi 2022. nakon čega se broj smanjuje.
-              Otprilike 10 tisuća Hrvata svake godine dolazi u Hrvatsku – ovaj trend blago raste.
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
 
-            </p>
+            <section className="section " id="usporedba">
 
-            <div>
-              <PersonBars />
-            </div>
+              <h2>Usporedba podataka HZZ i MUP</h2>
 
-          </section>
+              <p className="paragraph">
+                Broj dozvola za boravak i rad prema podacima MUP-a u pravilu je veći od broja HZZ pozitivnih mišljenja.
+                U oba slučaja, broj raste do 2025. godine kad se može vidjeti i najveća razlika u podacima zbog manjeg broja novih zaposlenja u odnosu na povećani broj produljenja.
 
-          <section className="section " id="choropleth-hr">
+                <span> Izvori:{" "}
 
-            <h2>Kamo idu Hrvati?</h2>
 
-            <p className="paragraph">
-              U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.
+                  <a
+                    href="https://www.hzz.hr/statistika/statistika-usluga-test-trzista-rada-i-radne-dozvole/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    HZZ
+                  </a>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/2025/hr/97255"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  DZS
-                </a>
-              </span>
+                  {" "}i{" "}
 
-            </p>
+                  <a
+                    href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    MUP
+                  </a>
+                </span>
 
-            <div >
-              < ChoroplethHr />
-            </div>
+              </p>
 
-          </section>
+              <div>
+                <GroupedBars />
+              </div>
 
-          <section className="section " id="big-data">
+            </section>
 
-            <h2>Big data</h2>
 
-            <p className="paragraph">
-              Meta ads
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/2025/hr/97255"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Meta
-                </a>
-              </span>
 
-            </p>
 
-            <div >
-              < BubbleChart />
-            </div>
+            <section className="section mb-10" id="choropleth-cro">
 
-          </section>
+              <h2>Odakle dolazi najviše migranata?</h2>
 
-<section className="section " id="corr">
+              <p className="paragraph">
+                2022. i 2023. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije. 
+                Najnovijih podataka nema u Eurostatu, ali za dostupne godine moguće je vidjeti podjelu po svim zemljama, za razliku od hrvatskih javnih podataka koji grupiraju zemlje prema podrijetlu (DZS: Azija, Afrika, Oceanija i sl.) ili prikazuju samo top 10 (MUP).
 
-            <h2>Big data</h2>
+                <span> Izvor:{" "}
+                  <a
+                    href="https://ec.europa.eu/eurostat/databrowser/view/migr_imm7ctb/default/table?lang=en&category=migr.migr_cit.migr_immi"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Eurostat
+                  </a>
+                </span>
 
-            <p className="paragraph">
-              Meta ads
+              </p>
 
-              <span> Izvor:{" "}
-                <a
-                  href="https://podaci.dzs.hr/2025/hr/97255"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Meta
-                </a>
-              </span>
+              <div >
+                < ChoroplethCro sidebarVisible={sidebarVisible} />
+              </div>
 
-            </p>
+            </section>
 
-            <div >
-              < CorrContainer />
-            </div>
+            <section className="section mb-20" id="top5">
 
-          </section>
+              <h2>Migranti prema podrijetlu</h2>
 
+              <p className="paragraph">
+                Nakon 2023. broj migranata iz Ukrajine se smanjuje, dok broj migranata iz Azije nastavlja rasti.
 
+                <span> Izvor:{" "}
+                  <a
+                    href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DZS
+                  </a>
+                </span>
+              </p>
 
-        </main>
+              <div>
+                <TopImmigrants />
+              </div>
+
+            </section>
+
+
+            <section className="section " id="mup">
+
+              <h2>Najčešći stranci u Hrvatskoj</h2>
+
+              <p className="paragraph">
+                Prema podacima Ministarstva unutarnjih poslova, u Hrvatskoj je 2025. evidentirano podjednako osoba iz BiH i Nepala.
+                Iako je tijekom 2022. i 2023. u Hrvatsku migriralo više od 20 000 osoba iz Ukrajine, broj koji se zadržao u 2025. puno je manji.
+                U odnosu na prethodnu 2024. godinu, povećao se jedino broj osoba iz Filipina.
+
+                <span> Izvor:{" "}
+                  <a
+                    href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    MUP Top 10 državljanstva po godini
+                  </a>
+                </span>
+
+              </p>
+
+              <div>
+                <Mup />
+              </div>
+
+            </section>
+
+            <section className="section " id="pie">
+
+              <h2>Stanovništvo Hrvatske</h2>
+
+              <p className="paragraph">
+                Strani radnici čine otprilike 4,5% ukupnog stanovništva Hrvatske u 2025. godini.
+                *U siječnju 2026. nije još dostupna precizna procjena ukupnog stanovništa za 2025. pa je u ovom slučaju korištena procjena ukupnog stanovništva iz prethodne godine.
+
+                <span> Izvori:{" "}
+                  <a
+                    href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    MUP
+                  </a>
+
+                  {" "}i{" "}
+
+                  <a
+                    href="https://podaci.dzs.hr/hr/statistika-u-nizu/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DZS
+                  </a>
+                </span>
+
+              </p>
+
+              <div>
+                <Pie />
+              </div>
+
+            </section>
+
+            <section className="section mb-20" id="bars">
+
+              <h2>Migracije Hrvata</h2>
+
+              <p className="paragraph">
+                Najviše Hrvata odlazi 2022. nakon čega se broj smanjuje.
+                Otprilike 10 tisuća Hrvata svake godine dolazi u Hrvatsku – ovaj trend blago raste.
+
+                <span> Izvor:{" "}
+                  <a
+                    href="https://podaci.dzs.hr/hr/podaci/stanovnistvo/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DZS
+                  </a>
+                </span>
+
+              </p>
+
+              <div>
+                <PersonBars />
+              </div>
+
+            </section>
+
+            <section className="section " id="choropleth-hr">
+
+              <h2>Kamo idu Hrvati?</h2>
+
+              <p className="paragraph">
+                U 2024. godini Hrvati najčešće odlaze u Njemačku i dolaze iz Njemačke.
+
+                <span> Izvor:{" "}
+                  <a
+                    href="https://podaci.dzs.hr/2025/hr/97255"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    DZS
+                  </a>
+                </span>
+
+              </p>
+
+              <div >
+                < ChoroplethHr sidebarVisible={sidebarVisible} />
+              </div>
+
+            </section>
+
+
+
+
+
+          </div >
+
+        </main >
 
       </div >
 

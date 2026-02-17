@@ -69,7 +69,12 @@ interface AggregatedCountry {
   remit?: number | null;
 }
 
-export default function DorlingWorld() {
+type Props = {
+  sidebarVisible: boolean;
+};
+
+export default function DorlingWorld({ sidebarVisible }: Props) {
+
 
   type CountryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, CountryFeatureProperties>;
 
@@ -155,13 +160,13 @@ export default function DorlingWorld() {
         return { width: 500, height: 250, baseScale: 200, sizeRange: [5, 65] };
       }
 
-      let width = size.width * (size.width < 500 ? 0.7 : 0.9);
+      let width = size.width * (size.width < 500 ? 0.8 : 0.9);
 
 
       return {
         width,
         height: width * 0.5,
-        baseScale: Math.max(70, Math.min(260, width / 5)),
+        baseScale: Math.max(60, Math.min(260, width / 5)),
         sizeRange: [5, Math.max(10, Math.min(65, width / 8))],
       };
     })();
@@ -229,8 +234,6 @@ export default function DorlingWorld() {
     const tooltip = d3.select(tooltipRef.current);
 
     tooltip.style("position", "absolute");
-
-
 
 
     const polyProjection = d3.geoNaturalEarth1()
@@ -402,9 +405,9 @@ export default function DorlingWorld() {
 
   return (
     <div >
-      <div className="flex flex-wrap items-center justify-between gap-5 mt-5 mb pr-[70px]">
+      <div className="flex flex-wrap items-center justify-between gap-5 mt-5 ">
 
-        <div className="flex flex-wrap gap-[5px] mb-2.5">
+        <div className="flex flex-wrap gap-2.5 mb-2.5">
 
           {["origin", "destination"].map(m => (
             <button
@@ -412,13 +415,10 @@ export default function DorlingWorld() {
               aria-pressed={mode === m} // for the screen reader
               lang="hr" // Croatian TTS
               onClick={() => setMode(m)}
+              className="button"
               style={{
-                padding: "5px 10px",
                 backgroundColor: mode === m ? "#c51b8a" : "#eee",
                 color: mode === m ? "#fff" : "#000",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
                 userSelect: "none",
               }}
             >
@@ -437,29 +437,20 @@ export default function DorlingWorld() {
       </div>
 
 
-
-      <div
-        ref={containerRef}
-        className="relative w-full flex justify-center  
-        mt-20 md:mt-10
-        mb-10 md:mb-0 "
-      >
+      <div ref={containerRef} className={`relative w-[80vw] xl:w-[90vw]  flex justify-center
+      mt-20 md:mt-10
+      mb-10 md:mb-0
+      ${sidebarVisible ? "ml-[-90] w-[80vw] " : "ml-0 w-[100vw]"} xl:ml-[-90] portrait:ml-0 portrait:w-[100vw]`} >
+        
         <svg ref={svgRef} />
-
 
         {tooltip && (
           <div
             className="tooltip"
             style={{
               position: "absolute",
-              left: Math.min(
-                tooltip.x,
-                (containerRef.current?.clientWidth ?? 0) - 210
-              ),
-              top: Math.min(
-                tooltip.y,
-                (containerRef.current?.clientHeight ?? 0) - 150
-              ),
+              left: Math.min(tooltip.x, (containerRef.current?.clientWidth ?? window.innerWidth) - (window.innerWidth > 1000 ? 300 : 240)),
+              top: Math.min(tooltip.y, (containerRef.current?.clientHeight ?? 0) - 100),
               opacity: tooltip.opacity,
               transition: "opacity 0.2s ease",
             }}

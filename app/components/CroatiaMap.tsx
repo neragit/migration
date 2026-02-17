@@ -83,19 +83,6 @@ export default function CroatiaMap() {
 
   const formatNumber = (num: number) => num.toLocaleString("fr-FR");
 
-  useEffect(() => {
-    d3.csv("/data/zahtjevi.csv").then((raw) => {
-      setData(
-        raw.map((d: any) => ({
-          zupanija: d.zupanija,
-          neg: +d.neg,
-          poz: +d.poz,
-          godina: +d.godina,
-        }))
-      );
-    });
-  }, []);
-
 
   useEffect(() => {
     d3.json("/maps/zupanije.topojson").then((topology: any) => {
@@ -110,20 +97,18 @@ export default function CroatiaMap() {
   const draw = () => {
     if (!size || !svgRef.current || !topoRef.current || !dataByYear[year]) return;
 
-
     const container = svgRef.current.parentElement!;
     const width = container.clientWidth;
+
     let height = size.width * 0.75; // default proportional
-
-
     if (size.width < 800) height = 300;
-
     const maxHeight = 600;
     if (height > maxHeight) height = maxHeight;
 
-
-
     const svg = d3.select(svgRef.current);
+
+
+
 
     svg
       .attr("viewBox", `0 0 ${width} ${height}`)
@@ -131,7 +116,7 @@ export default function CroatiaMap() {
 
     const projection = d3.geoMercator();
     projection.fitSize(
-      [width * 0.85, height - 40],
+      [width, height - 40],
       topoRef.current
     );
 
@@ -160,7 +145,7 @@ export default function CroatiaMap() {
         const v = selectedData[name];
         return v ? color(v.pos) : "#eee";
       })
-      .on("mousemove", (event, d) => {
+      .on("mouseover", (event, d) => {
         const name = d.properties?.name;
         if (!name) return;
 
@@ -180,20 +165,22 @@ export default function CroatiaMap() {
             <div>
               <b>{name}</b>
               <br />
-              Odobreno: {formatNumber(v.pos)}
+              <b>Odobreno:</b> {formatNumber(v.pos)}
               <br />
-              Neodobreno: {formatNumber(v.neg)}
+              <b>Neodobreno:</b> {formatNumber(v.neg)}
             </div>
           ),
         });
       })
       .on("mouseleave", (event) => {
-        // Reset stroke on mouse leave
-        d3.select(event.currentTarget)
-          .attr("stroke", "#fff")
-          .attr("stroke-width", 0.6);
 
-        setTooltip(null);
+
+  d3.select(svgRef.current)
+    .selectAll("path")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 0.6);
+
+  setTooltip(null);
       });
 
 
@@ -250,18 +237,17 @@ export default function CroatiaMap() {
       <div className="flex gap-5 flex-wrap justify-between items-start max-w-[850px] mb-10">
 
 
-        <div style={{ display: "flex", gap: "5px" }}>
+        <div className="flex flex-wrap gap-1.5">
           {years.map(y => (
             <button
               key={y}
+              type="button"
+              aria-pressed={y === year}
               onClick={() => setYear(y)}
+              className="button"
               style={{
-                padding: "5px 10px",
                 backgroundColor: y === year ? "#4CAF50" : "#eee",
                 color: y === year ? "#fff" : "#000",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
               }}
             >
               {y}
@@ -274,7 +260,7 @@ export default function CroatiaMap() {
         </div>
       </div>
 
-      <div className="pl-10 xl:pl-0">
+      <div className="">
         <svg
           ref={svgRef}
           className="block w-full h-auto"

@@ -348,19 +348,17 @@ const Treemap: React.FC = () => {
     >
 
       <div style={{ display: "flex", gap: "20px", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", marginBottom: "50px", overflow: "visible" }}>
-        <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", overflow: "visible" }}>
+        <div className="flex flex-wrap gap-1.5 overflow-visible">
           {years.map(y => (
             <button
               key={y}
+              aria-pressed={selectedYear === y} // for the screen reader
+              lang="hr" // Croatian TTS
               onClick={() => setSelectedYear(y)}
+              className="button"
               style={{
-                padding: "5px 10px",
                 backgroundColor: selectedYear === y ? "#4292c6" : "#eee",
                 color: selectedYear === y ? "#fff" : "#000",
-                border: "none",
-                borderRadius: "4px",
-                cursor: "pointer",
-
               }}
             >
               {y}

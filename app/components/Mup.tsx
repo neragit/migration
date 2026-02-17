@@ -23,7 +23,7 @@ interface NodeDatum extends d3.SimulationNodeDatum {
 export default function Mup() {
   const svgRef = useRef<SVGSVGElement>(null);
   const [data, setData] = useState<CountryData[]>([]);
-  const [selectedYear, setSelectedYear] = useState<number>(2021);
+  const [year, setYear] = useState<number>(2021);
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
@@ -48,7 +48,7 @@ export default function Mup() {
       ? {
         width: size.width * 1.3,
         height: size.width * 1.7, // taller in portrait
-        iconSize: 5,
+        iconSize: 6,
 
         paddingTop: 150,
         paddingBottom: 150,
@@ -104,9 +104,8 @@ export default function Mup() {
   const nodesRef = useRef<Record<string, { x: number; y: number }>>({});
 
   const totalYear = React.useMemo(() => {
-    return data.reduce((sum, d) => sum + ((d[selectedYear] as number) || 0), 0);
-  }, [data, selectedYear]);
-
+    return data.reduce((sum, d) => sum + ((d[year] as number) || 0), 0);
+  }, [data, year]);
 
 
 
@@ -130,9 +129,9 @@ export default function Mup() {
     () =>
       data.map(d => ({
         country: d.country,
-        value: (d[selectedYear] as number) || 0
+        value: (d[year] as number) || 0
       })),
-    [data, selectedYear]
+    [data, year]
   );
 
   useEffect(() => {
@@ -359,22 +358,22 @@ export default function Mup() {
       const now = Date.now();
       if (now - lastScrollTime < cooldown) return;
 
-      const currentIndex = years.indexOf(selectedYear);
+      const currentIndex = years.indexOf(year);
 
       if (e.deltaY > 0 && currentIndex < years.length - 1) {
         e.preventDefault();
-        setSelectedYear(years[currentIndex + 1]);
+        setYear(years[currentIndex + 1]);
         lastScrollTime = now;
       } else if (e.deltaY < 0 && currentIndex > 0) {
         e.preventDefault();
-        setSelectedYear(years[currentIndex - 1]);
+        setYear(years[currentIndex - 1]);
         lastScrollTime = now;
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: false });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [size, selectedYear, years]);
+  }, [size, year, years]);
 
 
 
@@ -384,7 +383,7 @@ export default function Mup() {
     const svg = d3.select(svgRef.current);
 
     const minYear = Math.min(...[2021, 2022, 2023, 2024, 2025]);
-    setSelectedYear(minYear);
+    setYear(minYear);
 
 
     nodesRef.current = {};
@@ -463,19 +462,17 @@ export default function Mup() {
         }}
       >
 
-        <div style={{ display: "flex", gap: 6 }}>
+        <div className="flex flex-wrap gap-1.5">
           {years.map(y => (
             <button
               key={y}
-              onClick={() => setSelectedYear(y)}
+              type="button"
+              aria-pressed={y === year}
+              onClick={() => setYear(y)}
+              className="button"
               style={{
-                padding: "4px 10px",
-                background: selectedYear === y ? "#4e79a7" : "#eee",
-                color: selectedYear === y ? "#fff" : "#000",
-                border: "none",
-                borderRadius: 4,
-                cursor: "pointer",
-                zIndex: 50
+                background: year === y ? "#4e79a7" : "#eee",
+                color: year === y ? "#fff" : "#000",
               }}
             >
               {y}

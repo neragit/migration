@@ -5,7 +5,7 @@ import "./globals.css";
 const mukta = Mukta({
   variable: "--font-mukta",
   subsets: ["latin"],
-  weight: ["200", "300", "400", "500", "600", "700", "800"], 
+  weight: ["200", "300", "400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -21,6 +21,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${mukta.variable} antialiased`}>
+
+        <header className="fixed top-0 left-0 right-0 h-10 px-4 bg-neutral-50 text-neutral-700 shadow flex items-center z-9998">
+
+          <nav className="flex justify-between w-full">
+
+            <div className="flex gap-5">
+              <a href="/" className="hover:text-slate-600 focus:outline-none">Migracije</a>
+              <a href="/meta" className="hover:text-slate-600 focus:outline-none">Meta signali</a>
+            </div>
+
+            <div className="flex gap-5">
+              <a href="https://github.com/tvoje-github" className="hover:text-slate-600 focus:outline-none">GitHub</a>
+              <a href="https://linkedin.com/in/tvoje-linkedin" className="hover:text-slate-600 focus:outline-none">LinkedIn</a>
+            </div>
+
+          </nav>
+
+        </header>
+
+
         {children}
       </body>
     </html>

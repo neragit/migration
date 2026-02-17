@@ -8,11 +8,23 @@ import useResizeObserver from "../hooks/useResizeObs";
 
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
 
-export default function ChoroplethCro() {
+type Props = {
+  sidebarVisible: boolean;
+};
+
+export default function ChoroplethCro({ sidebarVisible }: Props) {
+
+
 
   const [csvData, setCsvData] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState("2020");
   const [isClient, setIsClient] = useState(false);
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    country: string;
+    value: number;
+  } | null>(null);
   const years = ["2020", "2021", "2022", "2023"];
   const containerRef = useRef<HTMLDivElement>(null);
   const lockScrollRef = useRef(false);
@@ -25,76 +37,6 @@ export default function ChoroplethCro() {
     setIsClient(true);
     d3.csv("/data/hrv_choropleth.csv").then(setCsvData);
   }, []);
-
-  useEffect(() => {
-    const tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("position", "absolute")
-      .style("pointer-events", "none")
-      .style("opacity", 0)
-
-    const cleanup = (): void => {
-      tooltip.remove();
-    };
-
-    return cleanup;
-  }, []);
-
-
-
-  useEffect(() => {
-    const tooltip = d3.select(".tooltip");
-    const moveHandler = (e: MouseEvent) => {
-      tooltip.style("left", e.pageX + 10 + "px").style("top", e.pageY + 10 + "px");
-    };
-    document.addEventListener("mousemove", moveHandler);
-    return () => document.removeEventListener("mousemove", moveHandler);
-  }, []);
-
-  const allCountryISO3 = allCountries.map((c) => c.cca3);
-  const locations = allCountryISO3;
-
-  const dataMap = new Map(
-    csvData.map((d) => [
-      d.country_code,
-      { value: parseFloat(d[selectedYear]), country_name: d.EUROSTAT },
-    ])
-  );
-
-  const zValues = allCountryISO3.map((code) => dataMap.get(code)?.value ?? null);
-  const numericZ = zValues.filter((v) => v != null) as number[];
-  const zmin = Math.min(...numericZ);
-  const zmax = Math.max(...numericZ);
-  const markerColors = zValues.map((v) => (v == null ? "#eeeeee" : undefined));
-
-  const currentTotal = React.useMemo(() => {
-    const stats: Record<string, number> = {};
-    years.forEach((year) => {
-      const yearData = csvData.map((d) => parseFloat(d[year])).filter((v) => !isNaN(v));
-      stats[year] = d3.sum(yearData);
-    });
-    return stats[selectedYear] ?? 0;
-  }, [csvData, selectedYear]);
-
-
-  const handleHover = (event: any) => {
-    const tooltip = d3.select(".tooltip");
-    if (!event.points || event.points.length === 0) return;
-    const pt = event.points[0];
-    const code = pt.location;
-    const dataEntry = dataMap.get(code);
-    if (!dataEntry) return;
-    tooltip
-      .html(`<b>${dataEntry.country_name}</b><br>${new Intl.NumberFormat('fr-FR').format(dataEntry.value)}`)
-      .style("opacity", 0.90);
-  };
-
-  const handleUnhover = () => {
-    d3.select(".tooltip").style("opacity", 0);
-  };
-
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -115,7 +57,6 @@ export default function ChoroplethCro() {
     observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [containerRef]);
-
 
   useEffect(() => {
     let lastScrollTime = 0; // timestamp of last year change
@@ -146,6 +87,55 @@ export default function ChoroplethCro() {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [selectedYear]);
 
+  const allCountryISO3 = allCountries.map((c) => c.cca3);
+  const locations = allCountryISO3;
+
+  const dataMap = new Map(
+    csvData.map((d) => [
+      d.country_code,
+      { value: parseFloat(d[selectedYear]), country_name: d.EUROSTAT },
+    ])
+  );
+
+  const zValues = allCountryISO3.map((code) => dataMap.get(code)?.value ?? null);
+  const numericZ = zValues.filter((v) => v != null) as number[];
+  const zmin = Math.min(...numericZ);
+  const zmax = Math.max(...numericZ);
+  const markerColors = zValues.map((v) => (v == null ? "#eeeeee" : undefined));
+
+  const currentTotal = React.useMemo(() => {
+    const stats: Record<string, number> = {};
+    years.forEach((year) => {
+      const yearData = csvData.map((d) => parseFloat(d[year])).filter((v) => !isNaN(v));
+      stats[year] = d3.sum(yearData);
+    });
+    return stats[selectedYear] ?? 0;
+  }, [csvData, selectedYear]);
+
+  const handleHover = (event: any) => {
+    if (!event.points || event.points.length === 0) return;
+    const pt = event.points[0];
+    const code = pt.location;
+    const dataEntry = dataMap.get(code);
+    if (!dataEntry) return;
+
+    setTooltip({
+      x: event.event.clientX + 10,
+      y: event.event.clientY + 10,
+      country: dataEntry.country_name,
+      value: dataEntry.value,
+    });
+  };
+
+  const handleUnhover = () => {
+    setTooltip(null);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (tooltip) {
+      setTooltip(prev => prev ? { ...prev, x: e.clientX + 10, y: e.clientY + 10 } : null);
+    }
+  };
 
   return (
     <div>
@@ -158,7 +148,7 @@ export default function ChoroplethCro() {
         gap: "20px",
       }}>
 
-        <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+        <div className="flex flex-wrap gap-1.5">
           {years.map((year) => (
             <label key={year} style={{ display: "inline-block" }}>
               <input
@@ -169,12 +159,9 @@ export default function ChoroplethCro() {
                 onChange={() => setSelectedYear(year)}
                 style={{ display: "none" }}
               />
-              <span
+              <span className="button"
                 style={{
                   display: "inline-block",
-                  padding: "5px 10px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
                   backgroundColor: selectedYear === year ? "#4CAF50" : "#eee",
                   color: selectedYear === year ? "#fff" : "#000",
                   userSelect: "none",
@@ -192,19 +179,10 @@ export default function ChoroplethCro() {
 
       </div>
 
-      <div
-        ref={containerRef}
-        className="
-    relative
-    w-full
-    h-full
-    top-0
-    z-10
 
-
-
-  "
-      >
+      <div ref={containerRef} className={`relative top-0 z-10 justify-center 
+       ${sidebarVisible ? " ml-[-80]  " : "ml-0  "} w-[95vw] lg:ml-[-60]  portrait:w-screen portrait:ml-0 `}
+       onMouseMove={handleMouseMove}>
 
         {isClient && (
           <Plot
@@ -228,25 +206,26 @@ export default function ChoroplethCro() {
                 projection: { type: "natural earth" },
                 center: {
                   lon: 40,
-                  lat: 0, },
-
-                  showcoastlines: false,
-                  showframe: false,
-
+                  lat: 0,
                 },
-                margin: { t: 0, b: 0, l: 0, r: 0 },
-                width: size?.width,
-                height: (size?.width ?? 0) * 0.5,
-                autosize: true,
-                dragmode: isDesktop ? "pan" : false,
 
-              }
+                showcoastlines: false,
+                showframe: false,
+
+              },
+              margin: { t: 0, b: 0, l: 0, r: 0 },
+              width: size?.width,
+              height: (size?.width ?? 0) * 0.5,
+              autosize: true,
+              dragmode: isDesktop ? "pan" : false,
+
+            }
             }
             config={{
               responsive: true,
               displaylogo: false,
               scrollZoom: false,
-              modeBarButtonsToRemove: ["pan2d", "select2d", "lasso2d"],
+              displayModeBar: false,
             }}
             onHover={handleHover}
             onUnhover={handleUnhover}
@@ -254,6 +233,22 @@ export default function ChoroplethCro() {
         )}
       </div>
 
+      {tooltip && (
+        <div
+          className="tooltip"
+          style={{
+            position: "fixed",
+            left: Math.min(tooltip.x, window.innerWidth - 100),
+            top: Math.min(tooltip.y, window.innerHeight - 50),
+            opacity: 0.9,
+            transition: "opacity 0.1s ease-in-out, transform 0.1s ease-out",
+          }}
+        >
+          <b>{tooltip.country}</b>
+          <br />
+          {new Intl.NumberFormat('fr-FR').format(tooltip.value)}
+        </div>
+      )}
 
     </div>
   );
