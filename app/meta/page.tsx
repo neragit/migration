@@ -46,12 +46,14 @@ export default function MetaPage() {
 
                         <p className="paragraph">
                             S obzirom na to da su podaci <b>anonimizirani i agregirani na razini skupine</b>, moguće je koristiti alate poput Meta Ads Managera i Graph API za analizu publike u istraživačke svrhe pod uvjetom poštivanja pravila privatnosti.
-                            U Europskoj uniji primjenjuje se GDPR, koji štiti privatnost korisnika.
+                            U Europskoj uniji primjenjuje se GDPR.
                             Radi očuvanja privatnosti, Meta u prikazu procjene potencijalne publike koristi raspon između <b>minimalne i maksimalne vrijednosti</b>.
                             Vrlo male vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika može se prikazati kao "&lt;1000".
 
 
                         </p>
+
+                        
 
                         <img
                             src="/meta.png"
@@ -116,7 +118,7 @@ export default function MetaPage() {
 
                     <section className="section">
 
-                        
+
 
                         <h2>Usporedba podataka Meta Ads Managera-a s brojem dozvola MUP-a</h2>
 
@@ -124,32 +126,33 @@ export default function MetaPage() {
 
                         <section className="section mt-20" >
 
-                        <h2>Razlike u procjenama Meta Ads Managera-a i Graph API-ja</h2>
+                            <h2>Razlike u procjenama Meta Ads Managera-a i Graph API-ja</h2>
 
-                        <p className="paragraph ">
-                            xxxxxxU nekim znanstvenim radovima navodi se da <b>procjene publike dobivene putem API mogu biti preciznije</b> (tj. manjim rasponima) nego one koje se prikazuju u sučelju Ads Managera.
-                            Korisnici često prijavljuju da Ads Manager prikazuje &lt;1000 ili <b>jako malu publiku</b> iako stvarni promet ili podaci pokazuju daleko veće brojeve, što može biti rezultat Meta ograničenja ili načina prikaza procjena.
-                            Moguće je da Meta namjerno ograničava procjenu publike radi privatnosti korisnika ili vlastitih strategija.
+                            <p className="paragraph ">
+                                xxxxxxU nekim znanstvenim radovima navodi se da <b>procjene publike dobivene putem API mogu biti preciznije</b> (tj. manjim rasponima) nego one koje se prikazuju u sučelju Ads Managera.
+                                Korisnici često prijavljuju da Ads Manager prikazuje &lt;1000 ili <b>jako malu publiku</b> iako stvarni promet ili podaci pokazuju daleko veće brojeve, što može biti rezultat Meta ograničenja ili načina prikaza procjena.
+                                Moguće je da Meta namjerno ograničava procjenu publike radi privatnosti korisnika ili vlastitih strategija.
+                            </p>
+
+                            <p className="paragraph ">
+                                Međutim, analiza
+                            </p>
+
+
+                            <MetaContainer />
+
+                            <p className="paragraph">
+                            Ova vizualizacija služi samo u obrazovne i istraživačke svrhe.
+                            Prikazani podaci iz Meta Marketing API-ja su agregirani i ne sadrže osobne ili identificirajuće informacije.
+                            Prikazane uvide služe analitičkoj demonstraciji i nisu namijenjene komercijalnoj upotrebi.
+
                         </p>
 
-                        <p className="paragraph ">
-                            Međutim, analiza 
-                        </p>
 
-
-                        <MetaContainer />
-
-                        <p className="paragraph mt-15 ">
-                            xxxxxxx
-
-                        </p>
+                        </section>
 
 
 
-                    </section>
-
-                        
-                        
 
                         <h2 className="mt-20">Balkanski jezici: Meta uglavnom
                             <span style={{ color: "#00a651" }}> "precjenjuje" </span>oko 2 puta više
@@ -337,7 +340,7 @@ export default function MetaPage() {
 
                     </section>
 
-                    
+
 
                     <section className="section" >
 
