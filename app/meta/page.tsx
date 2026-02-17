@@ -3,8 +3,10 @@
 "use client";
 
 import BubbleChart from "../components/BubbleChart";
-import MetaContainer from "../components/MetaContainer";
+
 import MetaBars from "../components/MetaBars";
+
+import MetaContainer from "../components/MetaContainer";
 
 
 export default function MetaPage() {

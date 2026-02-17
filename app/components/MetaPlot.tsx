@@ -1,4 +1,4 @@
-// components/MetaPlots.tsx
+// components/MetaPlot.tsx
 "use client";
 
 import React, { useRef, useEffect } from 'react';
@@ -70,7 +70,7 @@ const defaultData: MetaManagerData[] = [
 ];
 
 
-const MetaPlots: React.FC<Props> = ({ data }) => {
+const MetaPlot: React.FC<Props> = ({ data }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(containerRef);
 
@@ -481,4 +481,4 @@ const MetaPlots: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default MetaPlots;
+export default MetaPlot;

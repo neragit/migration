@@ -1,38 +1,23 @@
-//app/components/MetaContainer.tsx
+"use client";
 
-import { createClient } from '@supabase/supabase-js';
+import { useEffect, useState } from 'react';
 import MetaPlot from './MetaPlot';
 
-interface LangData {
-  lang: string;
-  code: string;
-  residents: number;
-  api_reach_min: number;
-  api_reach_max: number;
-  api_reach_avg: number;
-  country: 'N/A';
-}
+export default function MetaContainer() {
+  const [data, setData] = useState<any[] | null>(null);
 
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch('/api/meta');
+      const json = await res.json();
+      setData(json);
+    }
 
-export default async function MetaPlotContainer() {
-  const supabase = createClient(
-    process.env.SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_KEY!
-  );
+    fetchData();
+  }, []);
 
-  const { data, error } = await supabase
-    .from<'cro_lang_data', LangData>('cro_lang_data')
-    .select('*')
-    .order('snapshot_time', { ascending: false });
-
-  if (error) {
-    console.error('Supabase fetch error:', error);
-    return <div>Error fetching data</div>;
-  }
-
-  if (!data || data.length === 0) {
-    return <div>No data available</div>;
-  }
+  if (data === null) return <div>Loading...</div>;
+  if (data.length === 0) return <div>No data available</div>;
 
   return <MetaPlot data={data} />;
 }
