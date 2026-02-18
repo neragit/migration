@@ -13,7 +13,6 @@ interface LangData {
 }
 
 
-// Keep your token and ad account ID secure in Vercel environment variables
 const TOKEN = process.env.MARKETING_API_TOKEN!;
 const AD_ACCOUNT_ID = process.env.AD_ACCOUNT_ID!;
 
@@ -33,7 +32,6 @@ const languages: LangData[] = [
   { lang: 'Uzbečki', code: 'Uzbek', residents: 5521, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
 ];
 
-
 const localeMap: { [key: string]: number } = {
   Bosnian: 55,
   Macedonian: 79,
@@ -52,14 +50,17 @@ const localeMap: { [key: string]: number } = {
 };
 
 
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LangData[]>) {
 
-  if (req.headers['authorization'] !== `Bearer ${process.env.CRON_SECRET}`) {
+  // Accept either Authorization header or query parameter for cron
+  const token = req.headers['authorization']?.split(' ')[1] || req.query.token;
+  if (token !== process.env.CRON_SECRET) {
     return res.status(401).end('Unauthorized');
   }
 
   try {
+
+    console.log("Cron hit at", new Date().toISOString());
 
     console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
     console.log("AD_ACCOUNT_ID exists:", !!process.env.AD_ACCOUNT_ID);
@@ -74,7 +75,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       process.env.SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_KEY!
     )
-
 
     for (const lang of languages) {
 
@@ -95,17 +95,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         headers: { Authorization: `Bearer ${TOKEN}` },
       });
 
-
-
       const data = await response.json();
 
       if (!response.ok) {
         console.error("Facebook API error:", data);
       }
 
-
       // Log the raw response from Facebook
-
       if (data && data.data && !data.data.users_lower_bound) {
         console.warn(`${lang.lang} response might not respect geo_locations`);
       }
@@ -133,9 +129,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         apiReachAvg: avgReach,
       });
 
-
-
-
     }
 
     const { error } = await supabase
@@ -153,10 +146,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       );
 
     if (error) console.error('Supabase insert error:', error);
-
-    console.log("TOKEN exists:", !!process.env.MARKETING_API_TOKEN);
-
     res.status(200).json(results);
+
   } catch (err) {
     console.error('api API error:', err);
     res.status(500).json(languages); // fallback

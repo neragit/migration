@@ -31,50 +31,76 @@ export default function MetaPage() {
 
                     <section className="section" >
 
+                        <p className="paragraph">Koliko stranih radnika stvarno boravi u Hrvatskoj?
+                            Koliko ih radi neprijavljeno?
+                            Koliko ih je napustilo zemlju bez odjave?
+                            Koliko ih ostaje, a koliko odlazi dalje u EU?
+                            Što zapravo predstavlja broj izdanih radnih dozvola?
+                            Jesu li podaci MUP-a, HZMO-a i Ministarstva rada međusobno usklađeni? Bez jasnih i usklađenih podataka, teško je odgovoriti na šira pitanja koja dominiraju javnim prostorom: Je li Hrvatska tranzitna ili useljenička zemlja? Koliki je stvarni rizik zloupotrebe sustava?
+                            Radi li se o privremenoj radnoj snazi ili trajnoj migraciji?
+                            Dolaze li radnici sezonski ili ostaju dugoročno?
+                            Je li uvoz radne snage zamjena za demografsku politiku i povratak iseljenih?
+                            Koliko migranti doprinose proračunu?
+                            Koliko košta integracija?
+                            Postoji li strategija integracije?
+                            Ima li država kapaciteta u obrazovanju, stanovanju i socijalnom sustavu?
+                            Nudi li zakon stvarno rješenje ili samo kozmetičke izmjene?</p>
+
                         <p className="paragraph">
-                            Meta Platforms, Inc. <b>(Facebook, Instagram, WhatsApp, Messenger, Threads)</b> procjenjuje potencijalnu publiku za oglašavanje na temelju dostupnih podataka o korisnicima kao što su demografski podaci, interesi i aktivnosti kako bi omogućila ciljanje oglasa.
-                            Često se pri procjeni veličine potencijalne publike polazi od <b>jezika korisnika</b>, pri čemu se analiza provodi prvenstveno na temelju postavki jezika korisničkog sučelja (primarni signal), ali i na temelju dodatnih pokazatelja, poput jezika kojim korisnik najčešće komunicira (sekundarni signal).
-                            To <b>ne znači</b> da ta procjena označava nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
+                            <b>Posljednjih godina migracije i dolazak stranih radnika postali su jedno od najpolariziranijih društvenih pitanja</b>. Javna rasprava često se kreće između dva ekstrema. Velik dio medijskih tekstova, osobito analitičkih i komentatorskih, naglašava neusklađenost statistika, rast izdanih radnih dozvola i moguće društvene posljedice, čime implicitno ili eksplicitno sugerira zabrinutost i sistemsku neuređenost.
+                            Istodobno, neki od izvora tvrde da su alarmističke interpretacije pretjerane ili politički motivirane. 
+                            U svakom slučaju, <b>brojke postaju politički argument</b>, a interpretacija podataka oblikuje percepciju stvarnosti. U središtu ove rasprave nalazi se temeljno, ali iznenađujuće teško pitanje:</p>
+
+                        <h2>Koliko je stvarno stranih radnika u Hrvatskoj?</h2>
+
+                        <img
+                            src="/news.png"
+                            alt="News collage"
+                            className="w-full h-auto mt-15"
+                        />
+
+                        <p className="paragraph mt-25 ">U atmosferi političke polarizacije brojke nisu više samo statistika. One oblikuju percepciju, potiču zabrinutost ili umiruju javnost. Ali prije nego što zaključimo je li sustav kaotičan ili reguliran, je li Hrvatska tranzitna ili useljenička zemlja, i jesu li strahovi opravdani ili pretjerani, moramo provjeriti osnovno pitanje:</p>
+
+                        <h2>Jesu li podaci pouzdani?</h2>
+
+                        <p className="paragraph">Bez preciznih i usporedivih brojki nemoguće je racionalno procijeniti učinke migracija niti oblikovati održive javne politike. Ako su podaci fragmentirani, zakašnjeli ili neusklađeni, prostor se otvara za spekulacije, političku instrumentalizaciju i polarizaciju javnosti. Ova analiza polazi upravo od tog problema: <b>može li digitalni trag, poput agregiranih podataka društvenih mreža, poslužiti kao dodatni alat za provjeru službenih statistika?</b> Ne kao zamjena, nego kao nadopuna za razumijevanje stvarnosti.</p>
+
+                        <p className="paragraph">
+                            Meta Platforms, Inc. <b>(Facebook, Instagram, WhatsApp, Messenger, Threads)</b> koristi dostupne podatke o korisnicima kao što su demografski podaci, interesi i aktivnosti kako bi omogućila procjenu potencijalne publike za oglašavanje i bolje ciljanje oglasa. Ako analiziramo ove podatke možemo dobiti uvid u to koje su zajednice aktivne na internetu, kako se jezik i lokacija preklapaju, pa čak i kako se trendovi mijenjaju tijekom vremena. Iako ovi brojevi ne odražavaju savršeno službene podatke o stanovništvu, oni nude <b>dinamičan uvid u društvo u stvarnom vremenu</b> koji može pomoći tvrtkama, političarima i istraživačima da razumiju digitalne tragove različitih populacija. Praćenje tih promjena tijekom vremena može otkriti suptilne obrasce, od novih kulturnih trendova do promjena u mobilnosti, za koje tradicionalne statistike mogu biti potrebni mjeseci ili godine.
+                            Pri procjeni veličine potencijalne publike često se polazi od jezika korisnika, pri čemu se analiza provodi <b>prvenstveno na temelju postavki jezika korisničkog sučelja</b> (primarni signal), ali i na temelju dodatnih pokazatelja, poput <b>jezika kojim korisnik najčešće komunicira</b> (sekundarni signal).
+                            To ne znači da ta procjena označava nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
                             Ako osoba koristi drugi jezik, primjerice engleski, bit će uključena u publiku za taj jezik, bez obzira na njezino državljanstvo ili podrijetlo.
                         </p>
-
-
-                    </section>
-
-
-                    <section className="section" >
-
-                        <h2>Privatnost podataka</h2>
-
-                        <p className="paragraph">
-                            S obzirom na to da su podaci <b>anonimizirani i agregirani na razini skupine</b>, moguće je koristiti alate poput Meta Ads Managera i Graph API za analizu publike u istraživačke svrhe pod uvjetom poštivanja pravila privatnosti.
-                            U Europskoj uniji primjenjuje se GDPR.
-                            Radi očuvanja privatnosti, Meta u prikazu procjene potencijalne publike koristi raspon između <b>minimalne i maksimalne vrijednosti</b>.
-                            Vrlo male vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika može se prikazati kao "&lt;1000".
-
-
-                        </p>
-
-                        
 
                         <img
                             src="/meta.png"
                             alt="Meta header"
-                            className="w-full h-auto"
+                            className="w-full h-auto mt-15"
                         />
 
+                    </section>
 
+
+                    <section className="section mt-10" >
+
+                        <h2>Privatnost podataka</h2>
+
+                        <p className="paragraph">
+                            S obzirom na to da su podaci <b>anonimizirani i agregirani na razini skupine</b>, moguće je koristiti alate poput Meta Ads Managera i Graph API-ja za analizu publike u istraživačke svrhe pod uvjetom poštivanja pravila privatnosti.
+                            U Europskoj uniji primjenjuje se GDPR.
+                            Radi očuvanja privatnosti, Meta u prikazu procjene potencijalne publike koristi raspon između <b>minimalne i maksimalne vrijednosti</b>.
+                            Vrlo male vrijednosti nisu prikazane, npr. procjena od 0 do 1 000 korisnika može se prikazati kao "ispod 1 000".
+                        </p>
 
                     </section>
 
                     <section className="section" >
 
-
                         <h2>Procjena korisnika u Hrvatskoj</h2>
 
                         <p className="paragraph">
-                            U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
-                            Važno je naglasiti da ova procjena nije precizan popis korisnika i može se razlikovati ovisno o kriterijima targetiranja, računanju duplikata i slično.
+                            U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika). 
+                            Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive, što znači da ista osoba može biti uključena u procjene za više jezika istovremeno, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj. 
 
                             <img
                                 src="/ads_manager.png"
@@ -96,7 +122,7 @@ export default function MetaPage() {
                         <p className="paragraph">
                             Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek raspona minimalne i maksimalne vrijednosti</b>.
                             Pri odabiru lokacije, Meta procjenjuje korisnike koji provode vrijeme na toj lokaciji, kao što su ljudi koji tu žive ili su nedavno tu bili.
-                            Polazni kriterij za odabir jezika je MUP-ova lista top 10 stranih državljanstava, a radi točnije procjene uključeni su najkorišteniji jezici u Hrvatskoj poput hrvatskog i engleskog, zatim službeni jezici susjednih i drugih europskih zemalja te svjetski jezici poput kineskog, japanskog itd.
+                            Polazni kriterij za odabir jezika je MUP-ova lista top 10 stranih državljanstava, a radi šire usporedbe i točnije procjene uključeni su najkorišteniji jezici u Hrvatskoj poput hrvatskog i engleskog, zatim službeni jezici susjednih i drugih europskih zemalja te svjetski jezici poput kineskog, japanskog itd.
                             Hrvatski i engleski su očekivano prepoznati kao najkorišteniji jezici u Hrvatskoj.
                         </p>
 
@@ -122,7 +148,7 @@ export default function MetaPage() {
 
 
 
-                        <h2>Usporedba podataka Meta Ads Managera-a s brojem dozvola MUP-a</h2>
+                        <h2>Usporedba podataka Meta Ads Managera-a s brojem dozvola</h2>
 
                         <MetaBars />
 
@@ -131,39 +157,48 @@ export default function MetaPage() {
                             <h2>Razlike u procjenama Meta Ads Managera-a i Graph API-ja</h2>
 
                             <p className="paragraph ">
-                                xxxxxxU nekim znanstvenim radovima navodi se da <b>procjene publike dobivene putem API mogu biti preciznije</b> (tj. manjim rasponima) nego one koje se prikazuju u sučelju Ads Managera.
-                                Korisnici često prijavljuju da Ads Manager prikazuje &lt;1000 ili <b>jako malu publiku</b> iako stvarni promet ili podaci pokazuju daleko veće brojeve, što može biti rezultat Meta ograničenja ili načina prikaza procjena.
-                                Moguće je da Meta namjerno ograničava procjenu publike radi privatnosti korisnika ili vlastitih strategija.
+                                U nekim znanstvenim radovima navodi se da <b>procjene publike dobivene putem API-ja mogu biti preciznije</b> (u manjim rasponima) nego one koje se prikazuju u sučelju Ads Managera.
+                                Također, korisnici često prijavljuju da Ads Manager prikazuje &lt;1000 ili jako malu publiku iako stvarni promet ili podaci pokazuju daleko veće brojeve, što može biti rezultat Meta ograničenja ili načina prikaza procjena.
+                                Pretpostavlja se da Meta namjerno ograničava procjenu publike radi privatnosti korisnika ili vlastitih strategija.
                             </p>
 
                             <p className="paragraph ">
-                                Međutim, analiza
-                            </p>
+                                Međutim, u ovoj analizi procjene Ads Managera i Graph API-ja pokazuju dobro slaganje, vjerojatno zato što su korišteni relativno jednostavni kriteriji (geografska lokacija i jezik) bez dodatnih demografskih filtera koji mogu uzrokovati veća odstupanja.
 
+                            </p>
 
                             <MetaContainer />
 
-                            <p className="paragraph">
-                            Ova vizualizacija služi samo u obrazovne i istraživačke svrhe.
-                            Prikazani podaci iz Meta Marketing API-ja su agregirani i ne sadrže osobne ili identificirajuće informacije.
-                            Prikazane uvide služe analitičkoj demonstraciji i nisu namijenjene komercijalnoj upotrebi.
+                            <p className="paragraph ">
+                                Povezanost Meta procjena s MUP-ovim podacima je umjerena i ukazuje na dva suprotna trenda koji utječu na koeficijent korelacije (r=0,66). S jedne strane, Meta procjene prepoznaju zznatno veću aktivnost govornika jezika susjednih zemalja nego što to sugeriraju MUP-ove dozvole za boravak i rad (odstupanja iznad crvene regresijske linije). Suprotna situacija vrijedi za azijske zajednice, pri čemu se čini da Meta podcjenjuje stvaran broj govornika (odstupanja ispod crvene regresijske linije), najvjerojatnije zato što te osobe Facebook koriste na engleskom jeziku, čime postaju nevidljive za procjene temeljene na jezičnim postavkama.
+                            </p>
 
-                        </p>
+                            <p className="paragraph ">
+                                Podaci za rusku i ukrajinsku zajednicu nisu dostupni u MUP-ovim evidencijama te su izostavljeni iz korelacijske analize, no Meta procjenjuje oko 15 500 govornika ruskog i 8 500 govornika ukrajinskog jezika u Hrvatskoj, što upućuje na prisutnost ovih zajednica koja nije obuhvaćena službenim statistikama.
+
+                            </p>
+
+
+                            <p className="paragraph">
+                                Ova vizualizacija služi samo u obrazovne i istraživačke svrhe.
+                                Prikazani podaci iz Meta Marketing API-ja su agregirani i ne sadrže osobne ili identificirajuće informacije.
+                                Prikazane uvide služe analitičkoj demonstraciji i nisu namijenjene komercijalnoj upotrebi.
+
+                            </p>
 
 
                         </section>
 
 
-
-
-                        <h2 className="mt-20">Balkanski jezici: Meta uglavnom
+                        <h2 className="mt-20">Balkanski jezici: Zašto Meta vidi više nego što MUP bilježi?
                             <span style={{ color: "#00a651" }}> "precjenjuje" </span>oko 2 puta više
                         </h2>
                         <ul>
-                            <li><b>Bosna i Hercegovina</b>: Meta 67 250 i MUP 32 225 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+109%</span>)</li>
-                            <li><b>Srbija</b>: Meta 41 350 i MUP 24 278 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+70%</span>) - Meta vjerojatno broji i Crnu Goru</li>
-                            <li><b>Kosovo</b>: Meta 11 850 i MUP 6 355 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+87%</span>) - Meta broji sve albanske govornike, uključujući Albaniju</li>
                             <li><b>Sj. Makedonija</b>: Meta 53 750 i MUP 11 856 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+353%</span>) - ova vrijednost je posebno zanimljiva i sugerira značajnu pogrešnu klasifikaciju jezika ili intenzivno prekogranično putovanje</li>
+                            <li><b>Bosna i Hercegovina</b>: Meta 67 250 i MUP 32 225 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+109%</span>)</li>
+                            <li><b>Kosovo</b>: Meta 11 850 i MUP 6 355 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+87%</span>) - Meta broji sve albanske govornike, uključujući Albaniju</li>
+                            <li><b>Srbija</b>: Meta 41 350 i MUP 24 278 (<span style={{ color: "#00a651", fontWeight: "bold" }}>+70%</span>) - Meta vjerojatno broji i Crnu Goru</li>
+
                         </ul>
 
 
@@ -282,7 +317,7 @@ export default function MetaPage() {
                             Meta vjerojatno "precijenjuje" Egipat jer se <b>arapski jezik koristi u brojnim zemljama Bliskog istoka i Sjeverne Afrike</b>, što može dovesti do uključivanja drugih arapskih govornika u Hrvatskoj koji nisu na MUP-ovoj listi top 10 (Sirija, Jordan, Palestina, itd.). Isto tako, Meta vjerojatno broji i turiste iz arapskih zemalja koji trenutno borave u Hrvatskoj. U svakom slučaju radi se o relativno maloj razlici od svega 1 146 i treba uzeti u obzir da Meta daje procjenu u rasponu, a ovdje je korišten prosjek te procjene pa može doći do malog odstupanja.</p>
 
 
-                        <h2 className="mt-20" >Bangladeš kao kontrolna skupina</h2>
+                        <h2 className="mt-20" >Po čemu je Bangladeš specifičan?</h2>
 
                         <p className="paragraph">
                             <b>Bangladeš (bengalski)</b>: Meta 3 400 i MUP 3 404 (<span style={{ color: "#555", fontWeight: "bold" }}> ≈ 0%</span>)
@@ -330,44 +365,26 @@ export default function MetaPage() {
                             </div>
 
 
-
                             <h3 className="text-xl font-bold ">Dijeli li Meta podatke s vladama?</h3>
 
                             <p className="paragraph">
                                 Meta dijeli korisničke podatke s vladinim agencijama diljem svijeta kao odgovor na službene zahtjeve u okviru zakona. Ovisno o zahtjevu, Meta može dijeliti kreditne kartice, adrese e-pošte, IP adrese prijave/odjave, poruke, fotografije, videozapise, objave na vremenskoj crti i informacije o lokaciji. Samo u 2022. godini zabilježeno je <b>476 802 zahtjeva</b> od vlada iz 130 zemalja, obuhvaćajući preko <b>800 000 korisničkih računa</b>. Meta je pristala na <b>76% svih zahtjeva</b>, a između 2014. i 2024. godine dijeljenje podataka s vladinim tijelima poraslo je za <b>675%</b>. Najviše podataka zahtijevaju <b>SAD</b> (236 000 korisnika), <b>Indija</b> (198 015 korisnika), <b>Brazil</b> (121 097 korisnika), <b>Njemačka</b> (51 783 korisnika) i <b>Izrael</b> (oko 60 zahtjeva na svakih 100,000 stanovnika što je na razini SAD-a ako se uzme u obzir veličina populacije).
                             </p>
 
-
                         </div>
 
                     </section>
-
 
 
                     <section className="section" >
 
                         <h2>Zaključak</h2>
 
-                        <section className="section" >
 
+                        <p className="paragraph">
+                            Možemo li dakle koristiti Meta procjene za provjeru službenih podataka? Ukratko odgovor je ne, barem ne izravno. Ista osoba može biti vidljiva u više jezičnih skupina istovremeno, ili ni u jednoj ako koristi isključivo jedan, npr. engleski. Možda je bolje pitanje može li nas promjene u procjenama upozoriti kada se nešto mijenja — prije nego što statistika to potvrdi. Ova analiza pokazuje da Meta podatke mogu biti koristan dopunski izvor za procjenu migrantskih zajednica, ali ne mogu zamijeniti službene evidencije. Procjena broja govornika bengalskog je dokaz u prilog točnosti MUP-ovih podataka - u slučaju da zajednica pretežno koristi svoj materinski jezik na Meta platformama, nema prekograničnog kretanja i Meta je dominantna platforma. Odstupanja kod balkanskih i azijskih zajednica nisu greška već odraz različitih ponašanja — putovanja, jezičnih karakteristika i izbora platformi. Meta uključuje prekogranične putnike, sezonske radnike i turiste, dok MUP pokazuje broj osoba s dozvolom za rad i boravak. Potencijalna objašnjenja trebalo bi dodatno ispitati, primjerice anketiranjem o korištenju društvenih mreža i jezičnim postavkama.
 
-
-                            <p className="paragraph">
-                                Meta precjenjuje balkanske jezike i podcjenjuje azijske jezike vjerojatno zbog <b>razlika u metodologiji</b>.
-                                Meta uključuje prekogranične putnike, sezonske radnike i turiste koja održava kulturne veze, dok
-                                MUP broji osobe s dozvolom za rad i boravak.
-
-                            </p>
-
-                            <h2>Teškoće u procjenama</h2>
-
-                            <ul className="list-disc pl-5 mb-10 font-bold">
-                                <li>Neusklađene brojke s drugim izvorima</li>
-                                <li>Ograničenja u prikazu vrlo malih ili specifičnih skupina</li>
-                                <li>Razlike u procjenama publike između Ads Managera i Graph API</li>
-                            </ul>
-
-                        </section>
+                        </p>
 
                     </section>
 

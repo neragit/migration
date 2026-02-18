@@ -191,7 +191,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .attr('cx', d => xScale(d.residents))
       .attr('cy', d => yScale(d.api_reach_avg))
       .attr('r', 5)
-      .attr('fill', '#1f77b4')
+      .attr('fill', '#308330')
       .attr('opacity', 0.8)
       .on('mouseover', (event, d) => {
         const rangeData = barsData.find(rd => rd.lang === d.lang);
@@ -275,6 +275,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .join('text')
       .attr('class', 'label')
       .attr('font-size', '10px')
+      .attr('fill', '#555')
       .attr('x', d => xScale(d.residents) + 10)
       .attr('y', d => yScale(d.api_reach_avg) + 2)
       .attr('pointer-events', 'none')
