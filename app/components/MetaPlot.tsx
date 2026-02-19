@@ -106,7 +106,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
 
   // Determine responsive dimensions
-  const chartWidth = size?.width ? (size.width - 60) / 2 : 400;
+  const chartWidth = size?.width ? size.width > 900 ? (size.width - 60) / 2 : size.width : 400;
   const chartHeight = chartWidth; // square charts
 
   // Scatter plot

@@ -151,7 +151,7 @@ const groups: Group[] = [
         sections: [
             {
                 id: 1,
-                heading: "Uzbekistan i drugačije digitalne navike",
+                heading: "Drugačije digitalne navike",
                 number: "1",
                 color: "[#555]",
                 content: <><b>U Uzbekistanu preko 70% populacije koristi Telegram</b> zbog povijesnog konteksta cenzure i nadzora. Telegram funkcionira ne samo kao privatni messenger već i kao primarna platforma za vijesti u <b>Srednjoj Aziji</b>, s tisućama kanala koji prenose sve od vladinih objava do komentara građana. Za razliku od Facebooka, Instagrama i drugih platformi koje su često bile blokirane, Telegram je postao <b>toliko integriran u uzbekistansko društvo da ga čak ni vlada ne može trajno blokirati</b>. Pokušaj blokade u studenom 2021. trajao je samo nekoliko sati prije nego što je predsjednik morao ponovno omogućiti pristup.
@@ -237,7 +237,7 @@ const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElemen
       =================================*/}
             <div
                 role="tablist"
-                className="flex flex-wrap gap-3 mb-12 ml-60"
+                className="flex flex-wrap gap-3 mb-12 justify-center lg:justify-normal lg:ml-60"
             >
 
                 {groups.map((group, index) => (
@@ -322,7 +322,7 @@ const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElemen
                                 }`}
                         >
                             <span
-                                className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0"
+                                className="absolute right-0 top-1/2 -translate-y-2/2  text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0"
                             >
                                 {section.number}
                             </span>

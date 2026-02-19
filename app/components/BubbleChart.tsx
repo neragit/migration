@@ -317,8 +317,7 @@ const BubbleChart: React.FC = () => {
         <svg
           ref={svgRef}
           width="100%"
-          height="500"
-          viewBox="0 0 900 500" // width x height of your design
+          viewBox="0 0 900 500" 
           preserveAspectRatio="xMidYMid meet"
         />
         <div
