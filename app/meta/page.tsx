@@ -191,7 +191,7 @@ export default function MetaPage() {
 
                                 <button
                                     onClick={() => setOpen1(!open1)}
-                                    className="flex items-center gap-2 text-blue-700 font-bold bg-blue-50 hover:bg-blue-100 cursor-pointer px-4 py-2 rounded-lg w-full justify-between"
+                                    className="flex items-center text-start gap-2 text-blue-700 font-bold bg-blue-50 hover:bg-blue-100 cursor-pointer px-4 py-2 rounded-lg w-full justify-between"
                                 >
                                     Broji li Meta korisnike WhatsAppa kao publiku?
                                     <ChevronDown
