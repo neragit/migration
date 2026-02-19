@@ -111,28 +111,28 @@ export default function MetaPage() {
                             <img
                                 src="/meta-jezik.jfif"
                                 alt="Meta AI"
-                                className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl"
+                                className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl"
                             />
 
                             <img
                                 src="/meta-lokacija.jfif"
                                 alt="Meta AI"
-                                className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl "
+                                className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl "
                             />
                         </div>
 
-                        <div className="flex flex-col-reverse md:flex-row w-full md:max-h-[400px] gap-4 mt-25">
+                        <div className="flex flex-col-reverse md:flex-row w-full md:max-h-[400px] gap-4 mt-10 md:mt-25">
 
                             <img
                                 src="/meta-analiza.jfif"
                                 alt="Meta AI"
-                                className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl"
+                                className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl"
                             />
 
                             <img
                                 src="/meta-privatnost.jfif"
                                 alt="Meta AI"
-                                className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl "
+                                className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl "
                             />
 
                             <p className="paragraph md:pl-15">S obzirom na to da su podaci <b>anonimizirani i agregirani na razini skupine</b>, moguće je koristiti alate poput Meta Ads Managera i Graph API-ja za analizu publike u istraživačke svrhe pod uvjetom poštivanja pravila privatnosti.
@@ -238,13 +238,13 @@ export default function MetaPage() {
                                         <img
                                             src="/meta-oglasi.jfif"
                                             alt="Meta AI"
-                                            className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl"
+                                            className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl"
                                         />
 
                                         <img
                                             src="/meta-business.jfif"
                                             alt="Meta AI"
-                                            className="w-3/4 mx-auto md:w-1/5 h-auto rounded-2xl "
+                                            className="w-5/6 mx-auto md:w-1/5 h-auto rounded-2xl "
                                         />
                                     </div>
 
