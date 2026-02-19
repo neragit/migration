@@ -176,8 +176,8 @@ export default function Objasnjenja() {
     const [activeGroup, setActiveGroup] = useState(0)
     const [activeSection, setActiveSection] = useState(0)
 
-const groupRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
-const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
+    const groupRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
+    const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
 
 
     const currentSections = groups[activeGroup].sections
@@ -243,9 +243,9 @@ const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElemen
                 {groups.map((group, index) => (
                     <button
                         key={group.id}
-                         ref={(el: HTMLButtonElement | null) => {
-      groupRefs.current[index] = el
-    }}
+                        ref={(el: HTMLButtonElement | null) => {
+                            groupRefs.current[index] = el
+                        }}
                         role="tab"
                         aria-selected={activeGroup === index}
                         tabIndex={activeGroup === index ? 0 : -1}
@@ -277,9 +277,9 @@ const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElemen
                         {currentSections.map((section, index) => (
                             <button
                                 key={section.id}
-                                 ref={(el: HTMLButtonElement | null) => {
-      sectionRefs.current[index] = el
-    }}
+                                ref={(el: HTMLButtonElement | null) => {
+                                    sectionRefs.current[index] = el
+                                }}
                                 role="tab"
                                 aria-selected={activeSection === index}
                                 tabIndex={activeSection === index ? 0 : -1}
@@ -311,38 +311,42 @@ const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElemen
                 {/* ===============================
             CONTENT PANEL (FADE)
         =================================*/}
-                <main className="lg:col-span-3 relative min-h-125">
-                    {currentSections.map((section, index) => (
-                        <section
-                            key={section.id}
-                            className={`absolute inset-0 
+
+                <main
+                    className={`lg:col-span-3 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-175 md:min-h-125" : "min-h-125"
+                        }`}
+                >
+                {currentSections.map((section, index) => (
+                    <section
+                        key={section.id}
+                        className={`absolute inset-0 
                 ${activeSection === index
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-4 pointer-events-none"
-                                }`}
+                                ? "opacity-100 translate-y-0"
+                                : "opacity-0 translate-y-4 pointer-events-none"
+                            }`}
+                    >
+                        <span
+                            className="absolute right-0 top-1/2 -translate-y-2/2  text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0"
                         >
-                            <span
-                                className="absolute right-0 top-1/2 -translate-y-2/2  text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0"
-                            >
-                                {section.number}
-                            </span>
+                            {section.number}
+                        </span>
 
-                            {/* CONTENT */}
-                            <div className="relative z-10 text-justify ">
-                                <h3 className={`text-xl sm:text-2xl font-bold text-${section.color}`}>
-                                    {section.heading}
-                                </h3>
+                        {/* CONTENT */}
+                        <div className="relative z-10 text-justify ">
+                            <h3 className={`text-xl sm:text-2xl font-bold text-${section.color}`}>
+                                {section.heading}
+                            </h3>
 
 
-                                <div className="mt-6 text-gray-700 leading-relaxed">
-                                    {section.content}
-                                </div>
+                            <div className="mt-6 text-gray-700 leading-relaxed ">
+                                {section.content}
                             </div>
-                        </section>
-                    ))}
-                </main>
+                        </div>
+                    </section>
+                ))}
+            </main>
 
-            </div>
         </div>
+        </div >
     )
 }
