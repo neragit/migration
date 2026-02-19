@@ -258,7 +258,7 @@ export default function Objasnjenja() {
                                 ? { backgroundColor: group?.color?.replace(/\[|\]/g, ""), color: "white" }
                                 : undefined
                         }
-                        className="px-2 md:px-5 py-2 rounded-lg text-sm font-medium transition
+                        className="px-4 md:px-5 py-2 rounded-lg text-sm font-medium transition
     bg-gray-100 hover:bg-gray-200 hover:cursor-pointer text-gray-700"
                     >
                         {group.label}
