@@ -313,7 +313,7 @@ export default function Objasnjenja() {
         =================================*/}
 
                 <main
-                    className={`lg:col-span-3 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-175 md:min-h-125" : "min-h-125"
+                    className={`lg:col-span-3 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-225 md:min-h-125" : "min-h-125"
                         }`}
                 >
                 {currentSections.map((section, index) => (
