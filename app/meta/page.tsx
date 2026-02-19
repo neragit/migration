@@ -166,7 +166,7 @@ export default function MetaPage() {
 
 
 
-                    <section className="section" >
+                    <section className="section  " >
 
                         <h2>Procjena korisnika prema jeziku</h2>
 

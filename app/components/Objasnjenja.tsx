@@ -228,7 +228,7 @@ export default function Objasnjenja() {
     return (
         <div className="max-w-7xl mx-auto px-6 py-10">
 
-            <h2 className="text-lg font-semibold text-gray-700 pb-10">
+            <h2 className="text-lg font-semibold text-gray-700 md:pb-10">
                 Što može objasniti ove razlike?
             </h2>
 
@@ -332,13 +332,13 @@ export default function Objasnjenja() {
                         </span>
 
                         {/* CONTENT */}
-                        <div className="relative z-10 text-justify ">
-                            <h3 className={`text-xl sm:text-2xl font-bold text-${section.color}`}>
+                        <div className="relative z-10  ">
+                            <h3 className={`text-xl sm:text-2xl font-bold text-${section.color} text-left `}>
                                 {section.heading}
                             </h3>
 
 
-                            <div className="mt-6 text-gray-700 leading-relaxed ">
+                            <div className="mt-6 text-gray-700 leading-relaxed text-justify">
                                 {section.content}
                             </div>
                         </div>
