@@ -145,7 +145,7 @@ export default function MetaPage() {
                     </section>
 
 
-                    <section className="section mt-15" >
+                    <section className="section mt-10 md:mt-15" >
 
                         <h2>Procjena korisnika u Hrvatskoj</h2>
 
