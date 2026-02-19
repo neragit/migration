@@ -101,7 +101,7 @@ export default function MetaPage() {
                         </p>
 
 
-                        <div className="flex flex-col md:flex-row w-full md:max-h-[450px] gap-4 mt-20 md:mt-20">
+                        <div className="flex flex-col md:flex-row w-full md:max-h-[450px] gap-4 mt-15 md:mt-20">
 
                             <p className="paragraph md:pr-15 ">Pri procjeni veličine potencijalne publike često se polazi od jezika korisnika, pri čemu se analiza provodi <b>prvenstveno na temelju postavki jezika korisničkog sučelja</b> (primarni signal), ali i na temelju dodatnih pokazatelja, poput <b>jezika kojim korisnik najčešće komunicira</b> (sekundarni signal).
                                 To ne znači da ta procjena označava nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
@@ -121,7 +121,7 @@ export default function MetaPage() {
                             />
                         </div>
 
-                        <div className="flex flex-col-reverse md:flex-row w-full md:max-h-[400px] gap-4 mt-10 md:mt-25">
+                        <div className="flex flex-col-reverse md:flex-row w-full md:max-h-[400px] gap-4 mt-15 md:mt-25">
 
                             <img
                                 src="/meta-analiza.jfif"
