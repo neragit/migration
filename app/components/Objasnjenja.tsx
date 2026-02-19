@@ -326,8 +326,9 @@ export default function Objasnjenja() {
                             }`}
                     >
                         <span
-                            className="absolute right-0 top-1/2 -translate-y-2/2  text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0"
-                        >
+                            className={ ` absolute right-0 
+                             ${(activeGroup === 4 && activeSection === 0) ? " -translate-y-1/3 md:top-1/2 md:-translate-y-2/2  " : " top-1/2 -translate-y-2/2  " }
+                            text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0 `} >
                             {section.number}
                         </span>
 
