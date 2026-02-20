@@ -4,8 +4,19 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import useResizeObserver from "../hooks/useResizeObs";
 
-//2025 mup data
-type Stranci = { Državljanstvo: string; lang: string; dozvola: number };
+interface LangData {
+    lang: string;
+    residents: number;
+    api_reach_min: number;
+    api_reach_max: number;
+    api_reach_avg: number;
+    country: string;
+}
+
+interface Props {
+    data: LangData[];
+}
+
 
 //2026 meta ads manager screenshots data
 interface MetaManagerData {
@@ -67,6 +78,8 @@ const data: MetaManagerData[] = [
     { lang: 'Cebuano', avg: 1200, region: 'Asia', subgroup: 'Filipini', min: 1100, max: 1300, country: 'Filipini' },
 ];
 
+//2025 mup data
+type Stranci = { Državljanstvo: string; lang: string; dozvola: number };
 
 const MupData: Stranci[] = [
     { Državljanstvo: "BiH", dozvola: 32225, lang: "Bosanski" },
@@ -81,12 +94,45 @@ const MupData: Stranci[] = [
     { Državljanstvo: "Bangladeš", dozvola: 3404, lang: "Bengalski" },
 ];
 
+const DZS = [
+    { lang: "Albanski", minority: "Albanci", number: 13817 },
+    { lang: "Njemački", minority: "Austrijanci", number: 365 },
+    { lang: "Bosanski", minority: "Bošnjaci", number: 24131 },
+    { lang: "Bugarski", minority: "Bugari", number: 262 },
+    { lang: "Crnogorski", minority: "Crnogorci", number: 3127 },
+    { lang: "Češki", minority: "Česi", number: 7862 },
+    { lang: "Mađarski", minority: "Mađari", number: 10315 },
+    { lang: "Makedonski", minority: "Makedonci", number: 3555 },
+    { lang: "Njemački", minority: "Nijemci", number: 3034 },
+    { lang: "Poljski", minority: "Poljaci", number: 657 },
+    { lang: "Romani", minority: "Romi", number: 17980 },
+    { lang: "Rumunski", minority: "Rumunji", number: 337 },
+    { lang: "Ruski", minority: "Rusi", number: 1481 },
+    { lang: "Rusinski", minority: "Rusini", number: 1343 },
+    { lang: "Slovački", minority: "Slovaci", number: 3688 },
+    { lang: "Slovenski", minority: "Slovenci", number: 7729 },
+    { lang: "Srpski", minority: "Srbi", number: 123892 },
+    { lang: "Talijanski", minority: "Talijani", number: 13763 },
+    { lang: "Turski", minority: "Turci", number: 404 },
+    { lang: "Ukrajinski", minority: "Ukrajinci", number: 1905 },
+    { lang: "Rumunski", minority: "Vlasi", number: 22 },
+    { lang: "Hebrejski", minority: "Židovi", number: 410 },
+    { lang: "Ostali", minority: "Ostali", number: 13196 },
+    { lang: "Regionalni", minority: "Regionalni", number: 12712 },
+    { lang: "Vjerski", minority: "Vjerski", number: 5874 },
+    { lang: "Neraspoređeni", minority: "Neraspoređeni", number: 3108 },
+    { lang: "Neizjašnjeni", minority: "Neizjašnjeni", number: 22388 },
+    { lang: "Nepoznato", minority: "Nepoznato", number: 26862 }
+];
+
 interface MetaBarChartProps {
     width?: number;
     height?: number;
 }
 
-export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChartProps) {
+export default function MetaBarChart(
+    { data: propsData, width = 900, height = 500 }: Props & MetaBarChartProps
+) {
     const svgRef = useRef<SVGSVGElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const size = useResizeObserver(containerRef);
@@ -96,7 +142,9 @@ export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChart
     const [tooltip, setTooltip] = useState<{
         x: number;
         y: number;
-        value: number;
+        value: number | string;
+        desc?: string;
+        note?: React.ReactNode;
         label: string;
         opacity: number;
         year?: number;
@@ -116,17 +164,31 @@ export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChart
 
         const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
+
+
         const mergedData = MupData.map(d => {
-            const meta = data.find(m => m.lang === d.lang); // direct match
+            const meta = data.find(m => m.lang === d.lang);
+            const dzsItem = DZS.find(z => z.lang === d.lang);
+            const api = propsData?.find(a => a.lang === d.lang); // <-- from Props
+
             return {
                 lang: d.lang,
-                mup: d.dozvola,
                 Državljanstvo: d.Državljanstvo,
-                meta: meta ? meta.avg : 0,
-                min: meta ? meta.min : 0,
-                max: meta ? meta.max : 0,
+                mup: d.dozvola,
+                dzs: dzsItem ? dzsItem.number : 0,
+
+                // Meta Ads Manager
+                meta_avg: meta ? meta.avg : 0,
+                meta_min: meta ? meta.min : 0,
+                meta_max: meta ? meta.max : 0,
+
+                // Meta Graph API
+                api_avg: api ? api.api_reach_avg : 0,
+                api_min: api ? api.api_reach_min : 0,
+                api_max: api ? api.api_reach_max : 0,
+
             };
-        }).sort((a, b) => b.meta - a.meta);
+        });
 
 
 
@@ -138,20 +200,32 @@ export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChart
             .padding(0.3);
 
         const x1 = d3.scaleBand()
-            .domain(["Meta", "MUP"])
+            .domain(["MUP+DZS", "API", "Meta"])
             .range([0, x0.bandwidth()])
             .padding(0.05);
 
         const y = d3.scaleLinear()
-            .domain([0, d3.max(mergedData, d => Math.max(d.meta, d.mup))! * 1.1])
+            .domain([
+                0,
+                d3.max(mergedData, d =>
+                    Math.max(
+                        d.mup + d.dzs,
+                        d.api_max,
+                        d.meta_max
+                    )
+                )! * 1.1
+            ])
             .range([chartHeight, 0])
             .nice();
 
         const color = d3.scaleOrdinal<string, string>()
-            .domain(["Meta", "MUP"])
-            .range(["#1976D2", "#fdae6b"]);
-
-
+            .domain(["MUP", "DZS", "Meta", "API"])
+            .range([
+                "#fdae6b",   // MUP
+                "#ffcc89",    // DZS
+                "#63B3ED",   // Meta Graph API (lighter blue)
+                "#1976D2"   // Meta Ads Manager (dark blue)
+            ]);
 
         const hoverLine = g.append("line")
             .attr("class", "hover-line")
@@ -204,80 +278,202 @@ export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChart
 
 
         // Bars
-        const langGroups = g.selectAll("g.lang")
+        const langGroups = g.selectAll<SVGGElement, typeof mergedData[0]>('g.lang')
             .data(mergedData)
-            .join("g")
-            .attr("class", "lang")
-            .attr("transform", d => `translate(${x0(d.Državljanstvo)},0)`); 
+            .join('g')
+            .attr('class', 'lang')
+            .attr('transform', d => `translate(${x0(d.Državljanstvo)},0)`);
 
-
-
-        const bars = langGroups.selectAll("rect")
-            .data(d => [
-                { key: "Meta Ads Manager", value: d.meta, lang: d.lang },
-                { key: "MUP", value: d.mup, lang: d.lang },
-            ])
-            .join("rect")
-            .attr("x", d => x1(d.key)!)
+        const metaRect = langGroups.append("rect")
+            .attr("x", x1("Meta")!)
             .attr("y", chartHeight)
             .attr("width", x1.bandwidth())
             .attr("height", 0)
-            .attr("fill", d => color(d.key)!)
-            .on("mouseenter", (event, d) => {
+            .attr("fill", color("Meta")!)
+            .attr("opacity", "0.8");
+
+        metaRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.meta_avg))
+            .attr("height", d => chartHeight - y(d.meta_avg));
+
+        function drawWhisker(
+            group: d3.Selection<SVGGElement, any, any, any>,
+            type: "Meta" | "API",
+            minValueAccessor: (d: any) => number,
+            maxValueAccessor: (d: any) => number
+        ) {
+            const whiskerWidth = x1.bandwidth() * 0.3;
+
+            // Vertical line
+            group.append("line")
+                .attr("class", "whisker")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2)
+                .attr("y1", d => y(minValueAccessor(d)))
+                .attr("y2", d => y(maxValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 2")
+                .attr("pointer-events", "none");
+
+            // Horizontal caps
+            group.append("line")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
+                .attr("y1", d => y(maxValueAccessor(d)))
+                .attr("y2", d => y(maxValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2);
+
+            group.append("line")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
+                .attr("y1", d => y(minValueAccessor(d)))
+                .attr("y2", d => y(minValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2);
+        }
+        drawWhisker(langGroups, "Meta", d => d.meta_min, d => d.meta_max);
+        drawWhisker(langGroups, "API", d => d.api_min, d => d.api_max);
+
+
+
+
+        const apiRect = langGroups.append("rect")
+            .attr("x", x1("API")!)
+            .attr("y", chartHeight)
+            .attr("width", x1.bandwidth())
+            .attr("height", 0)
+            .attr("fill", color("API")!)
+            .attr("opacity", "0.8");
+
+        apiRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.api_avg))
+            .attr("height", d => chartHeight - y(d.api_avg));
+
+
+
+        const mupRect = langGroups.append("rect")
+            .attr("x", x1("MUP+DZS")!)
+            .attr("y", chartHeight)
+            .attr("width", x1.bandwidth())
+            .attr("height", 0)
+            .attr("fill", color("MUP")!);
+
+        mupRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.mup))
+            .attr("height", d => chartHeight - y(d.mup));
+
+
+        const dzsRect = langGroups.append("rect")
+            .attr("x", x1("MUP+DZS")!)
+            .attr("y", chartHeight)
+            .attr("width", x1.bandwidth())
+            .attr("height", 0)
+            .attr("fill", color("DZS")!);
+
+        dzsRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.mup + d.dzs))
+            .attr("height", d => y(d.mup) - y(d.mup + d.dzs));
+
+
+        function showTooltip(
+            event: MouseEvent,
+            d: any,
+            type: "meta" | "api" | "stack"
+        ) {
+            const padding = 6;
+
+            let left = event.clientX + padding;
+            let top = event.clientY - 40;
+
+            let note: React.ReactNode = null;
+            if (d.Državljanstvo === "Kosovo") {
+                note = <><br />DZS prikazuje Albansku nacionalnu manjinu.<br />MUP prikazuje broj dozvola za državljane Kosova.<br />Meta i API prikazuju podatke za Albanski jezik.</>;
+            }
+
+            if (type === "meta") {
                 setTooltip({
-                    x: 0,
-                    y: 0,
-                    value: d.value,
-                    label: d.key,
-                    opacity: 0.9,
-                    year: undefined,
+                    x: left,
+                    y: top,
+                    opacity: 0.95,
+                    label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
+                    value: d.meta_avg.toLocaleString("fr-FR"),
+                    desc: `Meta Ads Manager: ${d.meta_min.toLocaleString("fr-FR")} - ${d.meta_max.toLocaleString("fr-FR")}`,
+                    note: note,
+
+
                 });
 
                 hoverLine
-                    .attr("y1", y(d.value))
-                    .attr("y2", y(d.value))
+                    .attr("y1", y(d.meta_avg))
+                    .attr("y2", y(d.meta_avg))
                     .attr("opacity", 0.2);
-            })
-            .on("mousemove", (event, d) => {
-                const tooltipWidth = 80;
-                const tooltipHeight = 40;
-                const padding = 4;
 
-                // Calculate tooltip position relative to window
-                let left = event.clientX + padding;
-                let top = event.clientY - tooltipHeight - padding;
+            } else if (type === "api") {
+                setTooltip({
+                    x: left,
+                    y: top,
+                    opacity: 0.95,
+                    label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
+                    value: d.api_avg.toLocaleString("fr-FR"),
+                    desc: `Meta Graph API: ${d.api_min.toLocaleString("fr-FR")} - ${d.api_max.toLocaleString("fr-FR")}`,
+                    note: note,
+                });
 
-                // Keep tooltip inside window bounds
-                if (left + tooltipWidth > window.innerWidth) left = window.innerWidth - tooltipWidth - padding;
-                if (top < 0) top = padding;
+                hoverLine
+                    .attr("y1", y(d.api_avg))
+                    .attr("y2", y(d.api_avg))
+                    .attr("opacity", 0.2);
+            } else {
+                setTooltip({
+                    x: left,
+                    y: top,
+                    opacity: 0.95,
+                    label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
+                    value: (d.mup + d.dzs).toLocaleString("fr-FR"),
+                    desc: `${d.dzs > 0
+                        ? `DZS: ${d.dzs.toLocaleString("fr-FR")}\n`
+                        : ""}MUP: ${d.mup.toLocaleString("fr-FR")}`,
+                    note: note,
+                });
 
-                // Update tooltip state
-                setTooltip(prev => prev ? { ...prev, x: left, y: top } : null);
-
-                hoverLine.attr("y1", y(d.value)).attr("y2", y(d.value));
-            })
-            .on("mouseleave", () => {
-                setTooltip(null);
-                hoverLine.attr("opacity", 0);
-            });
-
-        // Animate
-        const observer = new IntersectionObserver(([entry]) => {
-            if (entry.isIntersecting) {
-                bars.transition()
-                    .duration(1200)
-                    .attr("y", d => y(d.value))
-                    .attr("height", d => chartHeight - y(d.value));
-
-
-
-                observer.disconnect();
+                hoverLine
+                    .attr("y1", y(d.mup + d.dzs))
+                    .attr("y2", y(d.mup + d.dzs))
+                    .attr("opacity", 0.2);
             }
-        }, { threshold: 0.5 });
+        }
 
-        observer.observe(svgNode);
+        function hideTooltip() {
+            setTooltip(null);
+            hoverLine.attr("opacity", 0);
+        }
+
+        metaRect
+            .on("mouseenter", (e, d) => showTooltip(e, d, "meta"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "meta"))
+            .on("mouseleave", hideTooltip);
+
+        apiRect
+            .on("mouseenter", (e, d) => showTooltip(e, d, "api"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "api"))
+            .on("mouseleave", hideTooltip);
+
+        mupRect
+            .on("mouseenter", (e, d) => showTooltip(e, d, "stack"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "stack"))
+            .on("mouseleave", hideTooltip);
+
+        dzsRect
+            .on("mouseenter", (e, d) => showTooltip(e, d, "stack"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "stack"))
+            .on("mouseleave", hideTooltip);
     }
-
 
     useEffect(() => {
         if (!size || !svgRef.current) return;
@@ -307,10 +503,13 @@ export default function MetaBarChart({ width = 900, height = 500 }: MetaBarChart
                         top: tooltip.y,
                         opacity: tooltip.opacity,
                         transition: "opacity 0.2s ease",
+                        whiteSpace: "pre-line",
                     }}
                 >
                     <b>{tooltip.label}</b><br />
-                    {tooltip.value.toLocaleString("fr-FR")}
+                    <b>{typeof tooltip.value === "number" ? tooltip.value.toLocaleString("fr-FR") : tooltip.value}</b>
+                    <br />{tooltip.desc}
+                    {tooltip.note && <div>{tooltip.note}</div>}
                 </div>
             )}
 

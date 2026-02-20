@@ -33,11 +33,11 @@ const groups: Group[] = [
         sections: [
             {
                 id: 1,
-                heading: "Kratkotrajna putovanja preko granice",
+                heading: "Nacionalne manjine i kratkotrajna putovanja",
                 number: "1",
                 color: "[#1976D2]",
                 content: (
-                    <> Govornici bosanskog, srpskog i makedonskog jezika mogu slobodno putovati unutar EU bez boravišnih dozvola. Meta bilježi aktivnost uređaja u Hrvatskoj (uključujući posjetitelje), dok MUP broji samo stanovnike. To povećava Meta procjene za balkanske jezike.</>
+                    <>Prema popisu stanovništva iz 2021. godine, u Republici Hrvatskoj živjelo je 123 892 Srba, 24 131 Bošnjaka, 3 127 i 3 555 Makedonaca. Govornici bosanskog, srpskog i makedonskog jezika mogu slobodno putovati unutar EU bez boravišnih dozvola. Meta bilježi aktivnost uređaja u Hrvatskoj (uključujući posjetitelje), dok MUP broji samo stanovnike s dozvolom. To povećava Meta procjene za balkanske jezike.</>
                 ),
             },
             {
@@ -59,7 +59,7 @@ const groups: Group[] = [
                 heading: "Albanski jezik u Kosovu",
                 number: "4",
                 color: "[#1976D2]",
-                content: <>Budući da <b>većina stanovništva Kosova koristi albanski jezik</b>, u analizi su podaci za Kosovo (MUP) upareni s albanskim jezikom (Meta). Time bi se moglo objasniti zašto Meta precijenjuje Kosovo - zapravo broji sve albanske govornike, uključujući Albaniju. Slično kao za Crnu Goru, MUP nije objavio podatke za Albaniju pa se može samo pretpostaviti da je taj broj ispod 3 400. To bi djelomično objasnilo razliku od 5 495.</>,
+                content: <>Budući da <b>većina stanovništva Kosova koristi albanski jezik</b>, u analizi su podaci za Kosovo (MUP) upareni s albanskim jezikom (Meta). Time bi se moglo objasniti zašto Meta precijenjuje Kosovo - zapravo broji sve albanske govornike, uključujući Albaniju. Prema popisu stanovništva, u Hrvatskoj živi 13 817 Albanaca što zapravo odgovara Meta procjeni.</>,
             },
         ],
     },
@@ -76,7 +76,7 @@ const groups: Group[] = [
                 color: "[#FDAE6B]",
                 content: <>Engleski se koristi kao <b>drugi službeni jezik u Filipinima i Indiji</b>. Azijske migrantske skupine (indijske, filipinske, nepalske) često govore engleski i moguće je da koriste englesko sučelje na Meta platformama. U tom slučaju ih Meta može kategorizirati kao govornike engleskog, dok ih MUP broji prema državljanstvu bez obzira na jezik.
                     <br /><br />
-                    Također, što se tiče Filipina, treba uzeti u obzir i korištenje Cebuano jezika koji je prepoznat u značajnom broju pomoću Meta Ads Managera. Otprilike 1 200 govornika djelomično objašnjava razliku od 3 629.
+                    Također, što se tiče Filipina, treba uzeti u obzir i korištenje <b>Cebuano jezika</b> koji je prepoznat u značajnom broju pomoću Meta Ads Managera. Otprilike 1 200 govornika djelomično objašnjava razliku od ~ 3 629.
                 </>,
             },
             {
@@ -106,7 +106,7 @@ const groups: Group[] = [
                 heading: "Rasprostranjenost arapskog jezika",
                 number: "1",
                 color: "[#1976D2]",
-                content: <>Meta vjerojatno "precijenjuje" Egipat jer se <b>arapski jezik koristi u brojnim zemljama Bliskog istoka i Sjeverne Afrike</b>, što može dovesti do uključivanja drugih arapskih govornika u Hrvatskoj koji nisu na MUP-ovoj listi top 10 (Sirija, Jordan, Palestina, itd.). Isto tako, Meta vjerojatno broji i turiste iz arapskih zemalja koji trenutno borave u Hrvatskoj. U svakom slučaju radi se o relativno maloj razlici od svega 1 146 i treba uzeti u obzir da Meta daje procjenu u rasponu, a ovdje je korišten prosjek te procjene pa može doći do malog odstupanja.</>,
+                content: <>Meta vjerojatno "precijenjuje" Egipat jer se <b>arapski jezik koristi u brojnim zemljama Bliskog istoka i Sjeverne Afrike</b>, što znači da Meta broji i druge arapske govornike u Hrvatskoj koji nisu na MUP-ovoj listi top 10 (Sirija, Jordan, Palestina, itd.). Isto tako, Meta vjerojatno broji i turiste iz arapskih zemalja koji trenutno borave u Hrvatskoj. U svakom slučaju radi se o relativno maloj razlici od svega 1 146 i treba uzeti u obzir da Meta daje procjenu u rasponu, a ovdje je korišten prosjek te procjene pa može doći do malog odstupanja.</>,
             },
         ],
     },
@@ -162,7 +162,7 @@ const groups: Group[] = [
                 heading: "Korištenje ruskog jezika",
                 number: "2",
                 color: "[#555]",
-                content: <>Uzbekistan je bio dio Sovjetskog Saveza od 1924. do 1991. godine, te je ruski bio obavezan jezik koji je do danas u upotrebi. Time bi se mogla djelomično objasniti ova razlika. Međutim, danas sve manje Uzbekistanaca aktivno koristi ruski, posebno mlađe generacije i ruralna populacija. Stoga je ovo objašnjenje manje vjerojatno ako su uzbečki migrati nižeg obrazovanja.</>,
+                content: <>Uzbekistan je bio dio Sovjetskog Saveza od 1924. do 1991. godine, te je ruski bio obavezan jezik koji je do danas u upotrebi. Time bi se mogla djelomično objasniti ova razlika. Međutim, danas sve manje Uzbekistanaca aktivno koristi ruski, posebno mlađe generacije i ruralna populacija. Stoga je ovo objašnjenje manje vjerojatno ako su uzbečki migrati mlađi ili nižeg obrazovanja.</>,
             },
         ],
     },

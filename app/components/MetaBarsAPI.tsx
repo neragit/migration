@@ -18,51 +18,82 @@ interface Props {
 }
 
 interface MetaManagerData {
-  lang: string;
-  adsAvg: number;
-  adsMin: number;
-  adsMax: number;
-  region: string;
-  subgroup: string;
-  country: string;
+    lang: string;
+    adsAvg: number;
+    adsMin: number;
+    adsMax: number;
+    region: string;
+    subgroup: string;
+    country: string;
 }
 
+const DZS = [
+    { lang: "Albanski", minority: "Albanci", number: 13817 },
+    { lang: "Njemački", minority: "Austrijanci", number: 365 },
+    { lang: "Bosanski", minority: "Bošnjaci", number: 24131 },
+    { lang: "Bugarski", minority: "Bugari", number: 262 },
+    { lang: "Crnogorski", minority: "Crnogorci", number: 3127 },
+    { lang: "Češki", minority: "Česi", number: 7862 },
+    { lang: "Mađarski", minority: "Mađari", number: 10315 },
+    { lang: "Makedonski", minority: "Makedonci", number: 3555 },
+    { lang: "Njemački", minority: "Nijemci", number: 3034 },
+    { lang: "Poljski", minority: "Poljaci", number: 657 },
+    { lang: "Romani", minority: "Romi", number: 17980 },
+    { lang: "Rumunski", minority: "Rumunji", number: 337 },
+    { lang: "Ruski", minority: "Rusi", number: 1481 },
+    { lang: "Rusinski", minority: "Rusini", number: 1343 },
+    { lang: "Slovački", minority: "Slovaci", number: 3688 },
+    { lang: "Slovenski", minority: "Slovenci", number: 7729 },
+    { lang: "Srpski", minority: "Srbi", number: 123892 },
+    { lang: "Talijanski", minority: "Talijani", number: 13763 },
+    { lang: "Turski", minority: "Turci", number: 404 },
+    { lang: "Ukrajinski", minority: "Ukrajinci", number: 1905 },
+    { lang: "Rumunski", minority: "Vlasi", number: 22 },
+    { lang: "Hebrejski", minority: "Židovi", number: 410 },
+    { lang: "Ostali", minority: "Ostali", number: 13196 },
+    { lang: "Regionalni", minority: "Regionalni", number: 12712 },
+    { lang: "Vjerski", minority: "Vjerski", number: 5874 },
+    { lang: "Neraspoređeni", minority: "Neraspoređeni", number: 3108 },
+    { lang: "Neizjašnjeni", minority: "Neizjašnjeni", number: 22388 },
+    { lang: "Nepoznato", minority: "Nepoznato", number: 26862 }
+];
+
 const defaultData: MetaManagerData[] = [
-  { lang: 'Bosanski', adsAvg: 67250, region: 'Europa', subgroup: 'Balkan', adsMin: 61800, adsMax: 72700, country: 'Bosna i Hercegovina' },
-  { lang: 'Makedonski', adsAvg: 53750, region: 'Europa', subgroup: 'Balkan', adsMin: 49400, adsMax: 58100, country: 'Sjeverna Makedonija' },
-  { lang: 'Srpski', adsAvg: 41350, region: 'Europa', subgroup: 'Balkan', adsMin: 38000, adsMax: 44700, country: 'Srbija, Kosovo, Bosna i Hercegovina' },
-  { lang: 'Albanski', adsAvg: 11850, region: 'Europa', subgroup: 'Balkan', adsMin: 10900, adsMax: 12800, country: 'Albanija, Kosovo, Sjeverna Makedonija' },
-  { lang: 'Hrvatski', adsAvg: 2600000, region: 'Europa', subgroup: 'Balkan', adsMin: 2400000, adsMax: 2800000, country: 'Hrvatska (i ostali)' },
-  { lang: 'Slovenski', adsAvg: 35800, region: 'Europa', subgroup: 'Balkan', adsMin: 32900, adsMax: 38700, country: 'Slovenija' },
-  { lang: 'Slovački', adsAvg: 4250, region: 'Europa', subgroup: 'Europa', adsMin: 3900, adsMax: 4600, country: 'Slovačka' },
-  { lang: 'Češki', adsAvg: 82300, region: 'Europa', subgroup: 'Europa', adsMin: 75600, adsMax: 89000, country: 'Češka' },
-  { lang: 'Mađarski', adsAvg: 3600, region: 'Europa', subgroup: 'Europa', adsMin: 3300, adsMax: 3900, country: 'Mađarska' },
-  { lang: 'Rumunjski', adsAvg: 2150, region: 'Europa', subgroup: 'Europa', adsMin: 2000, adsMax: 2300, country: 'Rumunjska' },
-  { lang: 'Latvijski', adsAvg: 6650, region: 'Europa', subgroup: 'Europa', adsMin: 6100, adsMax: 7200, country: 'Latvija' },
-  { lang: 'Litvanski', adsAvg: 9700, region: 'Europa', subgroup: 'Europa', adsMin: 8900, adsMax: 10500, country: 'Litva' },
-  { lang: 'Nizozemski', adsAvg: 3600, region: 'Europa', subgroup: 'Europa', adsMin: 3500, adsMax: 4200, country: 'Nizozemska' },
-  { lang: 'Švedski', adsAvg: 4550, region: 'Europa', subgroup: 'Europa', adsMin: 4200, adsMax: 4900, country: 'Švedska' },
-  { lang: 'Poljski', adsAvg: 6550, region: 'Europa', subgroup: 'Europa', adsMin: 6000, adsMax: 7100, country: 'Poljska' },
-  { lang: 'Portugalski', adsAvg: 5900, region: 'Europa', subgroup: 'Europa', adsMin: 5400, adsMax: 6400, country: 'Portugal, Latiska Amerika' },
-  { lang: 'Danski', adsAvg: 4850, region: 'Europa', subgroup: 'Europa', adsMin: 4500, adsMax: 5200, country: 'Danska' },
-  { lang: 'Engleski', adsAvg: 2600000, region: 'Global', subgroup: 'English', adsMin: 2400000, adsMax: 2800000, country: 'Svjetski (službeni u Filipinima, Indiji, Pakistanu...)' },
-  { lang: 'Njemački', adsAvg: 45250, region: 'Global', subgroup: 'Global', adsMin: 41600, adsMax: 48900, country: 'Njemačka, Austrija, Švicarska...' },
-  { lang: 'Talijanski', adsAvg: 33850, region: 'Global', subgroup: 'Global', adsMin: 31100, adsMax: 36600, country: 'Italija' },
-  { lang: 'Španjolski', adsAvg: 13950, region: 'Global', subgroup: 'Global', adsMin: 12800, adsMax: 15100, country: 'Španjolska, Latinska Amerika' },
-  { lang: 'Francuski', adsAvg: 6750, region: 'Global', subgroup: 'Global', adsMin: 6200, adsMax: 7300, country: 'Francuska, Belgija, Kanada' },
-  { lang: 'Kineski', adsAvg: 1700, region: 'Global', subgroup: 'Global', adsMin: 1600, adsMax: 1800, country: 'Kina' },
-  { lang: 'Japanski', adsAvg: 1700, region: 'Global', subgroup: 'Global', adsMin: 1200, adsMax: 1400, country: 'Japan' },
-  { lang: 'Ruski', adsAvg: 15300, region: 'Middle', subgroup: 'Euroazija', adsMin: 14100, adsMax: 16500, country: 'Ukrajina, Uzbekistan, Rusija' },
-  { lang: 'Ukrajinski', adsAvg: 8350, region: 'Middle', subgroup: 'Euroazija', adsMin: 7700, adsMax: 9000, country: 'Ukrajina' },
-  { lang: 'Turski', adsAvg: 4000, region: 'Middle', subgroup: 'Africa', adsMin: 3700, adsMax: 4300, country: 'Turska' },
-  { lang: 'Arapski', adsAvg: 6650, region: 'Middle', subgroup: 'Africa', adsMin: 6100, adsMax: 7200, country: 'Egipat, Bliski istok, Sjeverna Afrika' },
-  { lang: 'Uzbečki', adsAvg: 1750, region: 'Middle', subgroup: 'Euroazija', adsMin: 1600, adsMax: 1900, country: 'Uzbekistan' },
-  { lang: 'Punjabi', adsAvg: 1950, region: 'Asia', subgroup: 'Indija', adsMin: 1800, adsMax: 2100, country: 'Pakistan' },
-  { lang: 'Hindski', adsAvg: 5450, region: 'Asia', subgroup: 'Indija', adsMin: 5000, adsMax: 5900, country: 'Indija' },
-  { lang: 'Bengalski', adsAvg: 3400, region: 'Asia', subgroup: 'Indija', adsMin: 3100, adsMax: 3700, country: 'Bangladeš, Indija' },
-  { lang: 'Nepalski', adsAvg: 19700, region: 'Asia', subgroup: 'Indija', adsMin: 18100, adsMax: 21300, country: 'Nepal' },
-  { lang: 'Filipinski', adsAvg: 14000, region: 'Asia', subgroup: 'Filipini', adsMin: 12900, adsMax: 15100, country: 'Filipini' },
-  { lang: 'Cebuano', adsAvg: 1200, region: 'Asia', subgroup: 'Filipini', adsMin: 1100, adsMax: 1300, country: 'Filipini' }
+    { lang: 'Bosanski', adsAvg: 67250, region: 'Europa', subgroup: 'Balkan', adsMin: 61800, adsMax: 72700, country: 'Bosna i Hercegovina' },
+    { lang: 'Makedonski', adsAvg: 53750, region: 'Europa', subgroup: 'Balkan', adsMin: 49400, adsMax: 58100, country: 'Sjeverna Makedonija' },
+    { lang: 'Srpski', adsAvg: 41350, region: 'Europa', subgroup: 'Balkan', adsMin: 38000, adsMax: 44700, country: 'Srbija, Kosovo, Bosna i Hercegovina' },
+    { lang: 'Albanski', adsAvg: 11850, region: 'Europa', subgroup: 'Balkan', adsMin: 10900, adsMax: 12800, country: 'Albanija, Kosovo, Sjeverna Makedonija' },
+    { lang: 'Hrvatski', adsAvg: 2600000, region: 'Europa', subgroup: 'Balkan', adsMin: 2400000, adsMax: 2800000, country: 'Hrvatska (i ostali)' },
+    { lang: 'Slovenski', adsAvg: 35800, region: 'Europa', subgroup: 'Balkan', adsMin: 32900, adsMax: 38700, country: 'Slovenija' },
+    { lang: 'Slovački', adsAvg: 4250, region: 'Europa', subgroup: 'Europa', adsMin: 3900, adsMax: 4600, country: 'Slovačka' },
+    { lang: 'Češki', adsAvg: 82300, region: 'Europa', subgroup: 'Europa', adsMin: 75600, adsMax: 89000, country: 'Češka' },
+    { lang: 'Mađarski', adsAvg: 3600, region: 'Europa', subgroup: 'Europa', adsMin: 3300, adsMax: 3900, country: 'Mađarska' },
+    { lang: 'Rumunjski', adsAvg: 2150, region: 'Europa', subgroup: 'Europa', adsMin: 2000, adsMax: 2300, country: 'Rumunjska' },
+    { lang: 'Latvijski', adsAvg: 6650, region: 'Europa', subgroup: 'Europa', adsMin: 6100, adsMax: 7200, country: 'Latvija' },
+    { lang: 'Litvanski', adsAvg: 9700, region: 'Europa', subgroup: 'Europa', adsMin: 8900, adsMax: 10500, country: 'Litva' },
+    { lang: 'Nizozemski', adsAvg: 3600, region: 'Europa', subgroup: 'Europa', adsMin: 3500, adsMax: 4200, country: 'Nizozemska' },
+    { lang: 'Švedski', adsAvg: 4550, region: 'Europa', subgroup: 'Europa', adsMin: 4200, adsMax: 4900, country: 'Švedska' },
+    { lang: 'Poljski', adsAvg: 6550, region: 'Europa', subgroup: 'Europa', adsMin: 6000, adsMax: 7100, country: 'Poljska' },
+    { lang: 'Portugalski', adsAvg: 5900, region: 'Europa', subgroup: 'Europa', adsMin: 5400, adsMax: 6400, country: 'Portugal, Latiska Amerika' },
+    { lang: 'Danski', adsAvg: 4850, region: 'Europa', subgroup: 'Europa', adsMin: 4500, adsMax: 5200, country: 'Danska' },
+    { lang: 'Engleski', adsAvg: 2600000, region: 'Global', subgroup: 'English', adsMin: 2400000, adsMax: 2800000, country: 'Svjetski (službeni u Filipinima, Indiji, Pakistanu...)' },
+    { lang: 'Njemački', adsAvg: 45250, region: 'Global', subgroup: 'Global', adsMin: 41600, adsMax: 48900, country: 'Njemačka, Austrija, Švicarska...' },
+    { lang: 'Talijanski', adsAvg: 33850, region: 'Global', subgroup: 'Global', adsMin: 31100, adsMax: 36600, country: 'Italija' },
+    { lang: 'Španjolski', adsAvg: 13950, region: 'Global', subgroup: 'Global', adsMin: 12800, adsMax: 15100, country: 'Španjolska, Latinska Amerika' },
+    { lang: 'Francuski', adsAvg: 6750, region: 'Global', subgroup: 'Global', adsMin: 6200, adsMax: 7300, country: 'Francuska, Belgija, Kanada' },
+    { lang: 'Kineski', adsAvg: 1700, region: 'Global', subgroup: 'Global', adsMin: 1600, adsMax: 1800, country: 'Kina' },
+    { lang: 'Japanski', adsAvg: 1700, region: 'Global', subgroup: 'Global', adsMin: 1200, adsMax: 1400, country: 'Japan' },
+    { lang: 'Ruski', adsAvg: 15300, region: 'Middle', subgroup: 'Euroazija', adsMin: 14100, adsMax: 16500, country: 'Ukrajina, Uzbekistan, Rusija' },
+    { lang: 'Ukrajinski', adsAvg: 8350, region: 'Middle', subgroup: 'Euroazija', adsMin: 7700, adsMax: 9000, country: 'Ukrajina' },
+    { lang: 'Turski', adsAvg: 4000, region: 'Middle', subgroup: 'Africa', adsMin: 3700, adsMax: 4300, country: 'Turska' },
+    { lang: 'Arapski', adsAvg: 6650, region: 'Middle', subgroup: 'Africa', adsMin: 6100, adsMax: 7200, country: 'Egipat, Bliski istok, Sjeverna Afrika' },
+    { lang: 'Uzbečki', adsAvg: 1750, region: 'Middle', subgroup: 'Euroazija', adsMin: 1600, adsMax: 1900, country: 'Uzbekistan' },
+    { lang: 'Punjabi', adsAvg: 1950, region: 'Asia', subgroup: 'Indija', adsMin: 1800, adsMax: 2100, country: 'Pakistan' },
+    { lang: 'Hindski', adsAvg: 5450, region: 'Asia', subgroup: 'Indija', adsMin: 5000, adsMax: 5900, country: 'Indija' },
+    { lang: 'Bengalski', adsAvg: 3400, region: 'Asia', subgroup: 'Indija', adsMin: 3100, adsMax: 3700, country: 'Bangladeš, Indija' },
+    { lang: 'Nepalski', adsAvg: 19700, region: 'Asia', subgroup: 'Indija', adsMin: 18100, adsMax: 21300, country: 'Nepal' },
+    { lang: 'Filipinski', adsAvg: 14000, region: 'Asia', subgroup: 'Filipini', adsMin: 12900, adsMax: 15100, country: 'Filipini' },
+    { lang: 'Cebuano', adsAvg: 1200, region: 'Asia', subgroup: 'Filipini', adsMin: 1100, adsMax: 1300, country: 'Filipini' }
 ];
 
 const MetaBarsAPI: React.FC<Props> = ({ data }) => {
@@ -79,6 +110,8 @@ const MetaBarsAPI: React.FC<Props> = ({ data }) => {
 
     // Merge MetaManager data with LangData
     const mmMap = new Map(defaultData.map(d => [d.lang, d]));
+    const dzsMap = new Map(DZS.map(d => [d.lang, d.number]));
+
     const barsData = filteredData.map(d => {
         const mm = mmMap.get(d.lang);
         return {
@@ -90,6 +123,7 @@ const MetaBarsAPI: React.FC<Props> = ({ data }) => {
             adsAvg: mm?.adsAvg ?? 0,
             adsMin: mm?.adsMin ?? 0,
             adsMax: mm?.adsMax ?? 0,
+            dzs: dzsMap.get(d.lang) ?? 0,  // NEW: DZS data
             country: d.country || mm?.country || 'N/A'
         };
     });
@@ -137,9 +171,9 @@ const MetaBarsAPI: React.FC<Props> = ({ data }) => {
                 <b><span style="color:#63B3ED;">MetaManager:</span></b> ${d.adsAvg.toLocaleString('fr-FR')} (${d.adsMin.toLocaleString('fr-FR')} - ${d.adsMax.toLocaleString('fr-FR')})<br/>
                 <b>Moguće podrijetlo:</b> ${d.country}
             `)
-            .style('opacity', 1)
-            .style('left', event.pageX + 10 + 'px')
-            .style('top', event.pageY - 28 + 'px');
+                .style('opacity', 1)
+                .style('left', event.pageX + 10 + 'px')
+                .style('top', event.pageY - 28 + 'px');
         };
         const moveTooltip = (event: any) => tooltip.style('left', event.pageX + 10 + 'px').style('top', event.pageY - 28 + 'px');
         const hideTooltip = () => tooltip.style('opacity', 0);

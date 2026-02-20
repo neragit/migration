@@ -3,9 +3,11 @@
 "use client";
 
 import BubbleChart from "../components/BubbleChart";
-import MetaBars from "../components/MetaBars";
+
 
 import MetaContainer from "../components/MetaContainer";
+
+import MetaChart from "../components/MetaChart";
 import Rezultati from "../components/Rezultati";
 import Objasnjenja from "../components/Objasnjenja";
 
@@ -198,9 +200,9 @@ export default function MetaPage() {
 
                     <section className="section">
 
-                        <h2>Usporedba podataka Meta Ads Managera-a s brojem dozvola</h2>
+                        <h2>Usporedba službenih podataka s Meta procjenama</h2>
 
-                        <MetaBars />
+                        <MetaChart />
 
                     </section>
 
@@ -216,7 +218,7 @@ export default function MetaPage() {
                                 onClick={() => setOpen1(!open1)}
                                 className="flex items-center text-start gap-2 text-blue-700 font-bold bg-blue-50 hover:bg-blue-100 cursor-pointer px-4 py-2 rounded-lg w-full justify-between"
                             >
-                                Broji li Meta korisnike WhatsAppa kao publiku?
+                                Broji li Meta korisnike WhatsApp-a kao publiku?
                                 <ChevronDown
                                     size={20}
                                     className={`transition-transform duration-300 ${open1 ? "rotate-180" : ""}`}

@@ -28,7 +28,13 @@ export default function RootLayout({
           <nav className="flex justify-between w-full">
 
             <div className="flex gap-5">
-              <a href="/" className="hover:text-slate-600 focus:outline-none">Migracije</a>
+              <a
+  href="/"
+  className="relative group"
+>
+  Migracije
+  <span className="absolute left-0 -bottom-1 h-[2px] w-0 bg-blue-400 transition-all duration-300 group-hover:w-full" />
+</a>
               <a href="/meta" className="hover:text-slate-600 focus:outline-none">Meta signali</a>
             </div>
 

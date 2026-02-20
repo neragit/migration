@@ -65,9 +65,9 @@ const data: DataItem[] = [
 
 
 const clusterCenters: Record<string, { x: number; y: number }> = {
-  'Balkan': { x: 250, y: 290 },
+  'Balkan': { x: 260, y: 290 },
   'Global': { x: 480, y: 270 },
-  'English': { x: 560, y: 170 },
+  'English': { x: 570, y: 180 },
   'Africa': { x: 550, y: 350 },
   'Euroazija': { x: 610, y: 340 },
   'Indija': { x: 650, y: 310 },

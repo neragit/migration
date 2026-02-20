@@ -5,7 +5,6 @@ import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
 import useResizeObserver from "../hooks/useResizeObs";
 
-
 interface LangData {
   lang: string;
   residents: number;
@@ -14,8 +13,6 @@ interface LangData {
   api_reach_avg: number;
   country: string;
 }
-
-
 
 interface Props {
   data: LangData[];
@@ -70,58 +67,79 @@ const defaultData: MetaManagerData[] = [
 ];
 
 
+const DZS = [
+  { lang: "Albanski", minority: "Albanci", number: 13817 },
+  { lang: "Njemački", minority: "Austrijanci", number: 365 },
+  { lang: "Bosanski", minority: "Bošnjaci", number: 24131 },
+  { lang: "Bugarski", minority: "Bugari", number: 262 },
+  { lang: "Crnogorski", minority: "Crnogorci", number: 3127 },
+  { lang: "Češki", minority: "Česi", number: 7862 },
+  { lang: "Mađarski", minority: "Mađari", number: 10315 },
+  { lang: "Makedonski", minority: "Makedonci", number: 3555 },
+  { lang: "Njemački", minority: "Nijemci", number: 3034 },
+  { lang: "Poljski", minority: "Poljaci", number: 657 },
+  { lang: "Romani", minority: "Romi", number: 17980 },
+  { lang: "Rumunski", minority: "Rumunji", number: 337 },
+  { lang: "Ruski", minority: "Rusi", number: 1481 },
+  { lang: "Rusinski", minority: "Rusini", number: 1343 },
+  { lang: "Slovački", minority: "Slovaci", number: 3688 },
+  { lang: "Slovenski", minority: "Slovenci", number: 7729 },
+  { lang: "Srpski", minority: "Srbi", number: 123892 },
+  { lang: "Talijanski", minority: "Talijani", number: 13763 },
+  { lang: "Turski", minority: "Turci", number: 404 },
+  { lang: "Ukrajinski", minority: "Ukrajinci", number: 1905 },
+  { lang: "Rumunski", minority: "Vlasi", number: 22 },
+  { lang: "Hebrejski", minority: "Židovi", number: 410 },
+  { lang: "Ostali", minority: "Ostali", number: 13196 },
+  { lang: "Regionalni", minority: "Regionalni", number: 12712 },
+  { lang: "Vjerski", minority: "Vjerski", number: 5874 },
+  { lang: "Neraspoređeni", minority: "Neraspoređeni", number: 3108 },
+  { lang: "Neizjašnjeni", minority: "Neizjašnjeni", number: 22388 },
+  { lang: "Nepoznato", minority: "Nepoznato", number: 26862 }
+];
+
 const MetaPlot: React.FC<Props> = ({ data }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const size = useResizeObserver(containerRef);
 
   const scatterRef = useRef<SVGSVGElement | null>(null);
-  const barsRef = useRef<SVGSVGElement | null>(null);
-
 
   // Guard against undefined data
   if (!data || data.length === 0) {
     return <div style={{ padding: '20px', textAlign: 'center', color: '#999' }}>No data available</div>;
   }
 
-  // Filter data: exclude outliers (api_reach_avg <= 0)
   const filteredData = data.filter(d => d.api_reach_avg > 0);
+  const scatterData = filteredData.filter(d => d.residents > 0);
+  const dzsMap = new Map(DZS.map(d => [d.lang, d.number]));
 
-  // Merge MetaManager data with LangData
-  const mmMap = new Map(defaultData.map(d => [d.lang, d]));
-  const barsData = filteredData.map(d => {
-    const mm = mmMap.get(d.lang);
-    return {
-      lang: d.lang,
-      residents: d.residents,
-      api_reach_avg: d.api_reach_avg,
-      api_reach_min: d.api_reach_min,
-      api_reach_max: d.api_reach_max,
-      adsAvg: mm?.adsAvg ?? 0,
-      adsMin: mm?.adsMin ?? 0,
-      adsMax: mm?.adsMax ?? 0,
-      country: d.country || mm?.country || 'N/A'
-    };
-  });
+  const excludedLangs = ["Makedonski", "Srpski", "Bosanski", "Albanski"];
 
+  const scatterDataWithDZS = scatterData
+    .filter(d => !excludedLangs.includes(d.lang))
+    .map(d => ({
+      ...d,
+      residentsTotal: d.residents + (dzsMap.get(d.lang) ?? 0),
+    }));
 
+  let chart = 600;
 
-  // Determine responsive dimensions
-  const chartWidth = size?.width ? size.width > 900 ? (size.width - 60) / 2 : size.width : 400;
+  const chartWidth = size?.width ? size.width > 900 ? (size.width - 60) / 2 : size.width : chart;
   const chartHeight = chartWidth; // square charts
 
-  // Scatter plot
+
   useEffect(() => {
     if (!scatterRef.current) return;
 
     const svg = d3.select(scatterRef.current);
     svg.selectAll('*').remove();
 
-    const width = 400;
-    const height = 400;
+    const width = chart;
+    const height = chart;
     const padding = { top: 30, right: 30, bottom: 30, left: 60 };
 
-    const xMax = d3.max(filteredData, d => d.residents) ?? 0;
-    const yMax = d3.max(filteredData, d => d.api_reach_avg) ?? 0;
+    const xMax = d3.max(scatterDataWithDZS, d => d.residentsTotal) ?? 0;
+    const yMax = d3.max(scatterDataWithDZS, d => d.api_reach_avg) ?? 0;
     const maxDomain = Math.max(xMax, yMax) * 1.1;
 
     const plotWidth = width - padding.left - padding.right;
@@ -186,21 +204,20 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .style('opacity', 0);
 
     svg.selectAll('circle')
-      .data(filteredData)
+      .data(scatterDataWithDZS)
       .join('circle')
-      .attr('cx', d => xScale(d.residents))
+      .attr('cx', d => xScale(d.residentsTotal))
       .attr('cy', d => yScale(d.api_reach_avg))
       .attr('r', 5)
       .attr('fill', '#308330')
       .attr('opacity', 0.8)
       .on('mouseover', (event, d) => {
-        const rangeData = barsData.find(rd => rd.lang === d.lang);
         tooltip.html(`
-          <b>${d.lang}</b><br/>
-          <b><span style="color:#ff7f0e;">MUP:</span></b> ${d.residents.toLocaleString('fr-FR')}<br/>
-          <b><span style="color:#1976D2;">Meta API:</span></b>  ${d.api_reach_avg.toLocaleString('fr-FR')}<br/>
-          <b>Moguće podrijetlo:</b> ${rangeData?.country || 'N/A'}
-        `)
+  <b>${d.lang}</b><br/>
+  <b><span style="color:#ff7f0e;">MUP:</span></b> ${d.residentsTotal.toLocaleString('fr-FR')}<br/>
+  <b><span style="color:#1976D2;">Meta API:</span></b> ${d.api_reach_avg.toLocaleString('fr-FR')}<br/>
+  <b>Moguće podrijetlo:</b> ${d.country || 'N/A'}
+`)
           .style('opacity', 1)
           .style('left', event.pageX + 10 + 'px')
           .style('top', event.pageY - 28 + 'px');
@@ -216,22 +233,22 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
 
 
-    const xMean = d3.mean(filteredData, d => d.residents)!;
-    const yMean = d3.mean(filteredData, d => d.api_reach_avg)!;
-    const numerator = d3.sum(filteredData, d => (d.residents - xMean) * (d.api_reach_avg - yMean));
-    const denominator = d3.sum(filteredData, d => Math.pow(d.residents - xMean, 2));
+    const xMean = d3.mean(scatterDataWithDZS, d => d.residentsTotal)!;
+    const yMean = d3.mean(scatterDataWithDZS, d => d.api_reach_avg)!;
+    const numerator = d3.sum(scatterDataWithDZS, d => (d.residentsTotal - xMean) * (d.api_reach_avg - yMean));
+    const denominator = d3.sum(scatterDataWithDZS, d => Math.pow(d.residentsTotal - xMean, 2));
     const slope = numerator / denominator;
     const intercept = yMean - slope * xMean;
 
-    const xMin = d3.min(filteredData, d => d.residents)!;
-    const xMaxVal = d3.max(filteredData, d => d.residents)!;
+    const xMin = d3.min(scatterDataWithDZS, d => d.residentsTotal)!;
+    const xMaxVal = d3.max(scatterDataWithDZS, d => d.residentsTotal)!;
     const regressionLine = [
-      { residents: xMin, api_reach_avg: slope * xMin + intercept },
-      { residents: xMaxVal, api_reach_avg: slope * xMaxVal + intercept }
+      { residentsTotal: xMin, api_reach_avg: slope * xMin + intercept },
+      { residentsTotal: xMaxVal, api_reach_avg: slope * xMaxVal + intercept }
     ];
 
-    const line = d3.line<{ residents: number; api_reach_avg: number }>()
-      .x(d => xScale(d.residents))
+    const line = d3.line<{ residentsTotal: number; api_reach_avg: number }>()
+      .x(d => xScale(d.residentsTotal))
       .y(d => yScale(d.api_reach_avg));
 
     svg.append('path')
@@ -242,13 +259,13 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .attr('stroke-width', 2);
 
     svg.selectAll('line.residual')
-      .data(filteredData)
+      .data(scatterDataWithDZS)
       .join('line')
       .attr('class', 'residual')
-      .attr('x1', d => xScale(d.residents))
+      .attr('x1', d => xScale(d.residentsTotal))
       .attr('y1', d => yScale(d.api_reach_avg))
-      .attr('x2', d => xScale(d.residents))
-      .attr('y2', d => yScale(slope * d.residents + intercept))
+      .attr('x2', d => xScale(d.residentsTotal))
+      .attr('y2', d => yScale(slope * d.residentsTotal + intercept))
       .attr('stroke', '#ffa500')
       .attr('stroke-width', 1)
       .attr('stroke-dasharray', '4 2')
@@ -256,8 +273,8 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
 
     const r = numerator / Math.sqrt(
-      d3.sum(filteredData, d => Math.pow(d.residents - xMean, 2)) *
-      d3.sum(filteredData, d => Math.pow(d.api_reach_avg - yMean, 2))
+      d3.sum(scatterDataWithDZS, d => Math.pow(d.residentsTotal - xMean, 2)) *
+      d3.sum(scatterDataWithDZS, d => Math.pow(d.api_reach_avg - yMean, 2))
     );
 
     svg.append('text')
@@ -271,214 +288,35 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
     // circle labels on top
     svg.selectAll('text.label')
-      .data(filteredData)
+      .data(scatterDataWithDZS)
       .join('text')
       .attr('class', 'label')
       .attr('font-size', '10px')
       .attr('fill', '#555')
-      .attr('x', d => xScale(d.residents) + 10)
+      .attr('x', d => xScale(d.residentsTotal) + 10)
       .attr('y', d => yScale(d.api_reach_avg) + 2)
       .attr('pointer-events', 'none')
       .text(d => d.lang);
 
+
   }, [data]);
 
-  useEffect(() => {
-  if (!barsRef.current) return;
-
-  const svg = d3.select(barsRef.current);
-  svg.selectAll('*').remove();
-
-  const width = 400;
-  const height = 400;
-  const padding = { top: 20, right: 30, bottom: 30, left: 60 };
-
-  const plotWidth = width - padding.left - padding.right;
-  const plotHeight = height - padding.top - padding.bottom;
-
-  // Y scale for languages (vertical bands)
-  const yScale = d3.scaleBand()
-    .domain(barsData.map(d => d.lang))
-    .range([padding.top, padding.top + plotHeight])
-    .padding(0.3);
-
-  // X scale for values (horizontal)
-  const xMax = Math.max(
-    d3.max(barsData, d => d.residents) ?? 0,
-    d3.max(barsData, d => d.api_reach_avg ?? 0) ?? 0,
-    d3.max(barsData, d => d.adsAvg ?? 0) ?? 0
-  ) * 1.1;
-
-  const xScale = d3.scaleLinear()
-    .domain([0, xMax])
-    .range([padding.left, padding.left + plotWidth]);
-
-  const tooltip = d3.select('body')
-    .selectAll('.tooltip-bar')
-    .data([null])
-    .join('div')
-    .attr('class', 'tooltip')
-    .style('position', 'absolute')
-    .style('opacity', 0);
-
-  const showTooltip = (event: any, d: any) => {
-    tooltip.html(`
-      <b>${d.lang}</b><br/>
-      <b><span style="color:#ff7f0e;">MUP:</span></b> ${d.residents.toLocaleString('fr-FR')}<br/>
-      <b><span style="color:#1976D2;">Meta API:</span></b> ${d.api_reach_avg?.toLocaleString('fr-FR')} (${d.api_reach_min?.toLocaleString('fr-FR')} - ${d.api_reach_max?.toLocaleString('fr-FR')})<br/>
-      <b><span style="color:#63B3ED;">MetaManager:</span></b> ${d.adsAvg.toLocaleString('fr-FR')} (${d.adsMin.toLocaleString('fr-FR')} - ${d.adsMax.toLocaleString('fr-FR')})<br/>
-      <b>Moguće podrijetlo:</b> ${d.country}
-    `)
-      .style('opacity', 1)
-      .style('left', event.pageX + 10 + 'px')
-      .style('top', event.pageY - 28 + 'px');
-  };
-
-  const moveTooltip = (event: any) => {
-    tooltip
-      .style('left', event.pageX + 10 + 'px')
-      .style('top', event.pageY - 28 + 'px');
-  };
-
-  const hideTooltip = () => {
-    tooltip.style('opacity', 0);
-  };
-
-  // --- Compute bar positions dynamically ---
-  const spacing = 0.05; // gap between bars
-  const mupHeightRatio = 0.3;
-  const apiHeightRatio = 0.3;
-  const mmHeightRatio = 1 - mupHeightRatio - apiHeightRatio - 2 * spacing;
-
-  svg.selectAll('rect.residents')
-    .data(barsData)
-    .join('rect')
-    .attr('class', 'residents')
-    .attr('x', padding.left)
-    .attr('y', d => (yScale(d.lang) ?? 0) + spacing * yScale.bandwidth())
-    .attr('width', d => xScale(d.residents) - padding.left)
-    .attr('height', d => mupHeightRatio * yScale.bandwidth())
-    .attr('fill', '#ff7f0e')
-    .attr('opacity', 0.8)
-    .on('mouseover', showTooltip)
-    .on('mousemove', moveTooltip)
-    .on('mouseout', hideTooltip);
-
-  svg.selectAll('rect.apireach')
-    .data(barsData.filter(d => d.api_reach_avg !== null))
-    .join('rect')
-    .attr('class', 'apireach')
-    .attr('x', padding.left)
-    .attr('y', d => {
-      const band = yScale.bandwidth();
-      return (yScale(d.lang) ?? 0) + spacing * band + mupHeightRatio * band + spacing * band;
-    })
-    .attr('width', d => xScale(d.api_reach_avg!) - padding.left)
-    .attr('height', d => apiHeightRatio * yScale.bandwidth())
-    .attr('fill', '#1976D2')
-    .attr('opacity', 0.8)
-    .on('mouseover', showTooltip)
-    .on('mousemove', moveTooltip)
-    .on('mouseout', hideTooltip);
-
-  svg.selectAll('rect.metamanager')
-    .data(barsData.filter(d => d.adsAvg > 0))
-    .join('rect')
-    .attr('class', 'metamanager')
-    .attr('x', padding.left)
-    .attr('y', d => {
-      const band = yScale.bandwidth();
-      return (yScale(d.lang) ?? 0) + spacing * band + mupHeightRatio * band + spacing * band + apiHeightRatio * band + spacing * band;
-    })
-    .attr('width', d => xScale(d.adsAvg) - padding.left)
-    .attr('height', d => mmHeightRatio * yScale.bandwidth())
-    .attr('fill', '#63B3ED')
-    .attr('opacity', 0.8)
-    .on('mouseover', showTooltip)
-    .on('mousemove', moveTooltip)
-    .on('mouseout', hideTooltip);
-
-  // --- Whiskers ---
-  svg.selectAll('line.whisker')
-    .data(barsData.filter(d => d.api_reach_min && d.api_reach_max))
-    .join('line')
-    .attr('class', 'whisker')
-    .attr('x1', d => xScale(d.api_reach_min!))
-    .attr('x2', d => xScale(d.api_reach_max!))
-    .attr('y1', d => (yScale(d.lang) ?? 0) + spacing * yScale.bandwidth() + mupHeightRatio * yScale.bandwidth() + spacing * yScale.bandwidth() + apiHeightRatio * yScale.bandwidth() / 2)
-    .attr('y2', d => (yScale(d.lang) ?? 0) + spacing * yScale.bandwidth() + mupHeightRatio * yScale.bandwidth() + spacing * yScale.bandwidth() + apiHeightRatio * yScale.bandwidth() / 2)
-    .attr('stroke', '#1976D2')
-    .attr('stroke-width', 1.5)
-    .attr('opacity', 0.8);
-
-  svg.selectAll('line.whisker-metamanager')
-    .data(barsData.filter(d => d.adsMin && d.adsMax))
-    .join('line')
-    .attr('class', 'whisker-metamanager')
-    .attr('x1', d => xScale(d.adsMin))
-    .attr('x2', d => xScale(d.adsMax))
-    .attr('y1', d => {
-      const band = yScale.bandwidth();
-      return (yScale(d.lang) ?? 0) + spacing * band + mupHeightRatio * band + spacing * band + apiHeightRatio * band + spacing * band + mmHeightRatio * band / 2;
-    })
-    .attr('y2', d => {
-      const band = yScale.bandwidth();
-      return (yScale(d.lang) ?? 0) + spacing * band + mupHeightRatio * band + spacing * band + apiHeightRatio * band + spacing * band + mmHeightRatio * band / 2;
-    })
-    .attr('stroke', '#63B3ED')
-    .attr('stroke-width', 1.5)
-    .attr('opacity', 0.8);
-
-  // --- Axes ---
-  svg.append('g')
-    .attr('transform', `translate(0,${padding.top + plotHeight})`)
-    .call(d3.axisBottom(xScale).tickSize(0).ticks(4).tickFormat(d => d.toLocaleString('fr-FR')))
-    .attr("font-family", "Mukta, sans-serif")
-    .select('.domain')
-    .attr('stroke', '#eee');
-
-  svg.append('g')
-    .attr('transform', `translate(${padding.left},0)`)
-    .call(d3.axisLeft(yScale).tickSize(0))
-    .attr("font-family", "Mukta, sans-serif")
-    .select('.domain')
-    .attr('stroke', '#eee');
-
-}, [barsData]);
 
 
   return (
-    <div className='mt-15'>
-
-      <div ref={containerRef} style={{ display: 'flex', gap: '50px', flexDirection: 'row', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-
-        <div style={{ flex: '1 1 400px' }}>
-          <h3 style={{ paddingTop: 0, paddingBottom: '10px', paddingRight: '10px', fontSize: '14px', fontWeight: 'bold' }}>
-            Usporedba službenih podataka MUP-a s procjenom publike prema jeziku na temelju Meta Graph API (tamnoplavo) i Meta Ads Managera (svijetloplavo)
-          </h3>
-          <svg
-            ref={barsRef}
-            width={chartWidth}
-            height={chartHeight}
-            viewBox="0 0 400 400"
-            style={{ display: 'block', maxWidth: '100%', height: 'auto' }}
-          />
-        </div>
-
-        <div style={{ flex: '1 1 400px' }}>
-          <h3 style={{ paddingTop: 0, paddingBottom: '10px', paddingRight: '10px', fontSize: '14px', fontWeight: 'bold' }}>
-            Korelacija službenih podataka MUP-a s procjenom publike prema jeziku na temelju Meta Graph API
-          </h3>
-          <svg
-            ref={scatterRef}
-            width={chartWidth}
-            height={chartHeight}
-            viewBox="0 0 400 400"
-            style={{ display: 'block', maxWidth: '100%', height: 'auto', overflow: 'visible' }}
-          />
-        </div>
-      </div>
+    <div className="mt-15" style={{ maxWidth: '800px' }}>
+      <h3 style={{ paddingTop: 0, paddingBottom: '10px', paddingRight: '10px', fontSize: '14px', fontWeight: 'bold' }}>
+        Korelacija službenih podataka MUP-a s procjenom publike prema jeziku na temelju Meta Graph API
+      </h3>
+      <svg
+        ref={scatterRef}
+        width={chartWidth}
+        height={chartHeight}
+        viewBox="0 0 ${chart} ${chart}"
+        style={{ display: 'block', maxWidth: '100%', height: 'auto', margin: '0 auto', overflow: 'visible' }}
+      />
     </div>
+
   );
 };
 
