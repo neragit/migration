@@ -77,6 +77,56 @@ const data: MetaManagerData[] = [
     { lang: 'Filipinski', avg: 14000, region: 'Asia', subgroup: 'Filipini', min: 12900, max: 15100, country: 'Filipini' },
     { lang: 'Cebuano', avg: 1200, region: 'Asia', subgroup: 'Filipini', min: 1100, max: 1300, country: 'Filipini' },
 ];
+const apiExpats = [
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "Serbia",
+        "lang": "Srpski",
+        "api_reach_min": 20700,
+        "api_reach_avg": 22500,
+        "api_reach_max": 24300
+    },
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "Nepal",
+        "lang": "Nepalski",
+        "api_reach_min": 23100,
+        "api_reach_avg": 25150,
+        "api_reach_max": 27200
+    },
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "Russia",
+        "lang": "Ruski",
+        "api_reach_min": 1500,
+        "api_reach_avg": 1650,
+        "api_reach_max": 1800
+    },
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "Philippines",
+        "lang": "Filipinski",
+        "api_reach_min": 13700,
+        "api_reach_avg": 14900,
+        "api_reach_max": 16100
+    },
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "India",
+        "lang": "Hindski",
+        "api_reach_min": 9500,
+        "api_reach_avg": 10300,
+        "api_reach_max": 11100
+    },
+    {
+        "created_at": "2026-02-22T01:29:04.910489+00:00",
+        "expat": "Bangladesh",
+        "lang": "Bengalski",
+        "api_reach_min": 3100,
+        "api_reach_avg": 3400,
+        "api_reach_max": 3700
+    }
+];
 
 //2025 mup data
 type Stranci = { Državljanstvo: string; lang: string; dozvola: number };
@@ -169,7 +219,11 @@ export default function MetaBarChart(
         const mergedData = MupData.map(d => {
             const meta = data.find(m => m.lang === d.lang);
             const dzsItem = DZS.find(z => z.lang === d.lang);
-            const api = propsData?.find(a => a.lang === d.lang); // <-- from Props
+            const api = propsData?.find(a => a.lang === d.lang);
+
+            const apiExpatsMap = new Map(apiExpats.map(d => [d.lang, d]));
+            const apiExpat = apiExpatsMap.get(d.lang);
+
 
             return {
                 lang: d.lang,
@@ -187,6 +241,11 @@ export default function MetaBarChart(
                 api_min: api ? api.api_reach_min : 0,
                 api_max: api ? api.api_reach_max : 0,
 
+                apiExpat_avg: apiExpat ? apiExpat.api_reach_avg : null,
+                apiExpat_min: apiExpat ? apiExpat.api_reach_min : null,
+                apiExpat_max: apiExpat ? apiExpat.api_reach_max : null,
+
+
             };
         });
 
@@ -200,7 +259,7 @@ export default function MetaBarChart(
             .padding(0.3);
 
         const x1 = d3.scaleBand()
-            .domain(["MUP+DZS", "API", "Meta"])
+            .domain(["MUP+DZS", "API", "Meta", "API Expat"])
             .range([0, x0.bandwidth()])
             .padding(0.05);
 
@@ -219,12 +278,13 @@ export default function MetaBarChart(
             .nice();
 
         const color = d3.scaleOrdinal<string, string>()
-            .domain(["MUP", "DZS", "Meta", "API"])
+            .domain(["MUP", "DZS", "Meta", "API", "API Expat"])
             .range([
                 "#fdae6b",   // MUP
                 "#ffcc89",    // DZS
                 "#63B3ED",   // Meta Graph API (lighter blue)
-                "#1976D2"   // Meta Ads Manager (dark blue)
+                "#1976D2",   // Meta Ads Manager (dark blue)
+                "#a8d4f5"
             ]);
 
         const hoverLine = g.append("line")
@@ -284,80 +344,6 @@ export default function MetaBarChart(
             .attr('class', 'lang')
             .attr('transform', d => `translate(${x0(d.Državljanstvo)},0)`);
 
-        const metaRect = langGroups.append("rect")
-            .attr("x", x1("Meta")!)
-            .attr("y", chartHeight)
-            .attr("width", x1.bandwidth())
-            .attr("height", 0)
-            .attr("fill", color("Meta")!)
-            .attr("opacity", "0.8");
-
-        metaRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.meta_avg))
-            .attr("height", d => chartHeight - y(d.meta_avg));
-
-        function drawWhisker(
-            group: d3.Selection<SVGGElement, any, any, any>,
-            type: "Meta" | "API",
-            minValueAccessor: (d: any) => number,
-            maxValueAccessor: (d: any) => number,
-            delay = 1200 // delay in ms before whisker animation starts
-        ) {
-            const whiskerWidth = x1.bandwidth() * 0.3;
-
-            // Vertical line (from min to max)
-            group.append("line")
-                .attr("class", "whisker")
-                .attr("x1", d => x1(type)! + x1.bandwidth() / 2)
-                .attr("x2", d => x1(type)! + x1.bandwidth() / 2)
-                .attr("y1", d => y(minValueAccessor(d)))
-                .attr("y2", d => y(maxValueAccessor(d)))
-                .attr("stroke", color(type)!)
-                .attr("stroke-width", 2)
-                .attr("stroke-dasharray", "4 2")
-                .attr("opacity", 0) // start invisible
-                .transition()
-                .delay(delay)
-                .duration(800)
-                .attr("opacity", 1);
-
-            // Top cap
-            group.append("line")
-                .attr("class", "whisker")
-                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
-                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
-                .attr("y1", d => y(maxValueAccessor(d)))
-                .attr("y2", d => y(maxValueAccessor(d)))
-                .attr("stroke", color(type)!)
-                .attr("stroke-width", 2)
-                .attr("opacity", 0) // start invisible
-                .transition()
-                .delay(delay)
-                .duration(800)
-                .attr("opacity", 1);
-
-            // Bottom cap
-            group.append("line")
-                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
-                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
-                .attr("y1", d => y(minValueAccessor(d)))
-                .attr("y2", d => y(minValueAccessor(d)))
-                .attr("stroke", color(type)!)
-                .attr("stroke-width", 2)
-                .attr("opacity", 0) // start invisible
-                .transition()
-                .delay(delay)
-                .duration(800)
-                .attr("opacity", 1);
-        }
-
-        drawWhisker(langGroups, "Meta", d => d.meta_min, d => d.meta_max);
-        drawWhisker(langGroups, "API", d => d.api_min, d => d.api_max);
-
-
-
-
         const apiRect = langGroups.append("rect")
             .attr("x", x1("API")!)
             .attr("y", chartHeight)
@@ -398,11 +384,104 @@ export default function MetaBarChart(
             .attr("y", d => y(d.mup + d.dzs))
             .attr("height", d => y(d.mup) - y(d.mup + d.dzs));
 
+        const metaRect = langGroups.append("rect")
+            .attr("x", x1("Meta")!)
+            .attr("y", chartHeight)
+            .attr("width", x1.bandwidth())
+            .attr("height", 0)
+            .attr("fill", color("Meta")!)
+            .attr("opacity", "0.8");
+
+        metaRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.meta_avg))
+            .attr("height", d => chartHeight - y(d.meta_avg));
+
+        const apiExpatRect = langGroups.append("rect")
+            .filter(d => d.apiExpat_avg !== null)
+            .attr("x", x1("API Expat")!)
+            .attr("y", chartHeight)
+            .attr("width", x1.bandwidth())
+            .attr("height", 0)
+            .attr("fill", color("API Expat")!)
+            .attr("opacity", 0.8);
+
+        apiExpatRect.transition()
+            .duration(1200)
+            .attr("y", d => y(d.apiExpat_avg!))
+            .attr("height", d => chartHeight - y(d.apiExpat_avg!));
+
+
+        function drawWhisker(
+            group: d3.Selection<SVGGElement, any, any, any>,
+            type: "Meta" | "API" | "API Expat",
+            minValueAccessor: (d: any) => number,
+            maxValueAccessor: (d: any) => number,
+            delay = 1200 // delay in ms before whisker animation starts
+        ) {
+            const whiskerWidth = x1.bandwidth() * 0.3;
+            const filtered = group.filter(d => minValueAccessor(d) > 0 && maxValueAccessor(d) > 0);
+
+            // Vertical line (from min to max)
+            filtered.append("line")
+                .attr("class", "whisker")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2)
+                .attr("y1", d => y(minValueAccessor(d)))
+                .attr("y2", d => y(maxValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "4 2")
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
+
+            // Top cap
+            filtered.append("line")
+                .attr("class", "whisker")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
+                .attr("y1", d => y(maxValueAccessor(d)))
+                .attr("y2", d => y(maxValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2)
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
+
+            // Bottom cap
+            filtered.append("line")
+                .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
+                .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
+                .attr("y1", d => y(minValueAccessor(d)))
+                .attr("y2", d => y(minValueAccessor(d)))
+                .attr("stroke", color(type)!)
+                .attr("stroke-width", 2)
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
+        }
+
+        drawWhisker(langGroups, "Meta", d => d.meta_min, d => d.meta_max);
+        drawWhisker(langGroups, "API", d => d.api_min, d => d.api_max);
+        drawWhisker(langGroups, "API Expat", d => d.apiExpat_min!, d => d.apiExpat_max!);
+
+
+
+
+
+
 
         function showTooltip(
             event: MouseEvent,
             d: any,
-            type: "meta" | "api" | "stack"
+            type: "meta" | "api" | "stack" | "expat"
         ) {
             const padding = 6;
 
@@ -432,6 +511,21 @@ export default function MetaBarChart(
                     .attr("y2", y(d.meta_avg))
                     .attr("opacity", 0.2);
 
+            } else if (type === "expat") {
+                setTooltip({
+                    x: left,
+                    y: top,
+                    opacity: 0.95,
+                    label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
+                    value: d.apiExpat_avg!.toLocaleString("fr-FR"),
+                    desc: `Meta API - "Lived in ${d.Državljanstvo} (Formerly Expats)": ${d.apiExpat_min!.toLocaleString("fr-FR")} - ${d.apiExpat_max!.toLocaleString("fr-FR")}`,
+                    note: note,
+                });
+
+                hoverLine
+                    .attr("y1", y(d.apiExpat_avg!))
+                    .attr("y2", y(d.apiExpat_avg!))
+                    .attr("opacity", 0.2);
             } else if (type === "api") {
                 setTooltip({
                     x: left,
@@ -439,7 +533,7 @@ export default function MetaBarChart(
                     opacity: 0.95,
                     label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
                     value: d.api_avg.toLocaleString("fr-FR"),
-                    desc: `Meta Graph API: ${d.api_min.toLocaleString("fr-FR")} - ${d.api_max.toLocaleString("fr-FR")}`,
+                    desc: `Meta API - jezik: ${d.api_min.toLocaleString("fr-FR")} - ${d.api_max.toLocaleString("fr-FR")}`,
                     note: note,
                 });
 
@@ -480,6 +574,11 @@ export default function MetaBarChart(
         apiRect
             .on("mouseenter", (e, d) => showTooltip(e, d, "api"))
             .on("mousemove", (e, d) => showTooltip(e, d, "api"))
+            .on("mouseleave", hideTooltip);
+
+        apiExpatRect
+            .on("mouseenter", (e, d) => showTooltip(e, d, "expat"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "expat"))
             .on("mouseleave", hideTooltip);
 
         mupRect
