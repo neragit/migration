@@ -118,15 +118,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     if (upper <= 1000 || lower >= 2400000) avgReach = 0;
 
                     results.push({
-    code: lang.code,
-    lang: lang.lang,
-    countyKey,
-    countyName: croatiaCounties[countyKey], // human-readable
-    residents: lang.residents,
-    apiReachMin: lower,
-    apiReachMax: upper,
-    apiReachAvg: avgReach,
-});
+                        code: lang.code,
+                        lang: lang.lang,
+                        countyKey,
+                        countyName: croatiaCounties[countyKey], // human-readable
+                        residents: lang.residents,
+                        apiReachMin: lower,
+                        apiReachMax: upper,
+                        apiReachAvg: avgReach,
+                    });
                 } catch (err) {
                     console.error(`Failed FB request for ${lang.lang} county ${countyKey}:`, err);
                     // push fallback zeros so you still have a record
@@ -150,7 +150,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 code: l.code,
                 lang: l.lang,
                 county_key: l.countyKey,
-county_name: l.countyName,
+                county_name: l.countyName,
                 residents: l.residents,
                 api_reach_min: l.apiReachMin,
                 api_reach_max: l.apiReachMax,

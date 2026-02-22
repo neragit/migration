@@ -7,8 +7,6 @@ interface expatData {
     code: string;
     expat: string;
     residents: number;
-    countyKey: string;
-    countyName: string;
     apiReachMin: number;
     apiReachMax: number;
     apiReachAvg: number;
@@ -45,19 +43,19 @@ const croatiaCounties: { [key: string]: string } = {
 
 
 const countries: expatData[] = [
-    { expat: 'Bosanski', code: 'Bosnian', countyKey: "0", countyName: "0", residents: 32225, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Makedonski', code: 'Macedonian', countyKey: "0", countyName: "0", residents: 11856, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Srpski', code: 'Serbian', countyKey: "0", countyName: "0", residents: 24278, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Nepalski', code: 'Nepali', countyKey: "0", countyName: "0", residents: 31708, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Ruski', code: 'Russian', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
-    { expat: 'Filipinski', code: 'Filipino', countyKey: "0", countyName: "0", residents: 17629, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Albanski', code: 'Albanian', countyKey: "0", countyName: "0", residents: 6355, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // KOSOVO
-    { expat: 'Ukrajinski', code: 'Ukrainian', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },// nema podataka za 2025.
-    { expat: 'Arapski', code: 'Arabic', countyKey: "0", countyName: "0", residents: 5504, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Hindski', code: 'Hindi', countyKey: "0", countyName: "0", residents: 15400, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Turski', code: 'Turkish', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
-    { expat: 'Bengalski', code: 'Bengali', countyKey: "0", countyName: "0", residents: 3404, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { expat: 'Uzbečki', code: 'Uzbek', countyKey: "0", countyName: "0", residents: 5521, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Bosanski', code: 'Bosnian',  residents: 32225, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Makedonski', code: 'Macedonian',  residents: 11856, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Srpski', code: 'Serbian', residents: 24278, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Nepalski', code: 'Nepali', residents: 31708, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Ruski', code: 'Russian', residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
+    { expat: 'Filipinski', code: 'Filipino', residents: 17629, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Albanski', code: 'Albanian', residents: 6355, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // KOSOVO
+    { expat: 'Ukrajinski', code: 'Ukrainian', residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },// nema podataka za 2025.
+    { expat: 'Arapski', code: 'Arabic', residents: 5504, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Hindski', code: 'Hindi', residents: 15400, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Turski', code: 'Turkish', residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
+    { expat: 'Bengalski', code: 'Bengali', residents: 3404, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { expat: 'Uzbečki', code: 'Uzbek', residents: 5521, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
 ];
 
 const localeMap: { [key: string]: number } = {
@@ -170,99 +168,91 @@ const expatCountries: { [key: string]: string } = {
   "6023516373983": "Congo DRC",
   "6023516403783": "Singapore"
 };
-
-const expatCountryMap: { [key: string]: string[] } = {
-    Nepali: ["Nepal"],
-    Bengali: ["Bangladesh"],
-    Filipino: ["Philippines"],
-    Hindi: ["India"]
+// Map expat codes to Facebook interest IDs
+const expatInterestMap: { [key: string]: string } = {
+  Nepali: "6023356955383",   // Nepal
+  Bengali: "6023356562783",  // Bangladesh
+  Filipino: "6018797091183", // Philippines
+  Hindi: "6016916298983",    // India
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<expatData[]>) {
-    // Auth check
-    const token = req.headers['authorization']?.split(' ')[1] || req.query.token;
-    if (token !== process.env.CRON_SECRET) return res.status(401).end('Unauthorized');
+  const token = req.headers['authorization']?.split(' ')[1] || req.query.token;
+  if (token !== process.env.CRON_SECRET) return res.status(401).end('Unauthorized');
 
-    const results: expatData[] = [];
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+  const results: expatData[] = [];
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
 
-    try {
-        // Filter expats we want
-        const selectedExpats = countries.filter(c => Object.keys(expatCountryMap).includes(c.code));
+  try {
+    // Filter only expats we have interest IDs for
+    const selectedExpats = countries.filter(c => expatInterestMap[c.code]);
 
-        for (const expat of selectedExpats) {
-            const locale = localeMap[expat.code];
+    for (const expat of selectedExpats) {
+      const interestId = expatInterestMap[expat.code];
 
-            // All Croatian counties
-            const countyKeys = Object.keys(croatiaCounties);
+      const targetingSpec = {
+        geo_locations: { countries: ["HR"] }, // all Croatia
+        flexible_spec: [
+          {
+            interests: [{ id: interestId, name: expat.expat }]
+          }
+        ],
+      };
 
-            for (const countyKey of countyKeys) {
-                const targetingSpec = {
-                    geo_locations: { regions: [{ key: countyKey }] },
-                    locales: [locale],
-                };
+      const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
+      const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
 
-                const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
-                const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
+      try {
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+        const data = await response.json();
 
-                try {
-                    const response = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
-                    const data = await response.json();
+        const lower = data.users_lower_bound ?? data.data?.users_lower_bound ?? 0;
+        const upper = data.users_upper_bound ?? data.data?.users_upper_bound ?? 0;
 
-                    const lower = data.users_lower_bound ?? data.data?.users_lower_bound ?? 0;
-                    const upper = data.users_upper_bound ?? data.data?.users_upper_bound ?? 0;
+        let avgReach = (lower + upper) / 2;
+        if (upper <= 1000 || lower >= 2400000) avgReach = 0;
 
-                    let avgReach = (lower + upper) / 2;
-                    if (upper <= 1000 || lower >= 2400000) avgReach = 0;
+        results.push({
+          code: expat.code,
+          expat: expat.expat,
+          residents: expat.residents,
+          apiReachMin: lower,
+          apiReachMax: upper,
+          apiReachAvg: avgReach,
+        });
 
-                    results.push({
-                        code: expat.code,
-                        expat: expatCountryMap[expat.code]?.[0] || expat.expat,
-                        countyKey,
-                        countyName: croatiaCounties[countyKey],
-                        residents: expat.residents,
-                        apiReachMin: lower,
-                        apiReachMax: upper,
-                        apiReachAvg: avgReach,
-                    });
-
-                } catch (err) {
-                    console.error(`Failed FB request for ${expat.expat} county ${countyKey}:`, err);
-                    results.push({
-                        code: expat.code,
-                        expat: expat.expat,
-                        countyKey,
-                        countyName: croatiaCounties[countyKey],
-                        residents: expat.residents,
-                        apiReachMin: 0,
-                        apiReachMax: 0,
-                        apiReachAvg: 0,
-                    });
-                }
-            }
-        }
-
-        // Insert all results once
-        const { error } = await supabase.from('cro_expat_by_county').insert(
-            results.map(l => ({
-                code: l.code,
-                expat: l.expat,
-                county_key: l.countyKey,
-                county_name: l.countyName,
-                residents: l.residents,
-                api_reach_min: l.apiReachMin,
-                api_reach_max: l.apiReachMax,
-                api_reach_avg: l.apiReachAvg,
-                snapshot_time: new Date(),
-            }))
-        );
-
-        if (error) console.error('Supabase insert error:', error);
-
-        res.status(200).json(results);
-
-    } catch (err) {
-        console.error('API error:', err);
-        res.status(500).json(countries.map(l => ({ ...l, apiReachMin: 0, apiReachMax: 0, apiReachAvg: 0 })));
+      } catch (err) {
+        console.error(`FB request failed for ${expat.expat}:`, err);
+        results.push({
+          code: expat.code,
+          expat: expat.expat,
+          residents: expat.residents,
+          apiReachMin: 0,
+          apiReachMax: 0,
+          apiReachAvg: 0,
+        });
+      }
     }
+
+    // Insert totals into Supabase
+    const { error } = await supabase.from('cro_expat').insert(
+      results.map(l => ({
+        code: l.code,
+        expat: l.expat,
+        residents: l.residents,
+        api_reach_min: l.apiReachMin,
+        api_reach_max: l.apiReachMax,
+        api_reach_avg: l.apiReachAvg,
+        snapshot_time: new Date(),
+      }))
+    );
+
+    if (error) console.error('Supabase insert error:', error);
+
+    res.status(200).json(results);
+
+  } catch (err) {
+    console.error('API error:', err);
+    res.status(500).json(countries.map(l => ({ ...l, apiReachMin: 0, apiReachMax: 0, apiReachAvg: 0 })));
+  }
 }
