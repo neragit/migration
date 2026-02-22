@@ -188,16 +188,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     const selectedExpats = countries.filter(c => expatInterestMap[c.code]);
 
     for (const expat of selectedExpats) {
-      const interestId = expatInterestMap[expat.code];
+      const behaviorId = expatInterestMap[expat.code];
 
       const targetingSpec = {
-        geo_locations: { countries: ["HR"] }, // all Croatia
-        flexible_spec: [
-          {
-            interests: [{ id: interestId, name: expat.expat }]
-          }
-        ],
-      };
+  geo_locations: { countries: ["HR"] },
+  flexible_spec: [
+    { behaviors: [{ id: behaviorId, name: expat.expat }] }
+  ],
+};
 
       const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
       const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
