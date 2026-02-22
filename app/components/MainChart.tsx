@@ -103,9 +103,9 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
       .attr("font-size", "12px")
       .attr("font-family", "Mukta, sans-serif");
 
-       // -------- CLIPPED AREAS --------
+    // -------- CLIPPED AREAS --------
 
-       const uid = Math.random().toString(36).slice(2);
+    const uid = Math.random().toString(36).slice(2);
     const clipImmId = `clip-imm-${uid}`;
     const clipEmgId = `clip-emg-${uid}`;
     const defs = svg.append("defs");
@@ -368,16 +368,16 @@ export default function LineChart({ width = 700, height = 450 }: LineChartProps)
               });
 
               fillImm.transition()
-          .delay(5500)
-          .duration(1200)
-          .ease(d3.easeCubicOut)
-          .attr("opacity", 0.1);
+                .delay(5500)
+                .duration(1500)
+                .ease(d3.easeCubicOut)
+                .attr("opacity", 0.1);
 
-        fillEmg.transition()
-          .delay(5500)
-          .duration(1200)
-          .ease(d3.easeCubicOut)
-          .attr("opacity", 0.1);
+              fillEmg.transition()
+                .delay(5500)
+                .duration(1500)
+                .ease(d3.easeCubicOut)
+                .attr("opacity", 0.1);
 
               observer.disconnect();
             }

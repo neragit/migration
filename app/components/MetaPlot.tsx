@@ -122,9 +122,8 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       residentsTotal: d.residents + (dzsMap.get(d.lang) ?? 0),
     }));
 
-  let chart = 600;
 
-  const chartWidth = size?.width ? size.width > 900 ? (size.width - 60) / 2 : size.width : chart;
+  const chartWidth = Math.min(size?.width ?? 500, 500);
   const chartHeight = chartWidth; // square charts
 
 
@@ -134,16 +133,14 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
     const svg = d3.select(scatterRef.current);
     svg.selectAll('*').remove();
 
-    const width = chart;
-    const height = chart;
     const padding = { top: 30, right: 30, bottom: 30, left: 60 };
 
     const xMax = d3.max(scatterDataWithDZS, d => d.residentsTotal) ?? 0;
     const yMax = d3.max(scatterDataWithDZS, d => d.api_reach_avg) ?? 0;
     const maxDomain = Math.max(xMax, yMax) * 1.1;
 
-    const plotWidth = width - padding.left - padding.right;
-    const plotHeight = height - padding.top - padding.bottom;
+    const plotWidth = chartWidth - padding.left - padding.right;
+    const plotHeight = chartHeight - padding.top - padding.bottom;
 
 
     const xScale = d3.scaleLinear()
@@ -158,7 +155,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
     // X-axis
     svg.append('g')
-      .attr('transform', `translate(0,${height - padding.bottom})`)
+      .attr('transform', `translate(0,${chartHeight - padding.bottom})`)
       .call(d3.axisBottom(xScale).tickSize(0).ticks(ticksCount).tickFormat(d => d.toLocaleString('fr-FR')))
       .attr("font-family", "Mukta, sans-serif")
       .select('.domain')
@@ -167,8 +164,8 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
 
 
     svg.append('text')
-      .attr('x', width / 2)
-      .attr('y', height - 5)
+      .attr('x', plotWidth / 2 + padding.left)
+      .attr('y', chartHeight + 5)
       .attr('fill', 'black')
       .attr('text-anchor', 'middle')
       .attr('font-size', '12px')
@@ -186,7 +183,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .attr('stroke', '#eee');
 
     svg.append('text')
-      .attr('x', -height / 2)
+      .attr('x', -chartHeight / 2)
       .attr('y', 0)
       .attr('fill', 'black')
       .attr('text-anchor', 'middle')
@@ -278,7 +275,7 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
     );
 
     svg.append('text')
-      .attr('x', width - padding.right - 5)
+      .attr('x', chartWidth - padding.right - 5)
       .attr('y', padding.top + 12)
       .attr('text-anchor', 'end')
       .attr('fill', '#ff6b6b')
@@ -308,13 +305,13 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       <h3 style={{ paddingTop: 0, paddingBottom: '10px', paddingRight: '10px', fontSize: '14px', fontWeight: 'bold' }}>
         Korelacija službenih podataka MUP-a s procjenom publike prema jeziku na temelju Meta Graph API
       </h3>
-      <svg
-        ref={scatterRef}
-        width={chartWidth}
-        height={chartHeight}
-        viewBox="0 0 ${chart} ${chart}"
-        style={{ display: 'block', maxWidth: '100%', height: 'auto', margin: '0 auto', overflow: 'visible' }}
-      />
+      <div style={{ width: '100%', maxWidth: '500px', margin: '0 auto' }}>
+        <svg
+          ref={scatterRef}
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          style={{ display: 'block', maxWidth: '100%', height: 'auto', margin: '0 auto', overflow: 'visible' }}
+        />
+      </div>
     </div>
 
   );

@@ -61,31 +61,41 @@ export default function MetaPage() {
 
                     <section className="section" >
 
-                        <p className="paragraph">Koliko stranih radnika stvarno boravi u Hrvatskoj?
-                            Koliko ih radi neprijavljeno?
-                            Koliko ih je napustilo zemlju bez odjave?
-                            Koliko ih ostaje, a koliko odlazi dalje u EU?
-                            Što zapravo predstavlja broj izdanih radnih dozvola?
-                            Jesu li podaci MUP-a, HZMO-a i Ministarstva rada međusobno usklađeni? Bez jasnih i usklađenih podataka, teško je odgovoriti na šira pitanja koja dominiraju javnim prostorom: Je li Hrvatska tranzitna ili useljenička zemlja? Koliki je stvarni rizik zloupotrebe sustava?
-                            Radi li se o privremenoj radnoj snazi ili trajnoj migraciji?
-                            Dolaze li radnici sezonski ili ostaju dugoročno?
-                            Je li uvoz radne snage zamjena za demografsku politiku i povratak iseljenih?
-                            Koliko migranti doprinose proračunu?
-                            Koliko košta integracija?
-                            Postoji li strategija integracije?
-                            Ima li država kapaciteta u obrazovanju, stanovanju i socijalnom sustavu?
-                            Nudi li zakon stvarno rješenje ili samo kozmetičke izmjene?</p>
+                        <div className="relative">
+                            <span className="absolute top-0 left-0 text-[10rem] font-black text-gray-100 select-none leading-none pointer-events-none">?</span>
+                            <span className="absolute bottom-0 right-0  text-[10rem] font-black text-gray-100 select-none leading-none pointer-events-none">?</span>
+                            <p className="paragraph relative ">
+                                Koliko <b>stranih radnika</b> stvarno boravi u Hrvatskoj?
+                                Koliko ih radi <b>neprijavljeno</b>?
+                                Koliko ih je napustilo zemlju <b>bez odjave</b>?
+                                Koliko ih ostaje, a koliko odlazi <b>dalje u EU</b>?
+                                Što zapravo predstavlja broj izdanih <b>radnih dozvola</b>?
+                                Jesu li podaci <b>MUP-a, HZMO-a i Ministarstva rada</b> međusobno usklađeni?
+                                Bez jasnih i usklađenih podataka, teško je odgovoriti na šira pitanja koja dominiraju javnim prostorom: Je li Hrvatska <b>tranzitna ili useljenička zemlja</b>? Koliki je stvarni rizik <b>zloupotrebe sustava</b>?
+                                Radi li se o <b>privremenoj radnoj snazi ili trajnoj migraciji</b>?
+                                Dolaze li radnici <b>sezonski ili ostaju dugoročno</b>?
+                                Je li uvoz radne snage zamjena za <b>demografsku politiku</b> i povratak iseljenih?
+                                Koliko <b>migranti</b> doprinose <b>proračunu</b>?
+                                Koliko košta <b>integracija</b>?
+                                Postoji li <b>strategija integracije</b>?
+                                Ima li država kapaciteta u <b>obrazovanju, stanovanju i socijalnom sustavu</b>?
+                                Nudi li <b>zakon</b> stvarno rješenje ili samo kozmetičke izmjene?
+                            </p>
+                        </div>
 
                         <img
                             src="/news.png"
                             alt="News collage"
+                            width="1200"
+                            height="800"
                             className="w-full h-auto my-15"
                         />
 
+
                         <p className="paragraph">
-                            Otkad su ukinute kvote za zapošljavanje stranih radnika u Hrvatskoj,<b> migracije i dolazak stranih radnika postali su jedno od najpolariziranijih društvenih pitanja</b>. Javna rasprava često se kreće između dva ekstrema. Velik dio medijskih tekstova, osobito analitičkih i komentatorskih, naglašava neusklađenost statistika, nekontroliran rast broja radnih dozvola i negativne društvene posljedice, čime implicitno ili eksplicitno sugerira zabrinutost i sistemsku neuređenost.
+                            <b>Otkad su ukinute kvote za zapošljavanje stranih radnika u Hrvatskoj, migracije i dolazak stranih radnika postali su jedno od najpolariziranijih društvenih pitanja</b>. Javna rasprava često se kreće između dva ekstrema. Velik dio medijskih tekstova, osobito analitičkih i komentatorskih, naglašava neusklađenost statistika, nekontroliran rast broja radnih dozvola i negativne društvene posljedice, čime implicitno ili eksplicitno sugerira zabrinutost i sistemsku neuređenost.
                             Istovremeno, neki od izvora tvrde da su alarmističke interpretacije pretjerane ili politički motivirane.
-                            U svakom slučaju, <b>brojke postaju politički argument</b>, a interpretacija podataka oblikuje percepciju stvarnosti. U središtu ove rasprave nalazi se temeljno, ali iznenađujuće teško pitanje:</p>
+                            U svakom slučaju, <b>brojke postaju politički argument</b>, a interpretacija podataka oblikuje percepciju stvarnosti. U središtu ove rasprave nalazi se temeljno pitanje:</p>
 
                         <h2>Koliko je stvarno stranih radnika u Hrvatskoj?</h2>
 
@@ -93,7 +103,10 @@ export default function MetaPage() {
 
                         <img
                             src="/meta.png"
-                            alt="Meta header"
+                            alt="Meta apps"
+                            loading="lazy"
+                            width="1200"
+                            height="800"
                             className="w-full h-auto mt-15"
                         />
 
@@ -105,20 +118,23 @@ export default function MetaPage() {
 
                         <div className="flex flex-col md:flex-row w-full md:max-h-[450px] gap-4 mt-15 md:mt-20">
 
-                            <p className="paragraph md:pr-15 ">Pri procjeni veličine potencijalne publike često se polazi od jezika korisnika, pri čemu se analiza provodi <b>prvenstveno na temelju postavki jezika korisničkog sučelja</b> (primarni signal), ali i na temelju dodatnih pokazatelja, poput <b>jezika kojim korisnik najčešće komunicira</b> (sekundarni signal).
-                                To ne znači da ta procjena označava nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
-                                Ako osoba koristi drugi jezik, primjerice engleski, bit će uključena u publiku za taj jezik, bez obzira na njezino državljanstvo ili podrijetlo.
+                            <p className="paragraph md:pr-15 ">Pri procjeni veličine potencijalne publike može se krenuti od jezika korisnika, pri čemu se klasifikacija provodi <b>prvenstveno na temelju postavki jezika korisničkog sučelja</b> (primarni signal), ali i na temelju dodatnih pokazatelja, poput <b>jezika kojim korisnik najčešće komunicira ili jezika sadržaja s kojim je obično u interakciji</b> (sekundarni signali). To ne znači da ta procjena označava nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
+                                Ako osoba koristi drugi jezik, primjerice engleski, bit će uključena u publiku za taj jezik, bez obzira na njezino državljanstvo ili podrijetlo.<br/><br/>
+                                S druge strane, klasifikacije "iseljenika" (engl. expats) mogu podrazumijevati osobne podatke koje regulatori smatraju osjetljivima (npr. etnička pripadnosti, migracijska pozadina i sl.) pa je Meta kroz godine ograničila ovakvo targetiranje jer nastoji smanjiti rizik diskriminirajućeg ili invazivnog targetiranja.
+
                             </p>
 
                             <img
                                 src="/meta-jezik.jfif"
                                 alt="Meta AI"
+                                loading="lazy"
                                 className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl"
                             />
 
                             <img
                                 src="/meta-lokacija.jfif"
                                 alt="Meta AI"
+                                loading="lazy"
                                 className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl "
                             />
                         </div>
@@ -128,19 +144,23 @@ export default function MetaPage() {
                             <img
                                 src="/meta-analiza.jfif"
                                 alt="Meta AI"
+                                loading="lazy"
                                 className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl"
                             />
 
                             <img
                                 src="/meta-privatnost.jfif"
                                 alt="Meta AI"
+                                loading="lazy"
                                 className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl "
                             />
 
                             <p className="paragraph md:pl-15">S obzirom na to da su podaci <b>anonimizirani i agregirani na razini skupine</b>, moguće je koristiti alate poput Meta Ads Managera i Graph API-ja za analizu publike u istraživačke svrhe pod uvjetom poštivanja pravila privatnosti.
                                 U Europskoj uniji primjenjuje se GDPR.
                                 Radi očuvanja privatnosti, Meta u prikazu procjene potencijalne publike koristi raspon između <b>minimalne i maksimalne vrijednosti</b>.
-                                Vrlo male vrijednosti nisu prikazane, npr. procjena od 0 do 1 000 korisnika može se prikazati kao "ispod 1 000".
+                                Vrlo male vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika može se prikazati kao "ispod 1000".
+                                <br /><br />
+                                Klasifikacije "iseljenika" (engl. expats) mogu podrazumijevati osobne podatke koje regulatori smatraju osjetljivima (npr. etnička pripadnosti, migracijska pozadina i sl.), pa je Meta kroz godine ograničila ovakvo targetiranje jer nastoji smanjiti rizik diskriminirajućeg ili invazivnog targetiranja.
                             </p>
                         </div>
 
@@ -158,6 +178,9 @@ export default function MetaPage() {
                             <img
                                 src="/ads_manager.png"
                                 alt="Meta Ads Manager procjena korisnika u Hrvatskoj"
+                                loading="lazy"
+                                width="1200"
+                                height="800"
                                 className="w-full h-auto my-10"
 
                             />
@@ -240,12 +263,14 @@ export default function MetaPage() {
                                         <img
                                             src="/meta-oglasi.jfif"
                                             alt="Meta AI"
+                                            loading="lazy"
                                             className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl"
                                         />
 
                                         <img
                                             src="/meta-business.jfif"
                                             alt="Meta AI"
+                                            loading="lazy"
                                             className="w-9/10 mx-auto md:w-1/5 h-auto rounded-2xl "
                                         />
                                     </div>
@@ -314,6 +339,7 @@ export default function MetaPage() {
                                     <img
                                         src="/meta-global.png"
                                         alt="Meta Global"
+                                        loading="lazy"
                                         className="w-full h-auto my-10"
                                     />
 
@@ -336,6 +362,7 @@ export default function MetaPage() {
                                     <img
                                         src="/meta-cro-type.png"
                                         alt="Meta Croatia"
+                                        loading="lazy"
                                         className="w-full h-auto "
                                     />
 
@@ -386,9 +413,9 @@ export default function MetaPage() {
                     <section className="section" >
 
                         <p className="paragraph">
-                            Vizualizacije služe samo u obrazovne i istraživačke svrhe.
+                            Ova analiza se bavim područjem digitalne demografije te istražuje potencijal i ograničenja komercijalnih platformskih podataka kao komplementarnog izvora za proučavanje migracijskih trendova. Vizualizacije služe samo u obrazovne i istraživačke svrhe. 
                             Prikazani podaci iz Meta Marketing API-ja su agregirani i ne sadrže osobne ili identificirajuće informacije.
-                            Prikazane uvide služe analitičkoj demonstraciji i nisu namijenjene komercijalnoj upotrebi.
+                            Prikazani uvidi služe analitičkoj demonstraciji i nisu namijenjene komercijalnoj upotrebi.
                         </p>
 
                         <ul >

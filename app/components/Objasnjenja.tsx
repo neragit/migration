@@ -37,7 +37,8 @@ const groups: Group[] = [
                 number: "1",
                 color: "[#1976D2]",
                 content: (
-                    <>Prema popisu stanovništva iz 2021. godine, u Republici Hrvatskoj živjelo je 123 892 Srba, 24 131 Bošnjaka, 3 127 i 3 555 Makedonaca. Govornici bosanskog, srpskog i makedonskog jezika mogu slobodno putovati unutar EU bez boravišnih dozvola. Meta bilježi aktivnost uređaja u Hrvatskoj (uključujući posjetitelje), dok MUP broji samo stanovnike s dozvolom. To povećava Meta procjene za balkanske jezike.</>
+                    <>Prema popisu stanovništva iz 2021. godine, u Republici Hrvatskoj živjelo je 123 892 Srba, 24 131 Bošnjaka, 3 127 i 3 555 Makedonaca.
+                    <b> Nacionalne manjine</b> mogle bi značajno doprinijeti objašnjenju velike prisutnosti bosanskog jezika. Primjerice, srpska manjina mogla bi objasniti signale publike na bosanskom jeziku u županijama s velikim brojem srpskog stanovništva, kao što su Osječko-baranjska i Vukovarsko-srijemska županija, ako je uređaj postavljen na hrvatski ili bosanski, a Meta klasificira sadržaj koji konzumiraju kao bosanski. Međutim, nema dokaza za ove pretpostavke i nacionalne manjine svakako nisu dovoljne da bi se objasnila prisutnost bosanskog jezika u županijama kao što su Splitko-dalmatinska i Dubrovačko-neretvanska. S druge strane, <b>MUP broji migracije radne snage</b>, ali nema javno dostupne podjele dozvola prema županijama s obzirom na državljanstvo. Ukupan broj svakako nije dovoljan da bi se objasnila prisutnost bosanskog. Meta bilježi aktivnost uređaja u Hrvatskoj, uključujući sve državljane koji su u interakciji sa sadržajem na tom jeziku, kao i posjetitelje, što povećava Meta procjene za balkanske jezike.</>
                 ),
             },
             {
@@ -45,7 +46,7 @@ const groups: Group[] = [
                 heading: "Problemi klasifikacije jezika",
                 number: "2",
                 color: "[#1976D2]",
-                content: <>Hrvatski, bosanski, srpski i crnogorski međusobno međusobno su razumljivi. Zbog <b>sličnosti među balkanskim jezicima i  razlikama među dijalektima</b>, moguće je da dolazi do pogrešne klasifikacije. Npr. ikavica i ekavica u odnosu na ijekavicu. Međutim, Meta detektira jezik prvenstveno prema postavkama sučelja (koje korisnik može konfigurirati) pa bi se očekivalo da je procjena u skladu s govornim jezikom.</>,
+                content: <>Hrvatski, bosanski, srpski i crnogorski međusobno međusobno su razumljivi. Zbog <b>sličnosti među balkanskim jezicima i razlikama među dijalektima</b>, moguće je da dolazi do pogrešne klasifikacije korisnika ili sadržaja. Međutim, ako Meta detektira jezik prvenstveno prema postavkama sučelja (koje korisnik može konfigurirati), u tom bi se slučaju očekivalo da je procjena u skladu s govornim jezikom. Naravno moguće je potpuno preklapanje hrvatskog i bosanskog, što bi značilo da je otprilike 5% ukupnog broja korisnika ubrojeno pod publiku na hrvatskom i bosanskom jeziku.</>,
             },
             {
                 id: 3,

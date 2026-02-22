@@ -301,11 +301,12 @@ export default function MetaBarChart(
             group: d3.Selection<SVGGElement, any, any, any>,
             type: "Meta" | "API",
             minValueAccessor: (d: any) => number,
-            maxValueAccessor: (d: any) => number
+            maxValueAccessor: (d: any) => number,
+            delay = 1200 // delay in ms before whisker animation starts
         ) {
             const whiskerWidth = x1.bandwidth() * 0.3;
 
-            // Vertical line
+            // Vertical line (from min to max)
             group.append("line")
                 .attr("class", "whisker")
                 .attr("x1", d => x1(type)! + x1.bandwidth() / 2)
@@ -315,25 +316,42 @@ export default function MetaBarChart(
                 .attr("stroke", color(type)!)
                 .attr("stroke-width", 2)
                 .attr("stroke-dasharray", "4 2")
-                .attr("pointer-events", "none");
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
 
-            // Horizontal caps
+            // Top cap
             group.append("line")
+                .attr("class", "whisker")
                 .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
                 .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
                 .attr("y1", d => y(maxValueAccessor(d)))
                 .attr("y2", d => y(maxValueAccessor(d)))
                 .attr("stroke", color(type)!)
-                .attr("stroke-width", 2);
+                .attr("stroke-width", 2)
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
 
+            // Bottom cap
             group.append("line")
                 .attr("x1", d => x1(type)! + x1.bandwidth() / 2 - whiskerWidth / 2)
                 .attr("x2", d => x1(type)! + x1.bandwidth() / 2 + whiskerWidth / 2)
                 .attr("y1", d => y(minValueAccessor(d)))
                 .attr("y2", d => y(minValueAccessor(d)))
                 .attr("stroke", color(type)!)
-                .attr("stroke-width", 2);
+                .attr("stroke-width", 2)
+                .attr("opacity", 0) // start invisible
+                .transition()
+                .delay(delay)
+                .duration(800)
+                .attr("opacity", 1);
         }
+
         drawWhisker(langGroups, "Meta", d => d.meta_min, d => d.meta_max);
         drawWhisker(langGroups, "API", d => d.api_min, d => d.api_max);
 

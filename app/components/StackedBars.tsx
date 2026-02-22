@@ -232,7 +232,7 @@ export default function StackedBars({ width = 1000, height = 600 }: StackedProps
                                 aria-pressed={selectedCategories.includes(cat)}
                                 lang="hr" // Croatian TTS
                                 onClick={() => toggleCategory(cat)}
-                                className="button"
+                                className="button "
                                 style={{
                                     backgroundColor: selectedCategories.includes(cat) ? catColors[cat] : "#eee",
                                     color: selectedCategories.includes(cat) ? "#fff" : "#333",
@@ -253,7 +253,7 @@ export default function StackedBars({ width = 1000, height = 600 }: StackedProps
                             aria-pressed={selectedYears.includes(year)} // for the screen reader
                             lang="hr" // Croatian TTS
                             onClick={() => toggleYear(year)}
-                            className="button"
+                            className="button "
                             style={{
                                 backgroundColor: selectedYears.includes(year) ? "#999" : "#eee",
                                 color: selectedYears.includes(year) ? "#fff" : "#333",

@@ -8,6 +8,7 @@ interface LangData {
     lang: string;
     residents: number;
     countyKey: string;
+    countyName: string;
     apiReachMin: number;
     apiReachMax: number;
     apiReachAvg: number;
@@ -18,19 +19,19 @@ const TOKEN = process.env.MARKETING_API_TOKEN!;
 const AD_ACCOUNT_ID = process.env.AD_ACCOUNT_ID!;
 
 const languages: LangData[] = [
-    { lang: 'Bosanski', code: 'Bosnian', countyKey: "0", residents: 32225, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Makedonski', code: 'Macedonian', countyKey: "0", residents: 11856, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Srpski', code: 'Serbian', countyKey: "0", residents: 24278, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Nepalski', code: 'Nepali', countyKey: "0", residents: 31708, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Ruski', code: 'Russian', countyKey: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
-    { lang: 'Filipinski', code: 'Filipino', countyKey: "0", residents: 17629, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Albanski', code: 'Albanian', countyKey: "0", residents: 6355, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // KOSOVO
-    { lang: 'Ukrajinski', code: 'Ukrainian', countyKey: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },// nema podataka za 2025.
-    { lang: 'Arapski', code: 'Arabic', countyKey: "0", residents: 5504, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Hindski', code: 'Hindi', countyKey: "0", residents: 15400, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Turski', code: 'Turkish', countyKey: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
-    { lang: 'Bengalski', code: 'Bengali', countyKey: "0", residents: 3404, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
-    { lang: 'Uzbečki', code: 'Uzbek', countyKey: "0", residents: 5521, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Bosanski', code: 'Bosnian', countyKey: "0", countyName: "0", residents: 32225, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Makedonski', code: 'Macedonian', countyKey: "0", countyName: "0", residents: 11856, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Srpski', code: 'Serbian', countyKey: "0", countyName: "0", residents: 24278, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Nepalski', code: 'Nepali', countyKey: "0", countyName: "0", residents: 31708, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Ruski', code: 'Russian', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
+    { lang: 'Filipinski', code: 'Filipino', countyKey: "0", countyName: "0", residents: 17629, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Albanski', code: 'Albanian', countyKey: "0", countyName: "0", residents: 6355, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // KOSOVO
+    { lang: 'Ukrajinski', code: 'Ukrainian', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },// nema podataka za 2025.
+    { lang: 'Arapski', code: 'Arabic', countyKey: "0", countyName: "0", residents: 5504, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Hindski', code: 'Hindi', countyKey: "0", countyName: "0", residents: 15400, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Turski', code: 'Turkish', countyKey: "0", countyName: "0", residents: 0, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 }, // nema podataka za 2025.
+    { lang: 'Bengalski', code: 'Bengali', countyKey: "0", countyName: "0", residents: 3404, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
+    { lang: 'Uzbečki', code: 'Uzbek', countyKey: "0", countyName: "0", residents: 5521, apiReachAvg: 0, apiReachMin: 0, apiReachMax: 0 },
 ];
 
 const localeMap: { [key: string]: number } = {
@@ -50,11 +51,29 @@ const localeMap: { [key: string]: number } = {
     Uzbek: 91,
 };
 
-const croatiaCountyKeys = [
-    "1592", "1603", "1599", "1591", "1597", "1608", "1593",
-    "1595", "1594", "1600", "1607", "1596", "1606", "1605",
-    "1610", "1601", "1609", "1598", "1604", "1602", "1611"
-];
+const croatiaCounties: { [key: string]: string } = {
+    "1592": "Brod-Posavina County",
+    "1603": "Šibenik-Knin County",
+    "1599": "Međimurje County",
+    "1591": "Bjelovar-Bilogora County",
+    "1597": "Krapina-Zagorje County",
+    "1608": "Vukovar-Syrmia County",
+    "1593": "Dubrovnik-Neretva County",
+    "1595": "Karlovac County",
+    "1594": "Istria County",
+    "1600": "Osijek-Baranja County",
+    "1607": "Virovitica-Podravina County",
+    "1596": "Koprivnica-Križevci County",
+    "1606": "Varaždin County",
+    "1605": "Split-Dalmatia County",
+    "1610": "Zagreb County",
+    "1601": "Požega-Slavonia County",
+    "1609": "Zadar County",
+    "1598": "Lika-Senj County",
+    "1604": "Sisak-Moslavina County",
+    "1602": "Primorje-Gorski Kotar County",
+    "1611": "Zagreb"
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<LangData[]>) {
     // Auth check
@@ -71,6 +90,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
         for (const lang of selectedLanguages) {
             const locale = localeMap[lang.code];
+
+            const croatiaCountyKeys = Object.keys(croatiaCounties);
 
             for (const countyKey of croatiaCountyKeys) {
                 const targetingSpec = {
@@ -97,14 +118,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                     if (upper <= 1000 || lower >= 2400000) avgReach = 0;
 
                     results.push({
-                        code: lang.code,
-                        lang: lang.lang,
-                        countyKey,
-                        residents: lang.residents,
-                        apiReachMin: lower,
-                        apiReachMax: upper,
-                        apiReachAvg: avgReach,
-                    });
+    code: lang.code,
+    lang: lang.lang,
+    countyKey,
+    countyName: croatiaCounties[countyKey], // human-readable
+    residents: lang.residents,
+    apiReachMin: lower,
+    apiReachMax: upper,
+    apiReachAvg: avgReach,
+});
                 } catch (err) {
                     console.error(`Failed FB request for ${lang.lang} county ${countyKey}:`, err);
                     // push fallback zeros so you still have a record
@@ -112,6 +134,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                         code: lang.code,
                         lang: lang.lang,
                         countyKey,
+                        countyName: croatiaCounties[countyKey],
                         residents: lang.residents,
                         apiReachMin: 0,
                         apiReachMax: 0,
@@ -127,6 +150,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
                 code: l.code,
                 lang: l.lang,
                 county_key: l.countyKey,
+county_name: l.countyName,
                 residents: l.residents,
                 api_reach_min: l.apiReachMin,
                 api_reach_max: l.apiReachMax,

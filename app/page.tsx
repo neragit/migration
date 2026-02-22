@@ -151,7 +151,7 @@ export default function Home() {
 
       {/*CONTENT*/}
 
-      <div className="flex mt-20">
+      <div className="min-h-screen flex  pt-20 ">
         {!showLandscapeWarning && (
           <div className="fixed z-50 pt-3 portrait:hidden ">
 
@@ -170,7 +170,7 @@ export default function Home() {
 
 
             <aside
-              className={`sidebar pb-5 min-w-48 max-w-56 flex-col fixed h-full overflow-y-auto scrollbar-left
+              className={`sidebar pb-5 min-w-48 max-w-56 flex-col fixed h-full  overflow-y-auto scrollbar-left
                 landscape:translate-x-0 portrait:hidden transition-transform duration-300 
               ${sidebarVisible ? "block" : "hidden"} xl:block `}
             >
@@ -190,7 +190,7 @@ export default function Home() {
         )}
 
 
-        <main className={`flex-1 min-w-0 px-5  text-gray-700 flex justify-center transition-all duration-100
+        <main className={`flex-1 min-w-0  px-5  text-gray-700 flex justify-center transition-all duration-100
             ${sidebarVisible ? "pl-60" : "pl-10"} xl:pl-7 portrait:px-5 overflow-visible `} id="start" >
 
           <div className="w-full max-w-4xl">
@@ -201,7 +201,7 @@ export default function Home() {
                 Hrvatska u brojkama: <span style={{ color: "#c51b8a" }}>migracije</span>
               </h1>
 
-              <p className="paragraph mb-5">
+              <p className="paragraph mb-5 !text-xl">
 
                 Tko migrira i kamo? Koliko je stranih radnika u Hrvatskoj, koje poslove obavljaju i kolike su im plaće?
                 U kojim županijama ima najviše migranata?
@@ -211,14 +211,7 @@ export default function Home() {
 
               </p>
 
-              <p className="paragraph mb-5">
 
-                Cilj je pružiti uvid u migracije na jednom mjestu, bez
-                dramatičnih naslova, subjektivnih interpretacija i reklama.
-
-                Prikazani su najnoviji podaci iz javno dostupnih izvora (Eurostat, MUP, UN, HZZ i sl.) u veljači 2026.
-
-              </p>
 
             </section>
 
@@ -227,7 +220,7 @@ export default function Home() {
               <h2>Tko odlazi i kamo ide?</h2>
 
               <p className="paragraph ">
-                Velike zemlje poput Indije i Kine, imaju i velik broj emigranata.
+                Velike zemlje poput Indije i Kine, imaju i velik broj iseljenika.
                 Osim ekonomskih razloga, do migracija često dolazi zbog ratova i konflikata, primjerice u Siriji i Ukrajini.
                 Ljudi najčešće odlaze u Sjedinjene Američke Države.
               </p>
@@ -250,7 +243,7 @@ export default function Home() {
                   <br /><br />Izvor ukupnog broja stanovnika (najnoviji dostupni podaci 2024):{" "}
                   <a href="https://population.un.org/wpp/downloads?folder=Standard%20Projections&group=Population" target="_blank" rel="noopener noreferrer">UN World Population Prospects</a>
 
-                  <br /><br />Broj imigranata predstavlja ukupan broj zabilježenih useljenika neke zemlje, a broj emigranata ukupan broj iseljenika (<em>migrant stock</em>).
+                  <br /><br />Broj useljenika predstavlja ukupan broj zabilježenih useljenika neke zemlje, a broj iseljenika ukupan broj iseljenika (<em>migrant stock</em>).
                   Izvor broja migranata (najnoviji dostupni podaci 2023):{" "}
                   <a href="https://www.un.org/development/desa/pd/content/international-migrant-stock" target="_blank" rel="noopener noreferrer">UN International Migrant Stock</a>
 
@@ -453,7 +446,7 @@ export default function Home() {
               <h2>Odakle dolazi najviše migranata?</h2>
 
               <p className="paragraph">
-                2022. i 2023. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije. 
+                2022. i 2023. godine u Hrvatsku dolazi značajan broj migranata iz Ukrajine i Azije.
                 Najnovijih podataka nema u Eurostatu, ali za dostupne godine moguće je vidjeti podjelu po svim zemljama, za razliku od hrvatskih javnih podataka koji grupiraju zemlje prema podrijetlu (DZS: Azija, Afrika, Oceanija i sl.) ili prikazuju samo top 10 (MUP).
 
                 <span> Izvor:{" "}
@@ -613,8 +606,13 @@ export default function Home() {
 
             </section>
 
+            <section className="section " id="choropleth-hr">
 
+              <p className="paragraph">
+                Zaključak
+              </p>
 
+            </section>
 
 
           </div >
@@ -622,6 +620,37 @@ export default function Home() {
         </main >
 
       </div >
+
+<footer className=" bg-neutral-700 text-neutral-300 px-5 py-5">
+  <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between text-center md:text-left items-center md:items-start gap-8">
+    
+    {/* Left column */}
+    <div className="max-w-4xl text-sm space-y-3">
+      <p>
+        Cilj je pružiti uvid u migracije na jednom mjestu, temeljem podataka iz javno dostupnih službenih izvora
+        (DZS, MUP, HZZ, UN, Eurostat i sl.)
+      </p>
+
+      <p>Zadnje ažuriranje: veljača 2026.</p>
+
+      <div className="pt-4 border-t border-neutral-600 text-neutral-400">
+        <p>Vizualizacija i obrada podataka: © 2026 Ime Prezime email@mail.com</p>
+
+      </div>
+    </div>
+
+    {/* Right column */}
+    <div className="flex ">
+      <button
+        onClick={() => scrollTo("start")}
+        className="hover:text-blue-400 transition-colors  hover:cursor-pointer "
+      >
+        Natrag na vrh ↑
+      </button>
+    </div>
+
+  </div>
+</footer>
 
     </>
   );

@@ -327,7 +327,7 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
         const containerRect = containerRef.current!.getBoundingClientRect();
 
         d3.select(event.currentTarget).attr("stroke", "#ff00ff");
-        const migLabel = mode === "destination" ? "Broj imigranata" : "Broj emigranata";
+        const migLabel = mode === "destination" ? "Broj useljenika" : "Broj iseljenika";
         const religionMap = { "Christians": "Kršćanstvo", "Muslims": "Islam", "Unaffiliated": "Neopredjeljeni", "Buddhists": "Budizam", "Hindus": "Hinduizam", "Jews": "Judaizam", "Other_religions": "Ostali" };
         let religionHtml = d.major1 ? (religionMap[d.major1 as keyof typeof religionMap] ?? d.major1) : "";
         if (d.major1_perc != null) religionHtml += ` ${Math.round(d.major1_perc * 100)}%`;
@@ -431,7 +431,7 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
         <div style={{ fontSize: "1.5rem", color: "#333" }}>
           <span style={{ animation: "fadeMoveIn 1s forwards" }}>
             {new Intl.NumberFormat('fr-FR').format(totalMig)}
-          </span> <b>{mode === "destination" ? " imigranata" : " emigranata"}</b>
+          </span> <b>{mode === "destination" ? " useljenika" : " iseljenika"}</b>
         </div>
 
       </div>
