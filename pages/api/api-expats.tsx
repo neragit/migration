@@ -171,8 +171,13 @@ const expatCountries: { [key: string]: string } = {
 };
 
 const expatInterestMap: { [key: string]: string } = {
-
-    Kenian:"6018796980983",
+    Nepali: "6023356955383",
+    Bengali: "6023356562783",
+    Filipino: "6018797091183",
+    Hindi: "6016916298983",
+    Serbian: "6027149004983",
+    Russian: "6025000815983",
+    Kenian:"6018796980983"
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<expatData[]>) {
