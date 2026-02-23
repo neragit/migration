@@ -28,6 +28,8 @@ interface MetaManagerData {
   country: string;
 }
 
+
+
 const defaultData: MetaManagerData[] = [
   { lang: 'Bosanski', adsAvg: 67250, region: 'Europa', subgroup: 'Balkan', adsMin: 61800, adsMax: 72700, country: 'Bosna i Hercegovina' },
   { lang: 'Makedonski', adsAvg: 53750, region: 'Europa', subgroup: 'Balkan', adsMin: 49400, adsMax: 58100, country: 'Sjeverna Makedonija' },
@@ -120,6 +122,8 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
     .map(d => ({
       ...d,
       residentsTotal: d.residents + (dzsMap.get(d.lang) ?? 0),
+          xRank: 0, // placeholder, will be updated
+    yRank: 0, // placeholder, will be updated
     }));
 
 
@@ -295,28 +299,54 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .attr('pointer-events', 'none')
       .text(d => d.lang);
 
-      function rankArray(arr: number[]) {
-  // returns array of ranks
-  const sorted = [...arr].sort((a, b) => a - b);
-  return arr.map(v => sorted.indexOf(v) + 1);
+// Rank array with proper handling of ties (average rank) - 1-based ranking
+function rankArray(arr: number[]): number[] {
+  // Attach original indices
+  const indexed = arr.map((value, index) => ({ value, index }));
+
+  // Sort ascending
+  indexed.sort((a, b) => a.value - b.value);
+
+  const ranks: number[] = new Array(arr.length);
+  let i = 0;
+
+  while (i < indexed.length) {
+    const start = i;
+    const val = indexed[i].value;
+
+    // Find all tied values
+    while (i + 1 < indexed.length && indexed[i + 1].value === val) {
+      i++;
+    }
+    const end = i;
+
+    // Average rank for ties (1-based)
+    const avgRank = (start + end + 2) / 2; // +1 for 1-based, +1 for end-inclusive
+
+    for (let j = start; j <= end; j++) {
+      ranks[indexed[j].index] = avgRank;
+    }
+    i++;
+  }
+
+  return ranks;
 }
 
-// Compute Spearman rank correlation
-function rankArray(arr: number[]) {
-  const sorted = [...arr].sort((a, b) => a - b);
-  return arr.map(v => sorted.indexOf(v) + 1);
-}
-
+// Compute ranks for Spearman correlation
 const xRanks = rankArray(scatterDataWithDZS.map(d => d.residentsTotal));
 const yRanks = rankArray(scatterDataWithDZS.map(d => d.api_reach_avg));
+
+// Attach ranks to data
 scatterDataWithDZS.forEach((d, i) => {
   d.xRank = xRanks[i];
   d.yRank = yRanks[i];
 });
 
+// Compute mean ranks
 const xRankMean = d3.mean(xRanks)!;
 const yRankMean = d3.mean(yRanks)!;
 
+// Compute numerator and denominator for Spearman r
 const numeratorRank = d3.sum(scatterDataWithDZS, d => (d.xRank - xRankMean) * (d.yRank - yRankMean));
 const denominatorRank = Math.sqrt(
   d3.sum(scatterDataWithDZS, d => Math.pow(d.xRank - xRankMean, 2)) *
