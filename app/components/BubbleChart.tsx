@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import { Plus, Minus } from "lucide-react";
 
 interface DataItem {
   lang: string;
@@ -65,13 +66,13 @@ const data: DataItem[] = [
 
 
 const clusterCenters: Record<string, { x: number; y: number }> = {
-  'Balkan': { x: 260, y: 290 },
-  'Global': { x: 480, y: 270 },
-  'English': { x: 570, y: 180 },
-  'Africa': { x: 550, y: 350 },
-  'Euroazija': { x: 610, y: 340 },
-  'Indija': { x: 650, y: 310 },
-  'Filipini': { x: 700, y: 320 },
+  'Balkan': { x: 280, y: 240 },
+  'Global': { x: 520, y: 240 },
+  'English': { x: 610, y: 150 },
+  'Africa': { x: 600, y: 310 },
+  'Euroazija': { x: 650, y: 310 },
+  'Indija': { x: 690, y: 280 },
+  'Filipini': { x: 740, y: 290 },
 };
 
 const langColors: Record<string, string> = {
@@ -126,12 +127,31 @@ const BubbleChart: React.FC = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
+  const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+
+  const zoomIn = () => {
+  if (!svgRef.current || !zoomRef.current) return;
+
+  d3.select(svgRef.current)
+    .transition()
+    .duration(300)
+    .call(zoomRef.current.scaleBy as any, 1.5);
+};
+
+const zoomOut = () => {
+  if (!svgRef.current || !zoomRef.current) return;
+
+  d3.select(svgRef.current)
+    .transition()
+    .duration(300)
+    .call(zoomRef.current.scaleBy as any, 0.75);
+};
 
   useEffect(() => {
     if (!svgRef.current) return;
 
     const width = 900;
-    const height = 500;
+    const height = 410;
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
@@ -141,7 +161,7 @@ const BubbleChart: React.FC = () => {
 
     const rScale = d3.scaleSqrt()
       .domain([d3.min(data, d => d.avg) ?? 0, d3.max(data, d => d.avg) ?? 1])
-      .range([10, 140]);
+      .range([10, 130]);
 
     const subgroups = Array.from(new Set(data.map(d => d.subgroup)));
 
@@ -197,7 +217,9 @@ const BubbleChart: React.FC = () => {
       })
 
       .on('mouseout', () => {
-        tooltip.style('opacity', 0);
+        tooltip
+  .style('opacity', 0)
+  .style('visibility', 'hidden');
       });
 
     bubbleGroup.selectAll('text')
@@ -212,74 +234,54 @@ const BubbleChart: React.FC = () => {
       .style('pointer-events', 'none')
       .style('font-weight', '600');
 
-
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 5]) // minimalno 1 (početno), maksimalno 5
-      .on('start', (event) => {
-        tooltip.style('opacity', 0);
+    
+      .scaleExtent([1, 2])
+      .filter((event) => {
 
-        if (event.sourceEvent?.type === 'wheel') {
-          // scrolling: zoom in or out
-          svg.attr('cursor', event.transform?.k >= 1 ? 'zoom-in' : 'zoom-out');
-          bubbleGroup.attr('cursor', event.transform?.k >= 1 ? 'zoom-in' : 'zoom-out');
-        } else if (event.sourceEvent?.type === 'mousedown' || event.sourceEvent?.type === 'touchstart') {
-          // dragging: show grabbing hand
-          svg.attr('cursor', 'grabbing');
-          bubbleGroup.attr('cursor', 'grabbing');
-        }
-
+        return event.type === 'mousedown' || event.type === 'touchstart';
       })
       .on('zoom', (event) => {
-        // Ograniči transformaciju da k ne padne ispod 1
-        const transform = event.transform.k < 1
-          ? d3.zoomIdentity // reset na početni zoom
-          : event.transform;
+        const { x, y, k } = event.transform;
 
-        bubbleGroup.attr('transform', transform);
-        bubbleGroup.attr('transform', event.transform);
+        
 
-        const legendOpacity = transform.k > 1 ? 0 : 1;
+        // Apply transform to bubble group
+        bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
 
+        // Legend opacity fades out if zoomed in
+        const legendOpacity = k > 1 ? 0 : 1;
         svg.select<SVGGElement>(".legend")
           .transition()
           .duration(300)
           .ease(d3.easeCubic)
           .style("opacity", legendOpacity);
 
-        if (event.sourceEvent?.type === 'wheel') {
-          svg.attr('cursor', event.sourceEvent.deltaY < 0 ? 'zoom-in' : 'zoom-out');
-          bubbleGroup.attr('cursor', event.sourceEvent.deltaY < 0 ? 'zoom-in' : 'zoom-out');
-        }
+          bubbleGroup.attr('cursor', 'grabbing');
+          svg.attr('cursor', 'grabbing');
 
+          tooltip
+  .style('opacity', 0)
+  .style('visibility', 'hidden');
       })
-
-
-
       .on('end', () => {
         bubbleGroup.attr('cursor', 'default');
         svg.attr('cursor', 'grab'); // reset after drag
-        tooltip.style('opacity', 0.9);
+
       });
 
-
-    // Only attach zoom on non-mobile devices
-    const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-    if (!isMobile) {
-      svg.call(zoom as any); // TypeScript workaround
-    }
 
 
 
     const groupLegend = [
-      { label: 'Balkan', color: '#C2185B' },            // Red
-      { label: 'Svjetski drugi europski', color: '#BA68C8' },     // Pink/Purple
-      { label: 'Turska i Afrika', color: '#6D4C41' },    // Brown
-      { label: 'Post-sovjetski', color: '#F9A825' }, // Yellow
-      { label: 'Indoarijski', color: '#2E7D32' },               // Green
-      { label: 'Filipini', color: '#1976D2' }, // Blue
+      { label: 'Balkan', color: '#C2185B' },
+      { label: 'Svjetski drugi europski', color: '#BA68C8' },
+      { label: 'Turska i Afrika', color: '#6D4C41' },
+      { label: 'Post-sovjetski', color: '#F9A825' },
+      { label: 'Indoarijski', color: '#2E7D32' },
+      { label: 'Filipini', color: '#1976D2' },
     ];
 
-    // Legend
     let legend = svg.select<SVGGElement>(".legend");
 
     if (legend.empty()) {
@@ -287,7 +289,7 @@ const BubbleChart: React.FC = () => {
 
       groupLegend.forEach((group, i) => {
         const row = legend.append("g")
-          .attr("transform", `translate(0, ${i * 25})`); // 25px spacing
+          .attr("transform", `translate(0, ${i * 25})`);
 
         row.append("circle")
           .attr("r", 6)
@@ -297,18 +299,33 @@ const BubbleChart: React.FC = () => {
           .attr("x", 18)
           .attr("y", 4)
           .text(group.label)
-          .attr("font-size", "13px")
           .attr("fill", "#555")
-          .attr("font-family", "Mukta, sans-serif");
+          .attr("font-size", "10px")
       });
     }
 
-    // Position legend top-right inside SVG
     legend.attr("transform", `translate(20, 20)`);
+
+   zoomRef.current = zoom;
+    svg.call(zoom as any);
 
 
   }, []);
 
+
+const zoomButtonStyle: React.CSSProperties = {
+  width: "48px",
+  height: "48px",
+  borderRadius: "50%",
+  border: "none",
+  background: "rgba(30,30,30,0.3)",
+  color: "white",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  transition: "all 0.2s ease",
+};
 
 
   return (
@@ -317,7 +334,7 @@ const BubbleChart: React.FC = () => {
         <svg
           ref={svgRef}
           width="100%"
-          viewBox="0 0 900 500" 
+          viewBox="0 0 900 410"
           preserveAspectRatio="xMidYMid meet"
         />
         <div
@@ -330,7 +347,31 @@ const BubbleChart: React.FC = () => {
 
           }}
         ></div>
+<div
+      style={{
+        position: "absolute",
+        bottom: "20px",
+        left: "50%",
+        transform: "translateX(-50%)",
+        display: "flex",
+        gap: "20px",
+        zIndex: 10,
+      }}
+    >
+      <button
+        onClick={zoomIn}
+        style={zoomButtonStyle}
+      >
+        <Plus size={28} />
+      </button>
 
+      <button
+        onClick={zoomOut}
+        style={zoomButtonStyle}
+      >
+        <Minus size={28} />
+      </button>
+    </div>
       </div>
 
     </>

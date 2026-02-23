@@ -38,7 +38,7 @@ const groups: Group[] = [
                 color: "[#1976D2]",
                 content: (
                     <>Prema popisu stanovništva iz 2021. godine, u Republici Hrvatskoj živjelo je 123 892 Srba, 24 131 Bošnjaka, 3 127 i 3 555 Makedonaca.
-                    <b> Nacionalne manjine</b> mogle bi značajno doprinijeti objašnjenju velike prisutnosti bosanskog jezika. Primjerice, srpska manjina mogla bi objasniti signale publike na bosanskom jeziku u županijama s velikim brojem srpskog stanovništva, kao što su Osječko-baranjska i Vukovarsko-srijemska županija, ako je uređaj postavljen na hrvatski ili bosanski, a Meta klasificira sadržaj koji konzumiraju kao bosanski. Međutim, nema dokaza za ove pretpostavke i nacionalne manjine svakako nisu dovoljne da bi se objasnila prisutnost bosanskog jezika u županijama kao što su Splitko-dalmatinska i Dubrovačko-neretvanska. S druge strane, <b>MUP broji migracije radne snage</b>, ali nema javno dostupne podjele dozvola prema županijama s obzirom na državljanstvo. Ukupan broj svakako nije dovoljan da bi se objasnila prisutnost bosanskog. Meta bilježi aktivnost uređaja u Hrvatskoj, uključujući sve državljane koji su u interakciji sa sadržajem na tom jeziku, kao i posjetitelje, što povećava Meta procjene za balkanske jezike.</>
+                        <b> Nacionalne manjine</b> mogle bi značajno doprinijeti objašnjenju velike prisutnosti bosanskog jezika. Primjerice, srpska manjina mogla bi objasniti signale publike na bosanskom jeziku u županijama s velikim brojem srpskog stanovništva, kao što su Osječko-baranjska i Vukovarsko-srijemska županija, ako je uređaj postavljen na hrvatski ili bosanski, a Meta klasificira sadržaj koji konzumiraju kao bosanski. Međutim, nema dokaza za ove pretpostavke i nacionalne manjine svakako nisu dovoljne da bi se objasnila prisutnost bosanskog jezika u županijama kao što su Splitko-dalmatinska i Dubrovačko-neretvanska. S druge strane, <b>MUP broji migracije radne snage</b>, ali nema javno dostupne podjele dozvola prema županijama s obzirom na državljanstvo. Ukupan broj svakako nije dovoljan da bi se objasnila prisutnost bosanskog. Meta bilježi aktivnost uređaja u Hrvatskoj, uključujući sve državljane koji su u interakciji sa sadržajem na tom jeziku, kao i posjetitelje, što povećava Meta procjene za balkanske jezike.</>
                 ),
             },
             {
@@ -227,7 +227,7 @@ export default function Objasnjenja() {
     }
 
     return (
-        <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="w-full ">
 
             <h2 className="text-lg font-semibold text-gray-700 md:pb-10">
                 Što može objasniti ove razlike?
@@ -259,15 +259,14 @@ export default function Objasnjenja() {
                                 ? { backgroundColor: group?.color?.replace(/\[|\]/g, ""), color: "white" }
                                 : undefined
                         }
-                        className="px-4 md:px-5 py-2 rounded-lg text-sm font-medium transition
-    bg-gray-100 hover:bg-gray-200 hover:cursor-pointer text-gray-700"
+                        className="px-4 md:px-5 py-2 rounded-lg text-sm font-medium transition bg-gray-100 hover:bg-gray-200 hover:cursor-pointer text-gray-700"
                     >
                         {group.label}
                     </button>
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-4  ">
 
                 {/* ===============================
             SIDEBAR SECTIONS
@@ -317,38 +316,38 @@ export default function Objasnjenja() {
                     className={`lg:col-span-3 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-225 md:min-h-125" : "min-h-125"
                         }`}
                 >
-                {currentSections.map((section, index) => (
-                    <section
-                        key={section.id}
-                        className={`absolute inset-0 
+                    {currentSections.map((section, index) => (
+                        <section
+                            key={section.id}
+                            className={`absolute inset-0 
                 ${activeSection === index
-                                ? "opacity-100 translate-y-0"
-                                : "opacity-0 translate-y-4 pointer-events-none"
-                            }`}
-                    >
-                        <span
-                            className={ ` absolute right-0 
-                             ${(activeGroup === 4 && activeSection === 0) ? " -translate-y-1/3 md:top-1/2 md:-translate-y-2/2  " : " top-1/2 -translate-y-2/2  " }
+                                    ? "opacity-100 translate-y-0"
+                                    : "opacity-0 translate-y-4 pointer-events-none"
+                                }`}
+                        >
+                            <span
+                                className={` absolute right-0 
+                             ${(activeGroup === 4 && activeSection === 0) ? " -translate-y-1/3 md:top-1/2 md:-translate-y-2/2  " : " top-1/2 -translate-y-2/2  "}
                             text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0 `} >
-                            {section.number}
-                        </span>
+                                {section.number}
+                            </span>
 
-                        {/* CONTENT */}
-                        <div className="relative z-10  ">
-                            <h3 className={`text-xl sm:text-2xl font-bold text-${section.color} text-left `}>
-                                {section.heading}
-                            </h3>
+                            {/* CONTENT */}
+                            <div className="relative z-10  ">
+                                <h3 className={`text-xl sm:text-2xl font-bold text-${section.color} text-left `}>
+                                    {section.heading}
+                                </h3>
 
 
-                            <div className="mt-6 text-gray-700 leading-relaxed text-justify">
-                                {section.content}
+                                <div className="mt-6 text-gray-700 leading-relaxed text-justify">
+                                    {section.content}
+                                </div>
                             </div>
-                        </div>
-                    </section>
-                ))}
-            </main>
+                        </section>
+                    ))}
+                </main>
 
-        </div>
+            </div>
         </div >
     )
 }

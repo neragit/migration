@@ -180,6 +180,8 @@ const expatInterestMap: { [key: string]: string } = {
     Kenian:"6018796980983"
 };
 
+/*
+// REQUEST BY MAP
 export default async function handler(req: NextApiRequest, res: NextApiResponse<expatData[]>) {
     const token = req.headers['authorization']?.split(' ')[1] || req.query.token;
     if (token !== process.env.CRON_SECRET) return res.status(401).end('Unauthorized');
@@ -192,6 +194,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         const selectedExpats = countries.filter(c => expatInterestMap[c.code]);
 
         for (const expat of selectedExpats) {
+
             const behaviorId = expatInterestMap[expat.code];
 
             const targetingSpec = {
@@ -259,3 +262,107 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         res.status(500).json(countries.map(l => ({ ...l, apiReachMin: 0, apiReachMax: 0, apiReachAvg: 0 })));
     }
 }
+    */
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<expatData[]>
+) {
+  const token = req.headers['authorization']?.split(' ')[1] || req.query.token;
+  if (token !== process.env.CRON_SECRET) return res.status(401).end('Unauthorized');
+
+  const results: expatData[] = [];
+  const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_KEY!);
+
+  try {
+    const allExpatIds = Object.keys(expatCountries);
+
+    for (const behaviorId of allExpatIds) {
+      const expatName = expatCountries[behaviorId];
+
+      // Find matching country object to get lang and residents
+      const countryMatch = countries.find(c => c.code === expatName);
+
+      // If not found, try to map via localeMap
+      const lang = countryMatch?.lang || 
+                   Object.keys(localeMap).find(l => localeMap[l] == Number(behaviorId)) || 
+                   "";
+
+      const residents = countryMatch?.residents || 0;
+
+      const targetingSpec = {
+        geo_locations: { countries: ["HR"] },
+        flexible_spec: [
+          { behaviors: [{ id: behaviorId, name: expatName }] }
+        ],
+      };
+
+      const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
+      const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
+
+      try {
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+        const data = await response.json();
+
+        const lower = data.users_lower_bound ?? data.data?.users_lower_bound ?? 0;
+        const upper = data.users_upper_bound ?? data.data?.users_upper_bound ?? 0;
+
+        let avgReach = (lower + upper) / 2;
+        if (upper <= 1000 || lower >= 2400000) avgReach = 0;
+
+        results.push({
+          code: behaviorId,
+          lang,
+          expat: expatName,
+          residents,
+          apiReachMin: lower,
+          apiReachMax: upper,
+          apiReachAvg: avgReach,
+        });
+      } catch (err) {
+        console.error(`FB request failed for ${expatName}:`, err);
+        results.push({
+          code: behaviorId,
+          lang,
+          expat: expatName,
+          residents,
+          apiReachMin: 0,
+          apiReachMax: 0,
+          apiReachAvg: 0,
+        });
+      }
+    }
+
+    // Insert totals into Supabase
+    const { error } = await supabase.from('cro_expat').insert(
+      results.map(l => ({
+        code: l.code,
+        expat: l.expat,
+        residents: l.residents,
+        api_reach_min: l.apiReachMin,
+        api_reach_max: l.apiReachMax,
+        api_reach_avg: l.apiReachAvg,
+        snapshot_time: new Date(),
+      }))
+    );
+
+    if (error) console.error('Supabase insert error:', error);
+
+    res.status(200).json(results);
+
+  } catch (err) {
+    console.error('API error:', err);
+    res.status(500).json(
+      Object.keys(expatCountries).map(id => ({
+        code: id,
+        expat: expatCountries[id],
+        lang: "",
+        residents: 0,
+        apiReachMin: 0,
+        apiReachMax: 0,
+        apiReachAvg: 0,
+      }))
+    );
+  }
+}
+

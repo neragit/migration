@@ -295,6 +295,47 @@ const MetaPlot: React.FC<Props> = ({ data }) => {
       .attr('pointer-events', 'none')
       .text(d => d.lang);
 
+      function rankArray(arr: number[]) {
+  // returns array of ranks
+  const sorted = [...arr].sort((a, b) => a - b);
+  return arr.map(v => sorted.indexOf(v) + 1);
+}
+
+// Compute Spearman rank correlation
+function rankArray(arr: number[]) {
+  const sorted = [...arr].sort((a, b) => a - b);
+  return arr.map(v => sorted.indexOf(v) + 1);
+}
+
+const xRanks = rankArray(scatterDataWithDZS.map(d => d.residentsTotal));
+const yRanks = rankArray(scatterDataWithDZS.map(d => d.api_reach_avg));
+scatterDataWithDZS.forEach((d, i) => {
+  d.xRank = xRanks[i];
+  d.yRank = yRanks[i];
+});
+
+const xRankMean = d3.mean(xRanks)!;
+const yRankMean = d3.mean(yRanks)!;
+
+const numeratorRank = d3.sum(scatterDataWithDZS, d => (d.xRank - xRankMean) * (d.yRank - yRankMean));
+const denominatorRank = Math.sqrt(
+  d3.sum(scatterDataWithDZS, d => Math.pow(d.xRank - xRankMean, 2)) *
+  d3.sum(scatterDataWithDZS, d => Math.pow(d.yRank - yRankMean, 2))
+);
+
+const spearmanR = numeratorRank / denominatorRank;
+
+// Display Spearman r on SVG (below Pearson r)
+svg.append('text')
+  .attr('x', chartWidth - padding.right - 5)
+  .attr('y', padding.top + 28) // shift down from Pearson r
+  .attr('text-anchor', 'end')
+  .attr('fill', '#1976D2')
+  .attr('font-size', '14px')
+  .attr('font-weight', 'bold')
+  .text(`Spearman r = ${spearmanR.toFixed(2)}`);
+
+console.log("Spearman r =", spearmanR.toFixed(2));
 
   }, [data]);
 
