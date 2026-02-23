@@ -277,61 +277,61 @@ export default async function handler(
   try {
     const allExpatIds = Object.keys(expatCountries);
 
-    for (const behaviorId of allExpatIds) {
-      const expatName = expatCountries[behaviorId];
+    for (const behaviorId of Object.keys(expatCountries)) {
+  const expatName = expatCountries[behaviorId];
 
-      // Find matching country object to get lang and residents
-      const countryMatch = countries.find(c => c.code === expatName);
+  // Try to find language and residents from your countries array
+  const countryMatch = countries.find(c => c.code === expatName);
 
-      // If not found, try to map via localeMap
-      const lang = countryMatch?.lang || 
-                   Object.keys(localeMap).find(l => localeMap[l] == Number(behaviorId)) || 
-                   "";
+  // Defaults if not found
+  const lang = countryMatch?.lang || "";
+  const residents = countryMatch?.residents || 0;
 
-      const residents = countryMatch?.residents || 0;
+  const targetingSpec = {
+    geo_locations: { countries: ["HR"] },
+    flexible_spec: [
+      { behaviors: [{ id: behaviorId, name: expatName }] }
+    ],
+  };
 
-      const targetingSpec = {
-        geo_locations: { countries: ["HR"] },
-        flexible_spec: [
-          { behaviors: [{ id: behaviorId, name: expatName }] }
-        ],
-      };
+  const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
+  const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
 
-      const encodedSpec = encodeURIComponent(JSON.stringify(targetingSpec));
-      const url = `https://graph.facebook.com/v19.0/act_${AD_ACCOUNT_ID}/reachestimate?targeting_spec=${encodedSpec}`;
+  try {
+    const response = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
+    const data = await response.json();
 
-      try {
-        const response = await fetch(url, { headers: { Authorization: `Bearer ${TOKEN}` } });
-        const data = await response.json();
+    const lower = data.users_lower_bound ?? data.data?.users_lower_bound ?? 0;
+    const upper = data.users_upper_bound ?? data.data?.users_upper_bound ?? 0;
 
-        const lower = data.users_lower_bound ?? data.data?.users_lower_bound ?? 0;
-        const upper = data.users_upper_bound ?? data.data?.users_upper_bound ?? 0;
+    let avgReach = (lower + upper) / 2;
+    if (upper <= 1000 || lower >= 2400000) avgReach = 0;
 
-        let avgReach = (lower + upper) / 2;
-        if (upper <= 1000 || lower >= 2400000) avgReach = 0;
+    // Always push, even if 0 or ""
+    results.push({
+      code: behaviorId,
+      lang,
+      expat: expatName,
+      residents,
+      apiReachMin: lower,
+      apiReachMax: upper,
+      apiReachAvg: avgReach,
+    });
 
-        results.push({
-          code: behaviorId,
-          lang,
-          expat: expatName,
-          residents,
-          apiReachMin: lower,
-          apiReachMax: upper,
-          apiReachAvg: avgReach,
-        });
-      } catch (err) {
-        console.error(`FB request failed for ${expatName}:`, err);
-        results.push({
-          code: behaviorId,
-          lang,
-          expat: expatName,
-          residents,
-          apiReachMin: 0,
-          apiReachMax: 0,
-          apiReachAvg: 0,
-        });
-      }
-    }
+  } catch (err) {
+    console.error(`FB request failed for ${expatName}:`, err);
+    // Push 0/"" on error too
+    results.push({
+      code: behaviorId,
+      lang,
+      expat: expatName,
+      residents,
+      apiReachMin: 0,
+      apiReachMax: 0,
+      apiReachAvg: 0,
+    });
+  }
+}
 
     // Insert totals into Supabase
     const { error } = await supabase.from('cro_expat').insert(
