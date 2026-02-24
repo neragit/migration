@@ -143,7 +143,7 @@ export default function MetaPage() {
                     Procjena korisnika prema jeziku
                 </p>
 
-                <h2 className="relative z-10  m-0">Procjena publike prema jeziku na temelju Meta Ads Manager sučelja</h2>
+                <h2 className="relative z-10  m-0">Procjena publike prema jeziku: Meta Ads Manager</h2>
 
                 <p className="paragraph">
                     Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek raspona minimalne i maksimalne vrijednosti</b>.
@@ -193,7 +193,7 @@ export default function MetaPage() {
                     Procjena korisnika prema prošloj lokaciji
                 </p>
 
-                <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji na temelju Meta API-ja</h2>
+                <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji: Meta API</h2>
 
                 <p className="paragraph">
                     Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". Međutim, ti brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se. Nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. Možemo djelomično pretpostaviti koje zemlje objašnjavaju Hrvati (npr. prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja). Drugi problem u interpretaciji proizlazi iz činjenice da Meta ne nudi kategorije za sve zemlje (nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan).
