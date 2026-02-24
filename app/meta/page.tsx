@@ -181,7 +181,7 @@ export default function MetaPage() {
 
                 <div className=" h-px border-t  border-gray-200" />
 
-                <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-0 tracking-tight">
+                <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-[-10] tracking-tight">
                     02
                 </span>
 
@@ -189,7 +189,7 @@ export default function MetaPage() {
 
             <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 mb-10 text-gray-700   ">
 
-                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7">
+                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7 z-10">
                     Procjena korisnika prema prošloj lokaciji
                 </p>
 
