@@ -126,6 +126,9 @@ export default function MetaPart4() {
         }
 
         @media (max-width: 640px) {
+        .p4-sticky-bg img {
+          object-position: 80% center;
+        }
           .p4-card-inner {
             padding: 28px 24px;
           }
@@ -163,7 +166,7 @@ export default function MetaPart4() {
                 interesi i aktivnosti kako bi omogućila procjenu potencijalne
                 publike za oglašavanje i bolje ciljanje oglasa.
                 Ako analiziramo
-                ove podatke možemo dobiti uvid u to koje su zajednice aktivne na
+                ove podatke možemo dobiti uvid u to koje su skupine aktivne na
                 internetu, kako se jezik i lokacija preklapaju, pa čak i kako se
                 trendovi mijenjaju tijekom vremena. <br /><br />
                 Iako ovi brojevi ne odražavaju
@@ -225,7 +228,7 @@ export default function MetaPart4() {
                 raspon između <b>minimalne i maksimalne vrijednosti</b>. Vrlo male
                 vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika
                 može se prikazati kao "manje od 1000".
-                
+
               </p>
             </div>
           </div>
