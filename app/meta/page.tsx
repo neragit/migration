@@ -110,7 +110,7 @@ export default function MetaPage() {
 
                     <p className="paragraph">
                         U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
-                        Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive, što znači da ista osoba može biti uključena u procjene za više jezika istovremeno, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj.
+                        Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj.
 
                         <img
                             src="/ads_manager.png"
@@ -123,8 +123,6 @@ export default function MetaPage() {
                         />
 
                     </p>
-
-             
 
             </div>
 
@@ -145,7 +143,7 @@ export default function MetaPage() {
                     Procjena korisnika prema jeziku
                 </p>
 
-                <h2 className="relative z-10  m-0">Procjena publike prema jeziku na temelju pojedinačne pretrage putem Meta Ads Manager UI</h2>
+                <h2 className="relative z-10  m-0">Procjena publike prema jeziku na temelju Meta Ads Manager sučelja</h2>
 
                 <p className="paragraph">
                     Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek raspona minimalne i maksimalne vrijednosti</b>.
