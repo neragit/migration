@@ -350,9 +350,9 @@ export default function MetaPage() {
 
                             <p className="paragraph">
                                 Najnovije izvješće o transparentnosti otkriva razlike u zahtjevima  među regijama, ističući neke obrasce, ali i značajna odstupanja u strategijama vladinih zahtjeva za podacima, stopama uspjeha i pravnim okvirima.
-                                Primjerice, ističe se <b>Tajvan (11 500 korisnika) sa stopom učinkovitosti od čak 95%</b> i visokim brojem zahtjeva po glavi stanovnika, što odražava precizno ciljanje i snažnu pravnu jasnoću u vladinim zahtjevima.
+                                Primjerice, ističe se <b>Tajvan </b>(11 500 korisnika) sa stopom učinkovitosti od čak 95%i visokim brojem zahtjeva po glavi stanovnika, što odražava precizno ciljanje i snažnu pravnu jasnoću u vladinim zahtjevima.
                                 <b> SAD</b> (150 000 korisnika) ima umjerenu stopu zahtjeva po glavi stanovnika, ali vrlo velik broj ukupnih zahtjeva i visoku stopu uspjeha (88%).
-                                S druge strane, <b>Meksiko (11 700 korisnika) ima relativno nisku stopu uspjeha (55%)</b> što ukazuje na manje precizne zahtjeve ili strukturne izazove u dobivanju podataka.
+                                S druge strane, <b>Meksiko</b> (11 700 korisnika) ima relativno nisku stopu uspjeha (55%) što ukazuje na manje precizne zahtjeve ili strukturne izazove u dobivanju podataka.
                                 <b> Indija</b> (246 000 korisnika) i <b>Brazil</b> (112 000 korisnika) imaju ogromne populacije, ali relativno malo zahtjeva po glavi stanovnika.
                                 <b> Njemačka</b> (39 700 korisnika), <b>Francuska</b> (18 400 korisnika) i <b>Ujedinjeno Kraljevstvo</b> (14 400 korisnika) imaju umjerene razine zahtjeva po glavi stanovnika, ali visoke stope uspjeha. Francuska pokazuje neobičan obrazac, jer hitni zahtjevi premašuju formalne pravne.</p>
 
