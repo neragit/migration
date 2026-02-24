@@ -555,8 +555,8 @@ export default function MetaBarChart(
                     y: top,
                     opacity: 0.95,
                     label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
-                    value: d.meta_avg.toLocaleString("fr-FR"),
-                    desc: `Meta Ads Manager: ${d.meta_min.toLocaleString("fr-FR")} - ${d.meta_max.toLocaleString("fr-FR")}`,
+                    value: `${d.meta_min.toLocaleString("fr-FR")} - ${d.meta_max.toLocaleString("fr-FR")}`,
+                    desc: ``,
                     note: note,
 
 
@@ -573,8 +573,8 @@ export default function MetaBarChart(
                     y: top,
                     opacity: 0.95,
                     label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
-                    value: d.apiExpat_avg!.toLocaleString("fr-FR"),
-                    desc: `Meta API - "Lived in ${d.Državljanstvo} (Formerly Expats)": ${d.apiExpat_min!.toLocaleString("fr-FR")} - ${d.apiExpat_max!.toLocaleString("fr-FR")}`,
+                    value: `${d.apiExpat_min!.toLocaleString("fr-FR")} - ${d.apiExpat_max!.toLocaleString("fr-FR")}`,
+                    desc: ``,
                     note: note,
                 });
 
@@ -588,8 +588,8 @@ export default function MetaBarChart(
                     y: top,
                     opacity: 0.95,
                     label: `${d.Državljanstvo === "BiH" ? "Bosna i Hercegovina" : d.Državljanstvo}`,
-                    value: d.api_avg.toLocaleString("fr-FR"),
-                    desc: `Meta API - jezik: ${d.api_min.toLocaleString("fr-FR")} - ${d.api_max.toLocaleString("fr-FR")}`,
+                    value: `${d.api_min.toLocaleString("fr-FR")} - ${d.api_max.toLocaleString("fr-FR")}`,
+                    desc: ``,
                     note: note,
                 });
 
@@ -673,7 +673,7 @@ export default function MetaBarChart(
                                     backgroundColor: selectedTypes.includes(type)
                                         ? color(type)
                                         : "#eee",
-                                    color: selectedTypes.includes(type) ? "#fff" : "#333"
+                                    color: selectedTypes.includes(type) ? "#fff" : ""
                                 }}
                             >
                                 {type}
@@ -699,7 +699,7 @@ export default function MetaBarChart(
                                     backgroundColor: selectedTypes.includes(type)
                                         ? color(type)
                                         : "#eee",
-                                    color: selectedTypes.includes(type) ? "#fff" : "#333"
+                                    color: selectedTypes.includes(type) ? "#fff" : ""
                                 }}
                             >
                                 {type}
@@ -727,7 +727,7 @@ export default function MetaBarChart(
                     }}
                 >
                     <b>{tooltip.label}</b><br />
-                    <b>{typeof tooltip.value === "number" ? tooltip.value.toLocaleString("fr-FR") : tooltip.value}</b>
+                    {typeof tooltip.value === "number" ? tooltip.value.toLocaleString("fr-FR") : tooltip.value}
                     <br />{tooltip.desc}
                     {tooltip.note && <div>{tooltip.note}</div>}
                 </div>

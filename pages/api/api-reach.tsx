@@ -131,7 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     }
 
-    // ADD THIS BEFORE insert
+
     const snapshotTime = new Date();
 
     const { error } = await supabase
@@ -144,7 +144,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           api_reach_min: lang.apiReachMin,
           api_reach_max: lang.apiReachMax,
           api_reach_avg: lang.apiReachAvg,
-          snapshot_time: snapshotTime // use SAME timestamp
+          snapshot_time: snapshotTime
         }))
       );
 

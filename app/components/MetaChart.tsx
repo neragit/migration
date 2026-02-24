@@ -8,7 +8,7 @@ export default function MetaChart() {
   const [data, setData] = useState<any[] | null>(null);
   const { ref, inView } = useInView({
     triggerOnce: true,       // fetch data only once
-    rootMargin: '100px',     // fetch slightly before scrolling into view
+    rootMargin: '200px',     // fetch slightly before scrolling into view
   });
 
   useEffect(() => {
@@ -30,9 +30,9 @@ export default function MetaChart() {
   }, [inView]);
 
   return (
-    <div ref={ref}>
-      {data === null && <div>Loading chart...</div>}
-      {data?.length === 0 && <div>No data available</div>}
+    <div ref={ref} className="w-full h-[500px] flex items-center justify-center">
+      {data === null && <div className="text-xs tracking-[0.18em] uppercase text-gray-300 font-semibold">Učitavanje...</div>}
+      {data?.length === 0 && <div className="text-xs tracking-[0.18em] uppercase text-gray-300 font-semibold">Nema podataka</div>}
       {data && <MetaBars data={data} />}
     </div>
   );

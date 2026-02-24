@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { ChevronRight } from "lucide-react"
+import useResizeObserver from "../hooks/useResizeObs";
 
 
 
@@ -177,8 +178,14 @@ export default function Objasnjenja() {
     const [activeGroup, setActiveGroup] = useState(0)
     const [activeSection, setActiveSection] = useState(0)
 
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const size = useResizeObserver(containerRef);
+
     const groupRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
     const sectionRefs = useRef<(HTMLButtonElement | null)[]>([] as (HTMLButtonElement | null)[])
+
+    const sidebarRef = useRef<HTMLDivElement | null>(null)
+    const [sidebarHeight, setSidebarHeight] = useState(0)
 
 
     const currentSections = groups[activeGroup].sections
@@ -226,12 +233,26 @@ export default function Objasnjenja() {
         refs.current[newIndex]?.focus()
     }
 
-    return (
-        <div className="w-full ">
+    useEffect(() => {
+        const updateSidebarHeight = () => {
+            if (sidebarRef.current) {
+                setSidebarHeight(sidebarRef.current.offsetHeight)
+            }
+        }
 
-            <h2 className="text-lg font-semibold text-gray-700 md:pb-10">
+        updateSidebarHeight()
+        window.addEventListener("resize", updateSidebarHeight)
+        return () => window.removeEventListener("resize", updateSidebarHeight)
+    }, [currentSections, size])
+
+    return (
+        <div ref={containerRef} className="w-full ">
+            <h2 className="text-lg  font-semibold text-gray-700 md:pb-10">
                 Što može objasniti ove razlike?
             </h2>
+
+
+
 
             {/* ===============================
           TOP GROUP BUTTONS
@@ -266,12 +287,20 @@ export default function Objasnjenja() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4  gap-12">
+            <div className="flex flex-col lg:flex-row px-5 gap-12 relative">
+                <span
+                    className="absolute right-5 text-gray-300 font-extrabold opacity-20 select-none pointer-events-none text-[15rem] z-0"
+                    style={{
+                        top: size?.vw && size.vw > 1024 ? "-90px" : `${sidebarHeight - 50}px`,
+                    }}
+                >
+                    {currentSections[activeSection]?.number ?? "1"}
+                </span>
 
                 {/* ===============================
             SIDEBAR SECTIONS
         =================================*/}
-                <aside className="lg:col-span-1">
+                <aside ref={sidebarRef} className="w-full lg:w-1/4">
 
                     <div role="tablist" className="space-y-2 ">
                         {currentSections.map((section, index) => (
@@ -313,7 +342,7 @@ export default function Objasnjenja() {
         =================================*/}
 
                 <main
-                    className={`lg:col-span-3 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-225 md:min-h-125" : "min-h-125"
+                    className={`w-full lg:w-3/4 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-225 md:min-h-150" : "min-h-125"
                         }`}
                 >
                     {currentSections.map((section, index) => (
@@ -325,12 +354,7 @@ export default function Objasnjenja() {
                                     : "opacity-0 translate-y-4 pointer-events-none"
                                 }`}
                         >
-                            <span
-                                className={` absolute right-0 
-                             ${(activeGroup === 4 && activeSection === 0) ? " -translate-y-1/3 md:top-1/2 md:-translate-y-2/2  " : " top-1/2 -translate-y-2/2  "}
-                            text-gray-300 text-[15rem] font-extrabold opacity-20 select-none pointer-events-none z-0 `} >
-                                {section.number}
-                            </span>
+
 
                             {/* CONTENT */}
                             <div className="relative z-10  ">
@@ -339,7 +363,7 @@ export default function Objasnjenja() {
                                 </h3>
 
 
-                                <div className="mt-6 text-gray-700 leading-relaxed text-justify">
+                                <div className="mt-6 text-gray-700 leading-relaxed text-justify pr-10">
                                     {section.content}
                                 </div>
                             </div>

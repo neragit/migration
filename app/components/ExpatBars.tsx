@@ -266,8 +266,8 @@ export default function ExpatBars({
                     y: top,
                     opacity: 0.95,
                     label: `${d.expat === "BiH" ? "Bosna i Hercegovina" : d.expat}`,
-                    value: `Meta API prema lokaciji: ${d.api_reach_avg.toLocaleString("fr-FR")} `,
-                    desc: `(${d.api_reach_min.toLocaleString("fr-FR")} - ${d.api_reach_max.toLocaleString("fr-FR")})`,
+                    value: `${d.api_reach_min.toLocaleString("fr-FR")} - ${d.api_reach_max.toLocaleString("fr-FR")}`,
+                    desc: ``,
                 });
 
                 hoverLine
@@ -324,7 +324,7 @@ export default function ExpatBars({
                     }}
                 >
                     <b>{tooltip.label}</b><br />
-                    <b>{typeof tooltip.value === "number" ? tooltip.value.toLocaleString("fr-FR") : tooltip.value}</b>{tooltip.desc}
+                    {typeof tooltip.value === "number" ? tooltip.value.toLocaleString("fr-FR") : tooltip.value}
                 </div>
             )}
 

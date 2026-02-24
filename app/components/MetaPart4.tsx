@@ -225,8 +225,7 @@ export default function MetaPart4() {
                 raspon između <b>minimalne i maksimalne vrijednosti</b>. Vrlo male
                 vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika
                 može se prikazati kao "manje od 1000".
-                <br /><br />
-xxx
+                
               </p>
             </div>
           </div>

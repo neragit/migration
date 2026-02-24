@@ -31,11 +31,11 @@ export default function Part3() {
 
         @media (max-width: 768px) {
           .grid { grid-template-columns: 1fr; padding: 0 24px; min-height: unset; }
-          .col1 { padding-right: 0; padding-bottom: 32px; }
-          .bridge { flex-direction: row; gap: 16px; padding: 28px 0; }
+          .col1 { padding-right: 0; padding-bottom: 32px; text-align: justify ;}
+          .bridge { flex-direction: row; gap: 0px; padding: 15px 0; }
           .bridge-line { flex: 1; height: 1px; width: auto; }
           .bridge-question { font-size: 2rem; padding: 0 8px; white-space: nowrap; }
-          .col2 { padding-left: 0; padding-top: 32px; opacity: 1 !important; filter: none !important; transform: none !important; pointer-events: auto !important; }
+          .col2 { text-align: justify ; padding-left: 0; padding-top: 32px; opacity: 1 !important; filter: none !important; transform: none !important; pointer-events: auto !important; }
         }
       `}</style>
 
