@@ -139,7 +139,7 @@ export default function MetaPage() {
 
             <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 text-gray-700   ">
 
-                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-15 mb-7">
+                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7">
                     Procjena korisnika prema jeziku
                 </p>
 
@@ -189,11 +189,11 @@ export default function MetaPage() {
 
             <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 mb-10 text-gray-700   ">
 
-                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-15 mb-7">
+                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7">
                     Procjena korisnika prema prošloj lokaciji
                 </p>
 
-                <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji na temelju pojedinačne pretrage putem Meta API-ja</h2>
+                <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji na temelju Meta API-ja</h2>
 
                 <p className="paragraph">
                     Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". Međutim, ti brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se. Nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. Možemo djelomično pretpostaviti koje zemlje objašnjavaju Hrvati (npr. prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja). Drugi problem u interpretaciji proizlazi iz činjenice da Meta ne nudi kategorije za sve zemlje (nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan).
