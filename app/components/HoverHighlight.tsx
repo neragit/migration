@@ -59,7 +59,7 @@ export default function HoverHighlight() {
               key={i}
               onMouseEnter={() => !isH1 && setActiveIndex(i)}
               onMouseLeave={() => setActiveIndex(null)}
-              className={isH1 ? " text-5xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
+              className={isH1 ? " text-4xl lg:text-5xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
               style={{ opacity: isInactive ? 0.1 : 1 }}
             >
               {line.map((seg, j) =>
