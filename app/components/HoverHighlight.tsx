@@ -47,7 +47,7 @@ export default function HoverHighlight() {
 
   return (
     <section className="w-full mt-30 bg-white px-5 lg:px-10">
-      <p className="text-2xl lg:text-5xl text-justify text-gray-700 mx-auto">
+      <p className="text-2xl lg:text-5xl text-center lg:text-justify text-gray-700 mx-auto">
 
         {combinedLines.map((line, i) => {
           const isH1 = line === H1_LINE;
