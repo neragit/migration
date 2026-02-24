@@ -46,7 +46,7 @@ export default function HoverHighlight() {
   ];
 
   return (
-    <section className="w-full mt-30 bg-white px-10">
+    <section className="w-full mt-30 bg-white lg:px-10">
       <p className="text-2xl lg:text-5xl text-justify text-gray-700 mx-auto">
 
         {combinedLines.map((line, i) => {
@@ -59,7 +59,7 @@ export default function HoverHighlight() {
               key={i}
               onMouseEnter={() => !isH1 && setActiveIndex(i)}
               onMouseLeave={() => setActiveIndex(null)}
-              className={isH1 ? " text-3xl lg:text-5xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
+              className={isH1 ? " text-4xl lg:text-5xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
               style={{ opacity: isInactive ? 0.1 : 1 }}
             >
               {line.map((seg, j) =>
