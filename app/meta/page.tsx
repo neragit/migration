@@ -108,21 +108,21 @@ export default function MetaPage() {
 
                 <h2 className="relative z-10  m-0">Koliko osoba u Hrvatskoj koristi Meta aplikacije?</h2>
 
-                    <p className="paragraph">
-                        U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
-                        Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj.
+                <p className="paragraph">
+                    U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
+                    Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj.
 
-                        <img
-                            src="/ads_manager.png"
-                            alt="Meta Ads Manager procjena korisnika u Hrvatskoj"
-                            loading="lazy"
-                            width="1200"
-                            height="800"
-                            className="w-full h-auto my-10"
+                    <img
+                        src="/ads_manager.png"
+                        alt="Meta Ads Manager procjena korisnika u Hrvatskoj"
+                        loading="lazy"
+                        width="1200"
+                        height="800"
+                        className="w-full h-auto my-10"
 
-                        />
+                    />
 
-                    </p>
+                </p>
 
             </div>
 
@@ -362,10 +362,10 @@ export default function MetaPage() {
                             <img
                                 src="/meta-cro-type.png"
                                 alt="Meta Croatia"
-                                loading="lazy"
-                                className="w-full h-auto "
+                                width={1200}
+                                height={800}
+                                className="w-full h-auto"
                             />
-
 
                         </div>
                     </div>
@@ -419,52 +419,52 @@ export default function MetaPage() {
 
             <div className="w-full max-w-4xl min-w-0 px-5  text-gray-700  mx-auto  ">
 
-                    <p className=" text-gray-500 text-sm text-justify">
-                        Ova analiza bavi se područjem digitalne demografije te istražuje potencijal i ograničenja komercijalnih platformskih podataka kao komplementarnog izvora za proučavanje migracijskih trendova. Vizualizacije služe samo u obrazovne i istraživačke svrhe.
-                        Prikazani podaci iz Meta Marketing API-ja su agregirani i ne sadrže osobne ili identificirajuće informacije.
-                        Prikazani uvidi služe analitičkoj demonstraciji i nisu namijenjeni komercijalnoj upotrebi.
-                    </p>
+                <p className=" text-gray-500 text-sm text-justify">
+                    Ova analiza bavi se područjem digitalne demografije te istražuje potencijal i ograničenja komercijalnih platformskih podataka kao komplementarnog izvora za proučavanje migracijskih trendova. Vizualizacije služe samo u obrazovne i istraživačke svrhe.
+                    Prikazani podaci su agregirani i ne sadrže osobne ili identificirajuće informacije.
+                    Prikazani uvidi služe analitičkoj demonstraciji i nisu namijenjeni komercijalnoj upotrebi.
+                </p>
 
-                    <div className=" h-px my-10 border-t  border-gray-300" />
+                <div className=" h-px my-10 border-t  border-gray-300" />
 
 
-                    <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mb-4">
-                        Izvori
-                    </p>
+                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mb-4">
+                    Izvori
+                </p>
 
-                    <ul className=" flex flex-col gap-3 mx-auto ">
-                        <li>
-                            <a href="https://www.researchgate.net/figure/Part-of-a-screenshot-of-Facebooks-Adverts-Manager-illustrating-some-of-the-targeting_fig1_324069454"
-                                target="_blank" rel="noopener noreferrer"
-                                className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
-                                Mejova, Weber i Fernandez-Luque (2018). Online Health Monitoring
-                                using Facebook Advertisement Audience Estimates in the United States: Evaluation Study
-                            </a>
-                        </li>
+                <ul className=" flex flex-col gap-3 mx-auto ">
+                    <li>
+                        <a href="https://www.researchgate.net/figure/Part-of-a-screenshot-of-Facebooks-Adverts-Manager-illustrating-some-of-the-targeting_fig1_324069454"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            Mejova, Weber i Fernandez-Luque (2018). Online Health Monitoring
+                            using Facebook Advertisement Audience Estimates in the United States: Evaluation Study
+                        </a>
+                    </li>
 
-                        <li>
-                            <a href="https://stats.napoleoncat.com/facebook-users-in-croatia/2025/05/"
-                                target="_blank" rel="noopener noreferrer"
-                                className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
-                                NapoleonCat: Facebook users in Croatia, May 2025
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://www.facebook.com/business/help/1665333080167380?id=176276233019487"
-                                target="_blank" rel="noopener noreferrer"
-                                className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
-                                Meta: About Estimated Audience Size
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://transparency.meta.com/reports/government-data-requests/country/HR/"
-                                target="_blank" rel="noopener noreferrer"
-                                className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
-                                Meta: Government Requests for User Data Croatia
-                            </a>
-                        </li>
-                    </ul>
-        
+                    <li>
+                        <a href="https://stats.napoleoncat.com/facebook-users-in-croatia/2025/05/"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            NapoleonCat: Facebook users in Croatia, May 2025
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://www.facebook.com/business/help/1665333080167380?id=176276233019487"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            Meta: About Estimated Audience Size
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://transparency.meta.com/reports/government-data-requests/country/HR/"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            Meta: Government Requests for User Data Croatia
+                        </a>
+                    </li>
+                </ul>
+
 
             </div >
 
