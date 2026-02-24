@@ -342,7 +342,7 @@ export default function Objasnjenja() {
         =================================*/}
 
                 <main
-                    className={`w-full lg:w-3/4 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-225 md:min-h-150" : "min-h-125"
+                    className={`w-full lg:w-3/4 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-250 md:min-h-150" : "min-h-125"
                         }`}
                 >
                     {currentSections.map((section, index) => (
@@ -363,7 +363,7 @@ export default function Objasnjenja() {
                                 </h3>
 
 
-                                <div className="mt-6 text-gray-700 leading-relaxed text-justify pr-10">
+                                <div className="mt-6 text-gray-700 leading-relaxed text-justify lg:pr-10">
                                     {section.content}
                                 </div>
                             </div>
