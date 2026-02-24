@@ -184,16 +184,9 @@ export default function MetaPart4() {
               <span className="p4-card-label">Jezik i lokacija</span>
               <p className="p4-card-text">
                 Pri procjeni veličine potencijalne publike može se krenuti od
-                jezika korisnika, pri čemu se klasifikacija provodi{" "}
-                <b>
-                  prvenstveno na temelju postavki jezika korisničkog sučelja
-                </b>{" "}
-                (primarni signal), ali i na temelju dodatnih pokazatelja, poput{" "}
-                <b>
-                  jezika kojim korisnik najčešće komunicira ili jezika sadržaja s
-                  kojim je obično u interakciji
-                </b>{" "}
-                (sekundarni signali). To ne znači da ta procjena označava
+                jezika korisnika, pri čemu se klasifikacija provodi
+                <b> prvenstveno na temelju postavki jezika korisničkog sučelja (primarni signal), ali i na temelju dodatnih pokazatelja, poput jezika kojim korisnik najčešće komunicira ili jezika sadržaja s
+                  kojim je obično u interakciji (sekundarni signali). </b>To ne znači da ta procjena označava
                 nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
                 Ako osoba koristi drugi jezik, primjerice engleski, bit će
                 uključena u publiku za taj jezik, bez obzira na njezino
@@ -233,10 +226,7 @@ export default function MetaPart4() {
                 vrijednosti nisu prikazane, npr. procjena od 0 do 1000 korisnika
                 može se prikazati kao "manje od 1000".
                 <br /><br />
-                Klasifikacije "iseljenika" (engl. expats) mogu podrazumijevati
-                osobne podatke koje regulatori smatraju osjetljivima, pa je Meta
-                kroz godine ograničila ovakvo targetiranje jer nastoji smanjiti
-                rizik diskriminirajućeg ili invazivnog targetiranja.
+xxx
               </p>
             </div>
           </div>

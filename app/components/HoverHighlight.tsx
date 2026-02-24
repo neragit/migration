@@ -32,21 +32,22 @@ const H1_LINE: QuestionLine = [
 
 // Compute the index to inject H1
 const midIndex = Math.floor(LINES.length / 2);
+const insertIndex = Math.max(0, midIndex - 2);
 
-export default function HoverHighlightBlock() {
+export default function HoverHighlight() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
 
   // Merge lines with H1 in the middle
   const combinedLines: QuestionLine[] = [
-    ...LINES.slice(0, midIndex),
+    ...LINES.slice(0, insertIndex),
     H1_LINE,
-    ...LINES.slice(midIndex),
+    ...LINES.slice(insertIndex),
   ];
 
   return (
     <section className="w-full mt-30 bg-white px-10">
-      <p className="text-4xl text-justify text-gray-700 mx-auto">
+      <p className="text-5xl text-justify text-gray-700 mx-auto">
 
         {combinedLines.map((line, i) => {
           const isH1 = line === H1_LINE;
@@ -58,7 +59,7 @@ export default function HoverHighlightBlock() {
               key={i}
               onMouseEnter={() => !isH1 && setActiveIndex(i)}
               onMouseLeave={() => setActiveIndex(null)}
-              className={isH1 ? " text-4xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
+              className={isH1 ? " text-5xl text-center font-bold sm:text-5xl " : "transition-all duration-300 ease-out select-none"}
               style={{ opacity: isInactive ? 0.1 : 1 }}
             >
               {line.map((seg, j) =>

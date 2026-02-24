@@ -77,6 +77,7 @@ const data: MetaManagerData[] = [
     { lang: 'Filipinski', avg: 14000, region: 'Asia', subgroup: 'Filipini', min: 12900, max: 15100, country: 'Filipini' },
     { lang: 'Cebuano', avg: 1200, region: 'Asia', subgroup: 'Filipini', min: 1100, max: 1300, country: 'Filipini' },
 ];
+
 const apiExpats = [
     {
         "created_at": "2026-02-22T01:29:04.910489+00:00",
@@ -180,14 +181,28 @@ interface MetaBarChartProps {
     height?: number;
 }
 
+
+
 export default function MetaBarChart(
-    { data: propsData, width = 900, height = 500 }: Props & MetaBarChartProps
+    { data: propsData, width = 1200, height = 600 }: Props & MetaBarChartProps
 ) {
     const svgRef = useRef<SVGSVGElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
     const size = useResizeObserver(containerRef);
     const hasAnimated = useRef(false);
 
+    const ALL_TYPES = ["MUP Dozvole", "DZS Manjine", "API Jezik", "Meta UI", "API Lokacija"] as const;
+    type DataType = typeof ALL_TYPES[number];
+
+    const [selectedTypes, setSelectedTypes] = useState([...ALL_TYPES]);
+
+    const toggleType = (type: DataType) => {
+        setSelectedTypes(prev =>
+            prev.includes(type)
+                ? prev.filter(t => t !== type)
+                : [...prev, type]
+        );
+    };
 
     const [tooltip, setTooltip] = useState<{
         x: number;
@@ -200,7 +215,15 @@ export default function MetaBarChart(
         year?: number;
     } | null>(null);
 
-
+    const color = d3.scaleOrdinal<string, string>()
+        .domain(["MUP Dozvole", "DZS Manjine", "Meta UI", "API Jezik", "API Lokacija"])
+        .range([
+            "#fdae6b",   // MUP
+            "#ffcc89",    // DZS
+            "#1976D2",   // Meta Ads Manager (dark blue)
+            "#63B3ED",   // Meta Graph API (lighter blue)
+            "#a8d4f5"
+        ]);
 
     function drawChart(svgNode: SVGSVGElement) {
         if (!size || !svgNode || MupData.length === 0) return;
@@ -214,11 +237,11 @@ export default function MetaBarChart(
 
         const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
 
-
-
         const mergedData = MupData.map(d => {
-            const meta = data.find(m => m.lang === d.lang);
             const dzsItem = DZS.find(z => z.lang === d.lang);
+
+            const meta = data.find(m => m.lang === d.lang);
+
             const api = propsData?.find(a => a.lang === d.lang);
 
             const apiExpatsMap = new Map(apiExpats.map(d => [d.lang, d]));
@@ -250,42 +273,46 @@ export default function MetaBarChart(
         });
 
 
-
-
-
         const x0 = d3.scaleBand()
             .domain(mergedData.map(d => d.Državljanstvo))
             .range([0, chartWidth])
             .padding(0.3);
 
+
+
+        const stackSelected = selectedTypes.includes("MUP Dozvole") || selectedTypes.includes("DZS Manjine");
+        const x1Domain = [
+            ...(stackSelected ? ["MUP Dozvole+DZS Manjine"] : []),
+            // fixed order for Meta/API/Lokacija
+            ...(selectedTypes.includes("Meta UI") ? ["Meta UI"] : []),
+            ...(selectedTypes.includes("API Jezik") ? ["API Jezik"] : []),
+            ...(selectedTypes.includes("API Lokacija") ? ["API Lokacija"] : [])
+        ];
+
         const x1 = d3.scaleBand()
-            .domain(["MUP+DZS", "API", "Meta", "API Expat"])
+            .domain(x1Domain)
             .range([0, x0.bandwidth()])
             .padding(0.05);
 
+        const maxValue = d3.max(mergedData, d => {
+            const values: number[] = [];
+
+            if (selectedTypes.includes("MUP Dozvole")) values.push(d.mup);
+            if (selectedTypes.includes("DZS Manjine")) values.push(d.dzs);
+            if (selectedTypes.includes("Meta UI")) values.push(d.meta_max);
+            if (selectedTypes.includes("API Jezik")) values.push(d.api_max);
+            if (selectedTypes.includes("API Lokacija") && d.apiExpat_max)
+                values.push(d.apiExpat_max);
+
+            return d3.max(values) ?? 0;
+        }) ?? 0;
+
         const y = d3.scaleLinear()
-            .domain([
-                0,
-                d3.max(mergedData, d =>
-                    Math.max(
-                        d.mup + d.dzs,
-                        d.api_max,
-                        d.meta_max
-                    )
-                )! * 1.1
-            ])
+            .domain([0, maxValue * 1.1])
             .range([chartHeight, 0])
             .nice();
 
-        const color = d3.scaleOrdinal<string, string>()
-            .domain(["MUP", "DZS", "Meta", "API", "API Expat"])
-            .range([
-                "#fdae6b",   // MUP
-                "#ffcc89",    // DZS
-                "#63B3ED",   // Meta Graph API (lighter blue)
-                "#1976D2",   // Meta Ads Manager (dark blue)
-                "#a8d4f5"
-            ]);
+
 
         const hoverLine = g.append("line")
             .attr("class", "hover-line")
@@ -344,77 +371,102 @@ export default function MetaBarChart(
             .attr('class', 'lang')
             .attr('transform', d => `translate(${x0(d.Državljanstvo)},0)`);
 
-        const apiRect = langGroups.append("rect")
-            .attr("x", x1("API")!)
+
+
+        const stackCategories: { key: "mup" | "dzs"; label: DataType; }[] = [
+            { key: "mup", label: "MUP Dozvole" },
+            { key: "dzs", label: "DZS Manjine" }
+        ];
+
+        langGroups.each(function (d) {
+            let stackOffset = 0;
+
+            stackCategories.forEach(cat => {
+                if (!selectedTypes.includes(cat.label)) return;
+
+                const value = d[cat.key];
+
+                // store reference for later toggling if needed
+                const rect = d3.select(this).append("rect")
+                    .attr("x", x1("MUP Dozvole+DZS Manjine")!)
+                    .attr("y", chartHeight) // start at bottom
+                    .attr("width", x1.bandwidth())
+                    .attr("height", 0)
+                    .attr("fill", color(cat.label)!)
+                    .attr("opacity", 0.8);
+
+                // transition to stacked position
+                rect.transition()
+                    .duration(1200)
+                    .attr("y", y(stackOffset + value))
+                    .attr("height", y(stackOffset) - y(stackOffset + value));
+
+                rect
+                    .on("mouseenter", (e, d) => showTooltip(e, d, "stack"))
+                    .on("mousemove", (e, d) => showTooltip(e, d, "stack"))
+                    .on("mouseleave", hideTooltip);
+
+
+
+                stackOffset += value;
+            });
+
+        });
+
+
+        let metaRect = langGroups.append("rect")
+            .attr("x", x1("Meta UI")!)
             .attr("y", chartHeight)
             .attr("width", x1.bandwidth())
             .attr("height", 0)
-            .attr("fill", color("API")!)
+            .attr("fill", color("Meta UI")!)
             .attr("opacity", "0.8");
 
-        apiRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.api_avg))
-            .attr("height", d => chartHeight - y(d.api_avg));
+        if (selectedTypes.includes("Meta UI")) {
+            metaRect.transition()
+                .duration(1200)
+                .attr("y", d => y(d.meta_avg))
+                .attr("height", d => chartHeight - y(d.meta_avg));
+        }
 
 
-
-        const mupRect = langGroups.append("rect")
-            .attr("x", x1("MUP+DZS")!)
+        let apiRect = langGroups.append("rect")
+            .attr("x", x1("API Jezik")!)
             .attr("y", chartHeight)
             .attr("width", x1.bandwidth())
             .attr("height", 0)
-            .attr("fill", color("MUP")!);
-
-        mupRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.mup))
-            .attr("height", d => chartHeight - y(d.mup));
-
-
-        const dzsRect = langGroups.append("rect")
-            .attr("x", x1("MUP+DZS")!)
-            .attr("y", chartHeight)
-            .attr("width", x1.bandwidth())
-            .attr("height", 0)
-            .attr("fill", color("DZS")!);
-
-        dzsRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.mup + d.dzs))
-            .attr("height", d => y(d.mup) - y(d.mup + d.dzs));
-
-        const metaRect = langGroups.append("rect")
-            .attr("x", x1("Meta")!)
-            .attr("y", chartHeight)
-            .attr("width", x1.bandwidth())
-            .attr("height", 0)
-            .attr("fill", color("Meta")!)
+            .attr("fill", color("API Jezik")!)
             .attr("opacity", "0.8");
 
-        metaRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.meta_avg))
-            .attr("height", d => chartHeight - y(d.meta_avg));
+        if (selectedTypes.includes("API Jezik")) {
+            apiRect.transition()
+                .duration(1200)
+                .attr("y", d => y(d.api_avg))
+                .attr("height", d => chartHeight - y(d.api_avg));
 
-        const apiExpatRect = langGroups.append("rect")
+        }
+
+
+
+        let apiExpatRect = langGroups.append("rect")
             .filter(d => d.apiExpat_avg !== null)
-            .attr("x", x1("API Expat")!)
+            .attr("x", x1("API Lokacija")!)
             .attr("y", chartHeight)
             .attr("width", x1.bandwidth())
             .attr("height", 0)
-            .attr("fill", color("API Expat")!)
+            .attr("fill", color("API Lokacija")!)
             .attr("opacity", 0.8);
 
-        apiExpatRect.transition()
-            .duration(1200)
-            .attr("y", d => y(d.apiExpat_avg!))
-            .attr("height", d => chartHeight - y(d.apiExpat_avg!));
-
+        if (selectedTypes.includes("API Lokacija")) {
+            apiExpatRect.transition()
+                .duration(1200)
+                .attr("y", d => y(d.apiExpat_avg!))
+                .attr("height", d => chartHeight - y(d.apiExpat_avg!));
+        }
 
         function drawWhisker(
             group: d3.Selection<SVGGElement, any, any, any>,
-            type: "Meta" | "API" | "API Expat",
+            type: "Meta UI" | "API Jezik" | "API Lokacija",
             minValueAccessor: (d: any) => number,
             maxValueAccessor: (d: any) => number,
             delay = 1200 // delay in ms before whisker animation starts
@@ -468,11 +520,15 @@ export default function MetaBarChart(
                 .attr("opacity", 1);
         }
 
-        drawWhisker(langGroups, "Meta", d => d.meta_min, d => d.meta_max);
-        drawWhisker(langGroups, "API", d => d.api_min, d => d.api_max);
-        drawWhisker(langGroups, "API Expat", d => d.apiExpat_min!, d => d.apiExpat_max!);
-
-
+        if (selectedTypes.includes("Meta UI")) {
+            drawWhisker(langGroups, "Meta UI", d => d.meta_min, d => d.meta_max);
+        }
+        if (selectedTypes.includes("API Jezik")) {
+            drawWhisker(langGroups, "API Jezik", d => d.api_min, d => d.api_max);
+        }
+        if (selectedTypes.includes("API Lokacija")) {
+            drawWhisker(langGroups, "API Lokacija", d => d.apiExpat_min!, d => d.apiExpat_max!);
+        }
 
 
 
@@ -481,7 +537,7 @@ export default function MetaBarChart(
         function showTooltip(
             event: MouseEvent,
             d: any,
-            type: "meta" | "api" | "stack" | "expat"
+            type: "Meta UI" | "API Jezik" | "stack" | "expat"
         ) {
             const padding = 6;
 
@@ -493,7 +549,7 @@ export default function MetaBarChart(
                 note = <><br />DZS prikazuje Albansku nacionalnu manjinu.<br />MUP prikazuje broj dozvola za državljane Kosova.<br />Meta i API prikazuju podatke za Albanski jezik.</>;
             }
 
-            if (type === "meta") {
+            if (type === "Meta UI") {
                 setTooltip({
                     x: left,
                     y: top,
@@ -526,7 +582,7 @@ export default function MetaBarChart(
                     .attr("y1", y(d.apiExpat_avg!))
                     .attr("y2", y(d.apiExpat_avg!))
                     .attr("opacity", 0.2);
-            } else if (type === "api") {
+            } else if (type === "API Jezik") {
                 setTooltip({
                     x: left,
                     y: top,
@@ -567,13 +623,13 @@ export default function MetaBarChart(
         }
 
         metaRect
-            .on("mouseenter", (e, d) => showTooltip(e, d, "meta"))
-            .on("mousemove", (e, d) => showTooltip(e, d, "meta"))
+            .on("mouseenter", (e, d) => showTooltip(e, d, "Meta UI"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "Meta UI"))
             .on("mouseleave", hideTooltip);
 
         apiRect
-            .on("mouseenter", (e, d) => showTooltip(e, d, "api"))
-            .on("mousemove", (e, d) => showTooltip(e, d, "api"))
+            .on("mouseenter", (e, d) => showTooltip(e, d, "API Jezik"))
+            .on("mousemove", (e, d) => showTooltip(e, d, "API Jezik"))
             .on("mouseleave", hideTooltip);
 
         apiExpatRect
@@ -581,21 +637,17 @@ export default function MetaBarChart(
             .on("mousemove", (e, d) => showTooltip(e, d, "expat"))
             .on("mouseleave", hideTooltip);
 
-        mupRect
-            .on("mouseenter", (e, d) => showTooltip(e, d, "stack"))
-            .on("mousemove", (e, d) => showTooltip(e, d, "stack"))
-            .on("mouseleave", hideTooltip);
-
-        dzsRect
-            .on("mouseenter", (e, d) => showTooltip(e, d, "stack"))
-            .on("mousemove", (e, d) => showTooltip(e, d, "stack"))
-            .on("mouseleave", hideTooltip);
     }
 
     useEffect(() => {
         if (!size || !svgRef.current) return;
         drawChart(svgRef.current);
-    }, [size]);
+    }, [size, selectedTypes]);
+
+    useEffect(() => {
+  console.log("propsData received:", propsData);
+}, [propsData]);
+
 
     return (
         <div
@@ -606,6 +658,57 @@ export default function MetaBarChart(
                 position: "relative",
             }}
         >
+            <div className="flex flex-wrap gap-3 mb-4 justify-center">
+                {/* MUP + DZS buttons */}
+                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-5">
+                    <div className="flex justify-center items-center " >Službeni podaci</div>
+                    <div className="flex  gap-2">
+                        {(["MUP Dozvole", "DZS Manjine"] as const).map(type => (
+                            <button
+                                key={type}
+                                aria-pressed={selectedTypes.includes(type)}
+                                onClick={() => toggleType(type)}
+                                className="button"
+                                style={{
+                                    backgroundColor: selectedTypes.includes(type)
+                                        ? color(type)
+                                        : "#eee",
+                                    color: selectedTypes.includes(type) ? "#fff" : "#333"
+                                }}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Gap between stacks and the rest */}
+                <div style={{ width: "1rem" }}></div>
+
+                {/* Other types: Meta, API, API Expat */}
+                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-5 ">
+                    <div className="flex justify-center items-center " >Meta procjene</div>
+                    <div className="flex  gap-2">
+                        {(["Meta UI", "API Jezik", "API Lokacija"] as const).map(type => (
+                            <button
+                                key={type}
+                                aria-pressed={selectedTypes.includes(type)}
+                                onClick={() => toggleType(type)}
+                                className="button"
+                                style={{
+                                    backgroundColor: selectedTypes.includes(type)
+                                        ? color(type)
+                                        : "#eee",
+                                    color: selectedTypes.includes(type) ? "#fff" : "#333"
+                                }}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
             <svg
                 ref={svgRef}
                 viewBox={`0 0 ${width} ${height}`}
@@ -629,7 +732,6 @@ export default function MetaBarChart(
                     {tooltip.note && <div>{tooltip.note}</div>}
                 </div>
             )}
-
 
         </div>
     );

@@ -131,6 +131,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     }
 
+    // ADD THIS BEFORE insert
+    const snapshotTime = new Date();
+
     const { error } = await supabase
       .from('cro_lang_data')
       .insert(
@@ -141,9 +144,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
           api_reach_min: lang.apiReachMin,
           api_reach_max: lang.apiReachMax,
           api_reach_avg: lang.apiReachAvg,
-          snapshot_time: new Date()
+          snapshot_time: snapshotTime // use SAME timestamp
         }))
       );
+
+
 
     if (error) console.error('Supabase insert error:', error);
     res.status(200).json(results);

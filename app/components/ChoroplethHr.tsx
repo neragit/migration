@@ -8,18 +8,13 @@ import useResizeObserver from "../hooks/useResizeObs";
 import { ColorScale } from 'plotly.js';
 import { ChevronUp } from "lucide-react";
 
-
-
 const Plot = dynamic(() => import("react-plotly.js"), { ssr: false });
-
 
 type Props = {
   sidebarVisible: boolean;
 };
 
 export default function ChoroplethHr({ sidebarVisible }: Props) {
-
-
 
     const [open, setOpen] = useState(false);
     const [tooltip, setTooltip] = useState<{
@@ -56,7 +51,7 @@ export default function ChoroplethHr({ sidebarVisible }: Props) {
 
     useEffect(() => {
         setIsClient(true);
-        d3.csv("/data/choropleth_dzs.csv").then(setCsvData);
+        d3.csv("/data/hrvati_choropleth.csv").then(setCsvData);
     }, []);
 
     const allCountryISO3 = allCountries.map((c) => c.cca3);

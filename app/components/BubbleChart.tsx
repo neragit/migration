@@ -66,13 +66,13 @@ const data: DataItem[] = [
 
 
 const clusterCenters: Record<string, { x: number; y: number }> = {
-  'Balkan': { x: 280, y: 240 },
-  'Global': { x: 520, y: 240 },
-  'English': { x: 610, y: 150 },
-  'Africa': { x: 600, y: 310 },
-  'Euroazija': { x: 650, y: 310 },
-  'Indija': { x: 690, y: 280 },
-  'Filipini': { x: 740, y: 290 },
+  'Balkan': { x: 290, y: 200 },
+  'Global': { x: 520, y: 210 },
+  'English': { x: 610, y: 140 },
+  'Africa': { x: 600, y: 280 },
+  'Euroazija': { x: 650, y: 280 },
+  'Indija': { x: 690, y: 250 },
+  'Filipini': { x: 740, y: 260 },
 };
 
 const langColors: Record<string, string> = {
@@ -130,28 +130,28 @@ const BubbleChart: React.FC = () => {
   const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
 
   const zoomIn = () => {
-  if (!svgRef.current || !zoomRef.current) return;
+    if (!svgRef.current || !zoomRef.current) return;
 
-  d3.select(svgRef.current)
-    .transition()
-    .duration(300)
-    .call(zoomRef.current.scaleBy as any, 1.5);
-};
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomRef.current.scaleBy as any, 1.5);
+  };
 
-const zoomOut = () => {
-  if (!svgRef.current || !zoomRef.current) return;
+  const zoomOut = () => {
+    if (!svgRef.current || !zoomRef.current) return;
 
-  d3.select(svgRef.current)
-    .transition()
-    .duration(300)
-    .call(zoomRef.current.scaleBy as any, 0.75);
-};
+    d3.select(svgRef.current)
+      .transition()
+      .duration(300)
+      .call(zoomRef.current.scaleBy as any, 0.75);
+  };
 
   useEffect(() => {
     if (!svgRef.current) return;
 
     const width = 900;
-    const height = 410;
+    const height = 450;
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
@@ -161,7 +161,7 @@ const zoomOut = () => {
 
     const rScale = d3.scaleSqrt()
       .domain([d3.min(data, d => d.avg) ?? 0, d3.max(data, d => d.avg) ?? 1])
-      .range([10, 130]);
+      .range([10, 120]);
 
     const subgroups = Array.from(new Set(data.map(d => d.subgroup)));
 
@@ -199,7 +199,7 @@ const zoomOut = () => {
       .on('mouseover', (event, d) => {
         tooltip
           .html(`<strong>${d.lang}</strong><br/>
-             Procjena između ${d.min} i ${d.max}<br/>
+             Procjena između ${d.min.toLocaleString("fr-FR")} i ${d.max.toLocaleString("fr-FR")}<br/>
              Područje: ${d.country}`)
           .style('opacity', 1);
       })
@@ -218,8 +218,8 @@ const zoomOut = () => {
 
       .on('mouseout', () => {
         tooltip
-  .style('opacity', 0)
-  .style('visibility', 'hidden');
+          .style('opacity', 0)
+
       });
 
     bubbleGroup.selectAll('text')
@@ -235,7 +235,7 @@ const zoomOut = () => {
       .style('font-weight', '600');
 
     const zoom = d3.zoom<SVGSVGElement, unknown>()
-    
+
       .scaleExtent([1, 2])
       .filter((event) => {
 
@@ -244,11 +244,12 @@ const zoomOut = () => {
       .on('zoom', (event) => {
         const { x, y, k } = event.transform;
 
-        
+
 
         // Apply transform to bubble group
         bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
 
+        /*
         // Legend opacity fades out if zoomed in
         const legendOpacity = k > 1 ? 0 : 1;
         svg.select<SVGGElement>(".legend")
@@ -257,12 +258,12 @@ const zoomOut = () => {
           .ease(d3.easeCubic)
           .style("opacity", legendOpacity);
 
-          bubbleGroup.attr('cursor', 'grabbing');
-          svg.attr('cursor', 'grabbing');
+          */
 
-          tooltip
-  .style('opacity', 0)
-  .style('visibility', 'hidden');
+        bubbleGroup.attr('cursor', 'grabbing');
+        svg.attr('cursor', 'grabbing');
+
+
       })
       .on('end', () => {
         bubbleGroup.attr('cursor', 'default');
@@ -272,60 +273,61 @@ const zoomOut = () => {
 
 
 
+    /*
+        const groupLegend = [
+          { label: 'Balkan', color: '#C2185B' },
+          { label: 'Svjetski drugi europski', color: '#BA68C8' },
+          { label: 'Turska i Afrika', color: '#6D4C41' },
+          { label: 'Post-sovjetski', color: '#F9A825' },
+          { label: 'Indoarijski', color: '#2E7D32' },
+          { label: 'Filipini', color: '#1976D2' },
+        ];
+    
+        let legend = svg.select<SVGGElement>(".legend");
+    
+        if (legend.empty()) {
+          legend = svg.append("g").attr("class", "legend");
+    
+          groupLegend.forEach((group, i) => {
+            const row = legend.append("g")
+              .attr("transform", `translate(0, ${i * 25})`);
+    
+            row.append("circle")
+              .attr("r", 6)
+              .attr("fill", group.color);
+    
+            row.append("text")
+              .attr("x", 18)
+              .attr("y", 4)
+              .text(group.label)
+              .attr("fill", "#555")
+              .attr("font-size", "10px")
+          });
+        }
+    
+        legend.attr("transform", `translate(20, 20)`);
+        */
 
-    const groupLegend = [
-      { label: 'Balkan', color: '#C2185B' },
-      { label: 'Svjetski drugi europski', color: '#BA68C8' },
-      { label: 'Turska i Afrika', color: '#6D4C41' },
-      { label: 'Post-sovjetski', color: '#F9A825' },
-      { label: 'Indoarijski', color: '#2E7D32' },
-      { label: 'Filipini', color: '#1976D2' },
-    ];
-
-    let legend = svg.select<SVGGElement>(".legend");
-
-    if (legend.empty()) {
-      legend = svg.append("g").attr("class", "legend");
-
-      groupLegend.forEach((group, i) => {
-        const row = legend.append("g")
-          .attr("transform", `translate(0, ${i * 25})`);
-
-        row.append("circle")
-          .attr("r", 6)
-          .attr("fill", group.color);
-
-        row.append("text")
-          .attr("x", 18)
-          .attr("y", 4)
-          .text(group.label)
-          .attr("fill", "#555")
-          .attr("font-size", "10px")
-      });
-    }
-
-    legend.attr("transform", `translate(20, 20)`);
-
-   zoomRef.current = zoom;
+    zoomRef.current = zoom;
     svg.call(zoom as any);
 
 
   }, []);
 
 
-const zoomButtonStyle: React.CSSProperties = {
-  width: "48px",
-  height: "48px",
-  borderRadius: "50%",
-  border: "none",
-  background: "rgba(30,30,30,0.3)",
-  color: "white",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  transition: "all 0.2s ease",
-};
+  const zoomButtonStyle: React.CSSProperties = {
+    width: "48px",
+    height: "48px",
+    borderRadius: "50%",
+    border: "none",
+    background: "rgba(30,30,30,0.3)",
+    color: "white",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+  };
 
 
   return (
@@ -334,7 +336,7 @@ const zoomButtonStyle: React.CSSProperties = {
         <svg
           ref={svgRef}
           width="100%"
-          viewBox="0 0 900 410"
+          viewBox="0 0 900 400"
           preserveAspectRatio="xMidYMid meet"
         />
         <div
@@ -347,31 +349,31 @@ const zoomButtonStyle: React.CSSProperties = {
 
           }}
         ></div>
-<div
-      style={{
-        position: "absolute",
-        bottom: "20px",
-        left: "50%",
-        transform: "translateX(-50%)",
-        display: "flex",
-        gap: "20px",
-        zIndex: 10,
-      }}
-    >
-      <button
-        onClick={zoomIn}
-        style={zoomButtonStyle}
-      >
-        <Plus size={28} />
-      </button>
+        <div
+          style={{
+            position: "absolute",
+            bottom: "20px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            display: "flex",
+            gap: "20px",
+            zIndex: 10,
+          }}
+        >
+          <button
+            onClick={zoomIn}
+            style={zoomButtonStyle}
+          >
+            <Plus size={28} />
+          </button>
 
-      <button
-        onClick={zoomOut}
-        style={zoomButtonStyle}
-      >
-        <Minus size={28} />
-      </button>
-    </div>
+          <button
+            onClick={zoomOut}
+            style={zoomButtonStyle}
+          >
+            <Minus size={28} />
+          </button>
+        </div>
       </div>
 
     </>

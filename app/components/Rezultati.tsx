@@ -78,10 +78,10 @@ export default function MetaMupSideBySideBars() {
 
                   {/* Row layout */}
                   <div className="flex items-center gap-4">
-                    {/* Meta column */}
+
                     <div className="flex-1 text-left text-sm text-gray-700">
-                      <div className="font-semibold text-[#1976D2]">Meta</div>
-                      <div>{r.meta.toLocaleString("fr-FR")}</div>
+                      <div className="font-semibold text-[#FDAE6B]">MUP</div>
+                      <div>{r.mup.toLocaleString("fr-FR")}</div>
                     </div>
 
                     {/* Horizontal bar */}
@@ -95,10 +95,11 @@ export default function MetaMupSideBySideBars() {
                       </div>
                     </div>
 
-                    {/* MUP column */}
+          
                     <div className="flex-1 text-right text-sm text-gray-700">
-                      <div className="font-semibold text-[#FDAE6B]">MUP</div>
-                      <div>{r.mup.toLocaleString("fr-FR")}</div>
+                      
+                      <div className="font-semibold text-[#1976D2]">Meta</div>
+                      <div>{r.meta.toLocaleString("fr-FR")}</div>
                     </div>
                   </div>
                 </div>

@@ -14,8 +14,6 @@ type Props = {
 
 export default function ChoroplethCro({ sidebarVisible }: Props) {
 
-
-
   const [csvData, setCsvData] = useState<any[]>([]);
   const [selectedYear, setSelectedYear] = useState("2020");
   const [isClient, setIsClient] = useState(false);
@@ -35,7 +33,7 @@ export default function ChoroplethCro({ sidebarVisible }: Props) {
 
   useEffect(() => {
     setIsClient(true);
-    d3.csv("/data/hrv_choropleth.csv").then(setCsvData);
+    d3.csv("/data/stranci_choropleth.csv").then(setCsvData);
   }, []);
 
   useEffect(() => {
