@@ -342,7 +342,7 @@ export default function Objasnjenja() {
         =================================*/}
 
                 <main
-                    className={`w-full lg:w-3/4 relative ${(activeGroup === 4 && activeSection === 0) ? "min-h-250 md:min-h-150" : "min-h-125"
+                    className={`w-full lg:w-3/4 relative ${((activeGroup === 4 && activeSection === 0) || (activeGroup === 0 && activeSection === 0)) ? "min-h-250 md:min-h-150" : "min-h-125"
                         }`}
                 >
                     {currentSections.map((section, index) => (
