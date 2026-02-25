@@ -26,10 +26,14 @@ export default function RootLayout({
     <html lang="hr">
 
       <head>
+        <Script
+          src={`https://t.contentsquare.net/uxa/${process.env.NEXT_PUBLIC_CONTENTSQUARE_ID}.js`}
+          strategy="afterInteractive"
+        />
 
         <Script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-DHXC4LR9DD" // GA4 library
+          src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA4_ID}`}
           strategy="afterInteractive"
         />
 
@@ -42,7 +46,7 @@ export default function RootLayout({
           'ad_storage': 'denied'
         });
         gtag('js', new Date());
-        gtag('config', 'G-DHXC4LR9DD', { anonymize_ip: true }); 
+        gtag('config', '${process.env.NEXT_PUBLIC_GA4_ID}', { anonymize_ip: true }); 
       `}
         </Script>
       </head>
