@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-export default function Part3() {
+export default function CentralQuestion() {
+    
     const [col1Hovered, setCol1Hovered] = useState(false);
     const [bridgeHovered, setBridgeHovered] = useState(false);
     const [col2Hovered, setCol2Hovered] = useState(false);

@@ -46,7 +46,7 @@ interface Props {
 export default function ExpatBars({
     data = expatData,
     width = 1200,
-    height = 600
+    height = 500
 }: Props) {
     const svgRef = useRef<SVGSVGElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);

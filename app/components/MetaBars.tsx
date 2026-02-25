@@ -184,7 +184,7 @@ interface MetaBarChartProps {
 
 
 export default function MetaBarChart(
-    { data: propsData, width = 1200, height = 600 }: Props & MetaBarChartProps
+    { data: propsData, width = 1200, height = 450 }: Props & MetaBarChartProps
 ) {
     const svgRef = useRef<SVGSVGElement | null>(null);
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -658,9 +658,9 @@ export default function MetaBarChart(
                 position: "relative",
             }}
         >
-            <div className="flex flex-wrap gap-3 mb-4 justify-center">
+            <div className="flex flex-wrap gap-3 justify-center ">
                 {/* MUP + DZS buttons */}
-                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-5">
+                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-3">
                     <div className="flex justify-center items-center " >Službeni podaci</div>
                     <div className="flex  gap-2">
                         {(["MUP Dozvole", "DZS Manjine"] as const).map(type => (
@@ -686,7 +686,7 @@ export default function MetaBarChart(
                 <div style={{ width: "1rem" }}></div>
 
                 {/* Other types: Meta, API, API Expat */}
-                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-5 ">
+                <div className="flex flex-col gap-2 bg-neutral-50 rounded-lg p-3 ">
                     <div className="flex justify-center items-center " >Meta procjene</div>
                     <div className="flex  gap-2">
                         {(["Meta UI", "API Jezik", "API Lokacija"] as const).map(type => (

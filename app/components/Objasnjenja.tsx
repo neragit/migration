@@ -247,7 +247,7 @@ export default function Objasnjenja() {
 
     return (
         <div ref={containerRef} className="w-full ">
-            <h2 className="text-lg  font-semibold text-gray-700 md:pb-10">
+            <h2 className="text-lg text-center my-20 font-semibold text-gray-700 md:pb-20">
                 Što može objasniti ove razlike?
             </h2>
 

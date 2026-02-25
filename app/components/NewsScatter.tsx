@@ -7,12 +7,13 @@ const NEWS_IMAGES = Array.from({ length: 24 }, (_, i) => `/news-${i + 1}.png`);
 const SCATTERED = [
   { left: "30%", top: "70%", rotation: 7, scale: 0.3 },
   { left: "50%", top: "55%", rotation: 4, scale: 0.3 },
-  { left: "80%", top: "20%", rotation: 6, scale: 0.3 },
+  { left: "70%", top: "30%", rotation: 8, scale: 0.3 },
   { left: "75%", top: "80%", rotation: -8, scale: 0.3 },
   { left: "40%", top: "65%", rotation: 4, scale: 0.3 },
   { left: "75%", top: "60%", rotation: -7, scale: 0.3 },
   { left: "18%", top: "62%", rotation: -5, scale: 0.3 },
-  { left: "5%", top: "18%", rotation: -8, scale: 0.3 },
+  { left: "80%", top: "20%", rotation: 6, scale: 0.3 },
+  
   { left: "55%", top: "15%", rotation: 5, scale: 0.3 },
   { left: "28%", top: "13%", rotation: -3, scale: 0.3 },
 
@@ -26,8 +27,8 @@ const SCATTERED = [
   { left: "62%", top: "30%", rotation: 7, scale: 0.3 },
   { left: "25%", top: "15%", rotation: 3, scale: 0.3 },
   { left: "45%", top: "20%", rotation: -4, scale: 0.3 },
-
-  { left: "80%", top: "30%", rotation: 8, scale: 0.3 },
+{ left: "5%", top: "18%", rotation: -8, scale: 0.3 },
+  
   { left: "15%", top: "50%", rotation: -9, scale: 0.3 },
   { left: "40%", top: "50%", rotation: 5, scale: 0.3 },
   { left: "60%", top: "55%", rotation: -6, scale: 0.3 },

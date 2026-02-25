@@ -24,9 +24,11 @@ export default function ChoroplethCro({ sidebarVisible }: Props) {
     value: number;
   } | null>(null);
   const years = ["2020", "2021", "2022", "2023"];
-  const containerRef = useRef<HTMLDivElement>(null);
+
   const lockScrollRef = useRef(false);
   const accumulatedDeltaRef = useRef(0);
+  
+  const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
   const isDesktop = size ? size.width > 768 : true; // fallback to desktop if size unknown
@@ -180,7 +182,7 @@ export default function ChoroplethCro({ sidebarVisible }: Props) {
 
       <div ref={containerRef} className={`relative top-0 z-10 justify-center 
        ${sidebarVisible ? " ml-[-80]  " : "ml-0  "} w-[95vw] lg:ml-[-60]  portrait:w-screen portrait:ml-0 `}
-       onMouseMove={handleMouseMove}>
+        onMouseMove={handleMouseMove}>
 
         {isClient && (
           <Plot

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState } from 'react';
+import useResizeObserver from "../hooks/useResizeObs";
 import * as d3 from 'd3';
 import { Plus, Minus } from "lucide-react";
 
@@ -16,6 +17,7 @@ interface DataItem {
   x?: number;
   y?: number;
   color?: string;
+  opacity?: number;
 }
 
 // Procjena publike prema jeziku na temelju pojedinačne pretrage putem Meta Ads Manager UI
@@ -56,7 +58,7 @@ const data: DataItem[] = [
 
   { lang: 'Punjabi', avg: 1950, region: 'Asia', subgroup: 'Indija', min: 1800, max: 2100, country: 'Pakistan' },
 
-  { lang: 'Hindi', avg: 5450, region: 'Asia', subgroup: 'Indija', min: 5000, max: 5900, country: 'Indija' },
+  { lang: 'Hindski', avg: 5450, region: 'Asia', subgroup: 'Indija', min: 5000, max: 5900, country: 'Indija' },
   { lang: 'Bengalski', avg: 3400, region: 'Asia', subgroup: 'Indija', min: 3100, max: 3700, country: 'Bangladeš, Indija' },
   { lang: 'Nepalski', avg: 19700, region: 'Asia', subgroup: 'Indija', min: 18100, max: 21300, country: 'Nepal' },
   { lang: 'Filipinski', avg: 14000, region: 'Asia', subgroup: 'Filipini', min: 12900, max: 15100, country: 'Filipini' },
@@ -115,19 +117,32 @@ const langColors: Record<string, string> = {
 
   // Asia / Indija / Filipini
   'Punjabi': '#608000',
-  'Hindi': '#66BB6A',
+  'Hindski': '#66BB6A',
   'Bengalski': '#81C784',
   'Nepalski': '#009688',
   'Filipinski': '#1976D2',
   'Cebuano': '#ace5ee',
 };
 
+interface BubbleChartProps {
+  step: number;
+}
 
-const BubbleChart: React.FC = () => {
+const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const size = useResizeObserver(containerRef);
+
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-
   const zoomRef = useRef<d3.ZoomBehavior<SVGSVGElement, unknown> | null>(null);
+
+
+  const [bubbles, setBubbles] = useState<DataItem[]>(() =>
+    data.map(d => ({ ...d, opacity: 1 }))
+  );
+
+
 
   const zoomIn = () => {
     if (!svgRef.current || !zoomRef.current) return;
@@ -147,17 +162,20 @@ const BubbleChart: React.FC = () => {
       .call(zoomRef.current.scaleBy as any, 0.75);
   };
 
+  const circlesRef = useRef<d3.Selection<SVGCircleElement, DataItem, SVGGElement, unknown> | null>(null);
+
+
+
   useEffect(() => {
     if (!svgRef.current) return;
 
     const width = 900;
-    const height = 450;
-    const svg = d3.select(svgRef.current);
-    svg.selectAll('*').remove();
+    const height = 500; // maintain 900x500 ratio
 
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove(); // reset prije crtanja
 
     const tooltip = d3.select(tooltipRef.current);
-
 
     const rScale = d3.scaleSqrt()
       .domain([d3.min(data, d => d.avg) ?? 0, d3.max(data, d => d.avg) ?? 1])
@@ -189,6 +207,19 @@ const BubbleChart: React.FC = () => {
     const bubbleGroup = svg.append('g')
       .attr('cursor', 'default');
 
+    const circleSelection = bubbleGroup.selectAll<SVGCircleElement, DataItem>('circle')
+      .data(nodes)
+      .join('circle')  // make sure circles exist
+      .attr('r', d => d.r!)
+      .attr('cx', d => d.x!)
+      .attr('cy', d => d.y!)
+      .attr('fill', d => d.color!)
+      .style('opacity', d => d.opacity ?? 1);
+
+
+
+    circlesRef.current = circleSelection;
+
     bubbleGroup.selectAll('circle')
       .data(nodes)
       .join('circle')
@@ -196,20 +227,29 @@ const BubbleChart: React.FC = () => {
       .attr('cx', d => d.x!)
       .attr('cy', d => d.y!)
       .attr('fill', d => d.color!)
+      .style('opacity', d => d.opacity ?? 1)
       .on('mouseover', (event, d) => {
         tooltip
           .html(`<strong>${d.lang}</strong><br/>
              Procjena između ${d.min.toLocaleString("fr-FR")} i ${d.max.toLocaleString("fr-FR")}<br/>
              Područje: ${d.country}`)
-          .style('opacity', 1);
+          .style('opacity', 0.9);
       })
       .on('mousemove', (event) => {
-        const container = svgRef.current?.parentElement;
-        if (!container) return;
+        const tooltipEl = tooltipRef.current;
+        if (!tooltipEl) return;
 
-        const rect = container.getBoundingClientRect(); // container's position on screen
-        const x = event.clientX - rect.left + 10; // 10px offset
-        const y = event.clientY - rect.top + 10;
+        const offset = 10;
+        const tooltipWidth = tooltipEl.offsetWidth;
+        const tooltipHeight = tooltipEl.offsetHeight;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+
+        let x = event.clientX + offset;
+        let y = event.clientY + offset;
+
+        if (x + tooltipWidth > screenWidth) x = event.clientX - tooltipWidth - offset;
+        if (y + tooltipHeight > screenHeight) y = event.clientY - tooltipHeight - offset;
 
         tooltip
           .style('left', `${x}px`)
@@ -221,6 +261,8 @@ const BubbleChart: React.FC = () => {
           .style('opacity', 0)
 
       });
+
+
 
     bubbleGroup.selectAll('text')
       .data(nodes)
@@ -244,8 +286,6 @@ const BubbleChart: React.FC = () => {
       .on('zoom', (event) => {
         const { x, y, k } = event.transform;
 
-
-
         // Apply transform to bubble group
         bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
 
@@ -257,20 +297,18 @@ const BubbleChart: React.FC = () => {
           .duration(300)
           .ease(d3.easeCubic)
           .style("opacity", legendOpacity);
-
           */
 
         bubbleGroup.attr('cursor', 'grabbing');
         svg.attr('cursor', 'grabbing');
-
-
+        tooltip
+          .style('opacity', 0)
       })
+
       .on('end', () => {
         bubbleGroup.attr('cursor', 'default');
         svg.attr('cursor', 'grab'); // reset after drag
-
       });
-
 
 
     /*
@@ -311,8 +349,37 @@ const BubbleChart: React.FC = () => {
     zoomRef.current = zoom;
     svg.call(zoom as any);
 
-
   }, []);
+
+  useEffect(() => {
+    const mup = ['Bosanski', 'Nepalski', 'Srpski', 'Filipinski', 'Cebuano', 'Hindski', 'Makedonski', 'Albanski', 'Uzbečki', 'Arapski', 'Bengalski'];
+    setBubbles(prev =>
+      prev.map(b => {
+        if (step === 1) {
+          // STEP 1: show only mup
+          return { ...b, opacity: mup.includes(b.lang) ? 1 : 0.1 };
+        }
+        if (step === 2) {
+          // STEP 2: show if NOT mup
+          return { ...b, opacity: !mup.includes(b.lang) ? 1 : 0.1 };
+        }
+        // STEP 3 & 4: default
+        return { ...b, opacity: 1 };
+      })
+    );
+  }, [step]);
+
+
+
+  useEffect(() => {
+    if (!circlesRef.current) return;
+
+    circlesRef.current
+      .data(bubbles)
+      .transition()
+      .duration(300)
+      .style('opacity', d => d.opacity ?? 1);
+  }, [bubbles]);
 
 
   const zoomButtonStyle: React.CSSProperties = {
@@ -336,17 +403,18 @@ const BubbleChart: React.FC = () => {
         <svg
           ref={svgRef}
           width="100%"
-          viewBox="0 0 900 400"
+          viewBox="0 0 900 500"
           preserveAspectRatio="xMidYMid meet"
+          style={{ overflow: "visible" }}
         />
         <div
           ref={tooltipRef}
           className="tooltip"
           style={{
-            position: "absolute",
+            position: "fixed",
             top: 0,
             left: 0,
-
+            zIndex: 1000,
           }}
         ></div>
         <div

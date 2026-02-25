@@ -4,7 +4,7 @@
 
 import NewsScatter from "../components/NewsScatter";
 import HoverHighlight from "../components/HoverHighlight";
-import CentralQuestin from "../components/CentralQuestion";
+import CentralQuestion from "../components/CentralQuestion";
 import MetaPart4 from "../components/MetaPart4";
 
 import BubbleChart from "../components/BubbleChart";
@@ -32,11 +32,11 @@ export default function MetaPage() {
         const observer = new IntersectionObserver(
             ([entry]) => {
                 if (entry.isIntersecting) {
-                    setVennVisible(true); // <-- here isVisible becomes true
-                    observer.disconnect(); // optional: only trigger once
+                    setVennVisible(true);
+                    observer.disconnect(); // only trigger once
                 }
             },
-            { threshold: 0.9 } // trigger when 20% of element is visible
+            { threshold: 0.9 }
         );
 
         if (ref.current) observer.observe(ref.current);
@@ -66,6 +66,100 @@ export default function MetaPage() {
         if (contentRef3.current) setHeight3(open3 ? contentRef3.current.scrollHeight : 0);
     }, [open3]);
 
+    ///////BUBBLE FLOW
+
+    const [activeStep01, setActiveStep01] = useState(0);
+    const [activeStep02, setActiveStep02] = useState(0);
+    const [activeStep03, setActiveStep03] = useState(0);
+
+    const flowTexts01 = [
+        `Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek</b> raspona minimalne i maksimalne vrijednosti. <br/><br/>Pri odabiru lokacije, Meta procjenjuje korisnike koji provode vrijeme u Hrvatskoj, kao što su ljudi koji tu žive ili su nedavno tu bili.`,
+        `Polazni kriterij za odabir jezika je MUP-ova lista top 10 stranih državljanstava.`,
+        `Radi šire usporedbe i točnije procjene uključeni su hrvatski i engleski jezik, zatim službeni jezici susjednih i drugih europskih zemalja te svjetski jezici poput kineskog, japanskog itd. <br/><br/>Hrvatski i engleski su očekivano prepoznati kao najkorišteniji jezici u Hrvatskoj.`,
+        `Drugi jezici iz indijske jezične skupine, kao što su urdu, telugu, marathi, tamilski, gudžaratski, kannada, malajalamski, pandžabi, asamski i odija, isključeni su jer je procijenjena publika prema Meta Ads Manageru bila manja od 1000 korisnika (eventualno nula). <br/><br/>Isto tako, europski jezici poput irskog, malteškog, islandskog, norveškog, finskog i estonskog te drugi jezici poput korejskog, farskog, kazahstanskog, tadžičkog također nisu prikazani zbog vrlo male procijenjene publike. <br/><br/>Crnogorski i romski nisu na listi jezika Ads Manager-a.`
+    ];
+
+    const flowTexts02 = [
+        `Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". <br/><br/>Nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. <br/><br/>Međutim, ti brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se. `,
+        `Možemo djelomično pretpostaviti koje zemlje objašnjavaju Hrvati.<br/><br/>Prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja.`,
+        `Drugi problem u interpretaciji proizlazi iz činjenice da Meta ne nudi kategorije za sve zemlje.<br/><br/>Npr. nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan...`,
+        `Osim hrvatskih državljana i stranih radnika, moguće je da Meta broji i druge osobe na teritoriju hrvatske. 
+        <br/><br/>U 2025. godini, međunarodna zaštita odobrena je ukupno 25 osoba. Od toga je 24 osobe dobilo azil: 10 dječaka 0-13 godina, 2 mladića 14-17 godina, 2 odrasla muškarca 18-34 godine i 3 muškarca 35-64 godine, 4 djevojčice 0-13 godina i 3 žene 18-34 godine. Jedan muškarac u dobi 14-17 godina dobio je supsidijarnu zaštitu.`,
+        `Ukupno je tijekom 2025. godine podneseno 14.928 zahtjeva za međunarodnu zaštitu. Najviše je zahtjeva državljana Ruske Federacije (3.227), slijede Turska (2.597), Afganistan (1.365), Egipat (1.364) i Sirija (1.253). 
+        <br/><br/>Među ostalim zemljama podrijetla ističu se Bangladeš (954), Pakistan (670), Palestina (527), Kina (485), Maroko (473) i Irak (282). Ostale zemlje s manjim brojem podnositelja zahtjeva uključuju Indiju (250), Nepal (210), Ganu (147), Iran (118), Šri Lanku (82), Sijeru Leone (78), Azerbajdžan (75), Jordan (69) i Alžir (53), dok su neke zemlje zastupljene s tek nekoliko osoba, poput Mjanmara, Ekvadora, Gruzije, Južnog Sudana, Turkmenistana, Gabona, Norveške, Kosova, Crne Gore, Dominikanske Republike i Nigera (po 1 osoba).`
+    ];
+
+    const flowTexts03 = [
+        `Službene statistike obuhvaćaju dvije vrste evidencija: podatke Ministarstva unutarnjih poslova o izdanim dozvolama za boravak i rad stranih državljana, te podatke Državnog zavoda za statistiku o nacionalnim manjinama u Hrvatskoj. <br/><br/>S druge strane, prikazane su dvije vrste Meta procjena.`,
+        `Pomoću Marketing API-ja procjenjena je publika, odnosno broj korisnika Meta aplikacija, prema jeziku. Važno je napomenuti da nije u potpunosti poznato kako algoritam klasificira ove korisnike. <br/><br/>Jezik koji Meta pripisuje korisniku nije nužno samo jezik koji je odabrao u postavkama, nego može biti i inferiran iz interakcija s određenim sadržajem, primjerice dijeljenjem objava koje su klasificirane kao "sadržaj na bosanskom jeziku". Zbog sličnosti balkanskih jezika, jezik može biti pogrešno klasificiran.`,
+        `Uz to, prikazane su i Meta procjene za kategorije "iseljenika" (engl. expats), koje prikazuju broj korisnika koji su nekada živjeli u određenoj zemlji. <br/><br/>Ni u ovom slučaju nije poznato koje točno kriterije Meta primjenjuje da bi nekoga svrstala u ove kategorije.`,
+        `Posebno je zanimljiva usporedba MUP-ovih podataka s Meta procjenama prema prošloj lokaciji (engl. expats), jer su vrijednosti relativno blizu, čak i u slučaju Srbije koja je susjedna zemlja. <br/><br/>Generalno, MUP-ova procjena je viša od Meta procjene prema prošloj lokaciji, što znači da Meta nije identificirala više migranata nego što ih evidencija bilježi.`,
+        `U svakom slučaju, treba uzeti u obzir i vremensku razliku u mjerenju: Meta podaci prikupljeni su u veljači 2026. godine, a MUP-ovi u prosincu 2025. <br/><br/>Dodatno ograničenje predstavlja nedostupnost pretrage za Bosnu i Hercegovinu, Makedoniju, Kosovo, Egipat i Uzbekistan.`,
+        `Ako usporedimo službene podatke s Meta procjenama prema jeziku, vidljive su regionalne razlike koje zahtijevaju pobližu analizu.`
+    ];
+
+    const flow01Ref = useRef<HTMLDivElement>(null);
+    const flow02Ref = useRef<HTMLDivElement>(null);
+    const flow03Ref = useRef<HTMLDivElement>(null);
+
+    // Flow 01
+    useEffect(() => {
+        const observer1 = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const step = Number((entry.target as HTMLElement).dataset.step);
+                        setActiveStep01(step);
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        document.querySelectorAll(".step-01").forEach(el => observer1.observe(el));
+
+        return () => observer1.disconnect();
+    }, []);
+
+    // Flow 02
+    useEffect(() => {
+        const observer2 = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const step = Number((entry.target as HTMLElement).dataset.step);
+                        setActiveStep02(step);
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        document.querySelectorAll(".step-02").forEach(el => observer2.observe(el));
+
+        return () => observer2.disconnect();
+    }, []);
+
+    // Flow 03
+    useEffect(() => {
+        const observer3 = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const step = Number((entry.target as HTMLElement).dataset.step);
+                        setActiveStep03(step);
+                    }
+                });
+            },
+            { threshold: 0.5 }
+        );
+
+        document.querySelectorAll(".step-03").forEach(el => observer3.observe(el));
+
+        return () => observer3.disconnect();
+    }, []);
+
+
     return (
 
         <>
@@ -73,8 +167,8 @@ export default function MetaPage() {
 
             <HoverHighlight />
 
-            <section className=" my-30 " >
-                <div className="w-full mb-20 flex items-center gap-3">
+            <section className=" mt-30 mb-20 " >
+                <div className="w-full mb-20  flex items-center gap-3">
                     <div className="h-px flex-1 border-t border-dashed border-gray-300" />
                     <span className="text-md tracking-[0.25em] px-5 uppercase text-gray-400 font-light">
                         Terminološki okvir
@@ -96,11 +190,11 @@ export default function MetaPage() {
 
             </section>
 
-            <CentralQuestin />
+            <CentralQuestion />
 
             <MetaPart4 />
 
-            <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-20 text-gray-700   ">
+            <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-20 mb-30 text-gray-700   ">
 
                 <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mb-7">
                     Procjena korisnika u Hrvatskoj
@@ -110,7 +204,8 @@ export default function MetaPage() {
 
                 <p className="paragraph">
                     U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
-                    Međutim, kad se targetira koristeći više karakteristika, a ne isključivo lokacije, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima nije ekvivalentan ukupnom broju korisnika u Hrvatskoj.
+                    <br /><br />
+                    Međutim, ako želimo preciznije targetirati koristeći više karakteristika, a ne samo lokaciju, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima neće biti jednak ukupnom broju korisnika u Hrvatskoj.
 
                     <img
                         src="/ads_manager.png"
@@ -126,117 +221,168 @@ export default function MetaPage() {
 
             </div>
 
+            <div className="relative mb-20">
 
-            <div className="relative mb-6 mt-30">
+                <div className="sticky top-10">
 
-                <div className=" h-px border-t  border-gray-200" />
 
-                <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-0 tracking-tight">
-                    01
-                </span>
+                    <div className="relative mb-6 ">
 
-            </div>
+                        <div className=" h-px border-t  border-gray-200" />
 
-            <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 text-gray-700   ">
+                        <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-0 tracking-tight">
+                            01
+                        </span>
 
-                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7">
-                    Procjena korisnika prema jeziku
-                </p>
+                    </div>
 
-                <h2 className="relative z-10  m-0">Procjena publike prema jeziku: Meta Ads Manager</h2>
+                    <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 text-gray-700   ">
 
-                <p className="paragraph">
-                    Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek raspona minimalne i maksimalne vrijednosti</b>.
-                    Pri odabiru lokacije, Meta procjenjuje korisnike koji provode vrijeme u Hrvatskoj, kao što su ljudi koji tu žive ili su nedavno tu bili.
-                    Polazni kriterij za odabir jezika je MUP-ova lista top 10 stranih državljanstava, a radi šire usporedbe i točnije procjene uključeni su najkorišteniji jezici u Hrvatskoj poput hrvatskog i engleskog, zatim službeni jezici susjednih i drugih europskih zemalja te svjetski jezici poput kineskog, japanskog itd.
-                    Hrvatski i engleski su očekivano prepoznati kao najkorišteniji jezici u Hrvatskoj.
-                </p>
+                        <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7">
+                            Procjena korisnika prema jeziku
+                        </p>
 
-            </div>
+                        <h2 className="relative z-10  m-0">Procjena publike prema jeziku: Meta Ads Manager</h2>
 
-            <section className="w-full  ">
+                        <BubbleChart step={activeStep01} />
 
-                <BubbleChart />
+                        <div className="text-center text-sm text-gray-500 mt-2">
+                            Podaci su prikupljeni u veljači 2026.
+                        </div>
 
-                <div className="text-center text-sm text-gray-500 mt-2">
-                    Podaci su prikupljeni u veljači 2026.
+                    </div>
+
                 </div>
 
-            </section>
 
-            <div className="w-full mx-auto max-w-4xl min-w-0 px-5 mt-10 text-gray-700    ">
+                <div className="flex justify-end pr-20">
 
-                <section className="section mt-10">
-                    <p className="paragraph mt-10">
-                        Drugi jezici iz indijske jezične skupine, kao što su urdu, telugu, marathi, tamilski, gudžaratski, kannada, malajalamski, pandžabi, asamski i odija, isključeni su jer je procijenjena publika prema Meta Ads Manageru bila manja od 1000 korisnika (odnosno nema korisnika koji koriste te jezike).
-                        Isto tako, europski jezici poput irskog, malteškog, islandskog, norveškog, finskog i estonskog te drugi jezici poput korejskog, farskog, kazahstanskog, tadžičkog također nisu prikazani zbog vrlo male procijenjene publike (ispod 1000, odnosno nula).
-                        Crnogorski i romski nisu na listi jezika Ads Manager-a.
-                    </p>
+                    <div ref={flow01Ref} className="w-80 h-auto gap-70 mt-10 mb-250  flex flex-col">
 
-                </section>
+                        {flowTexts01.map((text, index) => {
+                            const isActive = index === activeStep01;
+                            return (
+                                <div
+                                    key={index}
+                                    data-step={index}
+                                    className={`step-01 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
+                          ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
+                                    dangerouslySetInnerHTML={{ __html: text }}
+                                ></div>
+                            );
+                        })}
 
-            </div>
-
-            <div className="relative mb-6 ">
-
-                <div className=" h-px border-t  border-gray-200" />
-
-                <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-[-10] tracking-tight">
-                    02
-                </span>
+                    </div>
+                </div>
 
             </div>
 
-            <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10 mb-10 text-gray-700   ">
+            <div className="relative mb-20">
 
-                <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7 z-10">
-                    Procjena korisnika prema prošloj lokaciji
-                </p>
+                <div className="sticky top-10">
 
-                <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji: Meta API</h2>
+                    <div className="relative mb-6 ">
 
-                <p className="paragraph">
-                    Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". Međutim, ti brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se. Nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. Možemo djelomično pretpostaviti koje zemlje objašnjavaju Hrvati (npr. prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja). Drugi problem u interpretaciji proizlazi iz činjenice da Meta ne nudi kategorije za sve zemlje (nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan).
-                </p>
+                        <div className=" h-px border-t  border-gray-200" />
 
-            </div>
+                        <span aria-hidden className="absolute top-0 -translate-x-1/10 right-0  text-[clamp(5rem,12vw,12rem)] font-black text-gray-100 leading-none whitespace-nowrap select-none pointer-events-none z-[-10] tracking-tight">
+                            02
+                        </span>
+
+                    </div>
+
+                    <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-10  text-gray-700   ">
+
+                        <p className=" text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-10 mb-7 z-10">
+                            Procjena korisnika prema prošloj lokaciji
+                        </p>
+
+                        <h2 className="relative z-10  m-0">Procjena publike prema prošloj lokaciji: Meta API</h2>
+
+                    </div>
+
+                    <section className="w-full min-w-0 max-w-6xl mx-auto h-auto pl-10 pr-5 mb-20  ">
+
+                        <ExpatBars />
+
+                    </section>
+
+                </div>
 
 
-            <section className="w-full min-w-0 max-w-6xl mx-auto h-auto pl-10 pr-5 mb-20 ">
+                <div className="flex justify-end pr-20">
 
-                <ExpatBars />
+                    <div ref={flow02Ref} className="w-80 h-auto gap-70 mt-10 mb-100  flex flex-col">
 
-            </section>
+                        {flowTexts02.map((text, index) => {
+                            const isActive = index === activeStep02;
+                            return (
+                                <div
+                                    key={index}
+                                    data-step={index}
+                                    className={`step-02 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
+                          ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
+                                    dangerouslySetInnerHTML={{ __html: text }}
+                                ></div>
+                            );
+                        })}
 
-
-            <div className="w-full bg-gray-50 flex flex-col justify-center py-10 my-30">
-
-                <div className="w-full max-w-4xl min-w-0 mx-auto px-5">
-
-                    <p className="text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-5 ">
-                        Usporedba službenih podataka s Meta procjenama
-                    </p>
-                    <h2 className="relative mt-5 ">Je li digitalni trag ogledalo službenih statistika?</h2>
-
-                    <p className="paragraph  ">
-                        Službene statistike obuhvaćaju dvije vrste evidencija: podatke Ministarstva unutarnjih poslova o izdanim dozvolama za boravak i rad stranih državljana, te podatke Državnog zavoda za statistiku o nacionalnim manjinama u Hrvatskoj. S druge strane, prikazane su dvije vrste Meta procjena. Pomoću Marketing API-ja procjenjena je publika, odnosno broj korisnika Meta aplikacija prema jeziku, pri čemu nije u potpunosti poznato kako algoritam klasificira ove korisnike. Jezik koji Meta pripisuje korisniku nije nužno samo jezik koji je odabrao u postavkama, nego može biti i inferiran iz interakcija s određenim sadržajem, primjerice dijeljenjem objava koje su klasificirane kao bosanski sadržaj. Uz to, prikazane su i Meta procjene za kategorije "iseljenika" (engl. Formerly Expats), koje prikazuju broj korisnika koji su nekada živjeli u određenoj zemlji, ali ni u ovom slučaju nije poznato koje točno kriterije Meta primjenjuje da bi nekoga svrstala u ove kategorije.
-                    </p>
+                    </div>
                 </div>
             </div>
 
-            <div className="w-full min-w-0 max-w-6xl mx-auto h-auto pl-10 pr-5 mt-35">
 
-                <MetaChart />
+            <div className="relative mb-20">
 
-            </div>
+                <div className="sticky top-10">
 
-            <div className="w-full max-w-4xl min-w-0 px-5 mt-40 text-gray-700  mx-auto  ">
+                    <div className="w-full mt-20 mb-5 pt-5 bg-gray-50 flex flex-col justify-center  ">
 
-                <p className="paragraph pb-10 ">
-                    Posebno je zanimljiva usporedba MUP-ovih podataka s Meta procjenama prema prošloj lokaciji (engl. Formerly Expats), jer su vrijednosti relativno blizu, čak i u slučaju Srbije koja je susjedna zemlja. Generalno, MUP-ova procjena je viša od Meta procjene prema prošloj lokaciji, što znači da Meta nije identificirala više migranata nego što ih evidencija bilježi. Također, treba uzeti u obzir vremensku razliku u mjerenju: Meta podaci prikupljeni su u veljači 2026. godine, a MUP-ovi u prosincu 2025. Dodatno ograničenje predstavlja nedostupnost pretrage za Bosnu i Hercegovinu, Makedoniju, Kosovo, Egipat i Uzbekistan.
-                    <br /><br />
-                    Ako usporedimo službene podatke s Meta procjenama prema jeziku, vidljive su regionalne razlike koje zahtijevaju pobližu analizu.
-                </p>
+                        <div className="w-full max-w-4xl min-w-0 mx-auto px-5">
+
+                            <p className="text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-5 ">
+                                Usporedba službenih podataka s Meta procjenama
+                            </p>
+                            <h2 className="relative mt-5 !mb-10">Je li digitalni trag ogledalo službenih statistika?</h2>
+
+                        </div>
+                    </div>
+
+                    <div className="w-full min-w-0 max-w-6xl mx-auto h-auto pl-10 pr-5 ">
+
+                        <MetaChart />
+
+                    </div>
+
+
+                </div >
+
+                <div className="flex justify-end pr-20">
+
+                    <div ref={flow03Ref} className="w-80 h-auto gap-70 mt-10 mb-250  flex flex-col">
+
+                        {flowTexts03.map((text, index) => {
+                            const isActive = index === activeStep03;
+                            return (
+                                <div
+                                    key={index}
+                                    data-step={index}
+                                    className={`step-03 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
+                          ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
+                                    dangerouslySetInnerHTML={{ __html: text }}
+                                ></div>
+                            );
+                        })}
+                    </div>
+                </div >
+
+            </div >
+
+
+
+
+
+            <div className="w-full max-w-4xl min-w-0 px-5 mt-20 text-gray-700  mx-auto  ">
 
                 <Rezultati />
 
@@ -412,12 +558,12 @@ export default function MetaPage() {
                     <h2 className="relative mt-5 ">Digitalni trag daje širu sliku i može signalizirati promjene</h2>
 
                     <p className="paragraph  ">
-                        Možemo li dakle koristiti Meta procjene za provjeru službenih podataka? Odgovor je — donekle, ali ne u potpunosti. Ova analiza pokazuje da <b>Meta podaci mogu biti koristan dopunski izvor</b>, ali ne mogu zamijeniti službene evidencije. 
-                        <br/><br/>
-                        Razlike su očekivane i nastaju jer Meta i službene institucije mjere različite stvari. Također, postoje i vremenske razlike u mjerenju. Međutim, procjene prema prošloj lokaciji za dostupne zemlje prate podatke službene evidencije, što potvrđuje MUP-ove podatke i sugerira da digitalni trag može odražavati stvarne demografske obrasce. Posebno je značajna procjena broja govornika bengalskog koja potvrđuje MUP-ove podatke. Pretpostavlja se da MUP i Meta pokazuju približno iste podatke pod uvjetom da skupina dominantno koristi Meta platformu i pretežno koristi svoj materinski jezik na Meta platformama, te nema prekograničnog kretanja. 
-                        <br/><br/>
-                        Odstupanja kod balkanskih i azijskih skupina nisu nužno greška već odraz <b>različite metodologije, geografske blizine, jezičnih karakteristika i različitih ponašanja, kao što su interakcije sa različitim jezičnim sadržajem, putovanja i izbor platformi</b>. Meta u svoju procjenu uključuje samo svoje korisnike, bez obzira jesu li to prekogranični putnici, sezonski radnici ili turisti, dok MUP pokazuje broj osoba prema državljanstvu s dozvolom za rad i boravak unutar države. 
-                        <br/><br/>Potencijalna objašnjenja trebalo bi dodatno ispitati, primjerice anketiranjem o korištenju društvenih mreža i jezičnim postavkama. Možda je bolje pitanje što nam mogu reći promjene u procjenama i mogu li nas upozoriti kada se nešto mijenja, prije nego što službena statistika to potvrdi.
+                        Možemo li dakle koristiti Meta procjene za provjeru službenih podataka? Odgovor je — donekle, ali ne u potpunosti. Ova analiza pokazuje da <b>Meta podaci mogu biti koristan dopunski izvor</b>, ali ne mogu zamijeniti službene evidencije.
+                        <br /><br />
+                        Razlike su očekivane i nastaju jer Meta i službene institucije mjere različite stvari. Također, postoje i vremenske razlike u mjerenju. Međutim, procjene prema prošloj lokaciji (engl. expats) za dostupne zemlje prate podatke službene evidencije, što potvrđuje MUP-ove podatke i sugerira da digitalni trag može odražavati stvarne demografske obrasce. Posebno je značajna procjena broja govornika bengalskog koja potvrđuje MUP-ove podatke. Pretpostavlja se da MUP i Meta pokazuju približno iste podatke pod uvjetom da skupina dominantno koristi Meta platformu i pretežno koristi svoj materinski jezik na Meta platformama, te nema prekograničnog kretanja.
+                        <br /><br />
+                        Odstupanja kod balkanskih i azijskih skupina nisu nužno greška već odraz <b>različite metodologije, geografske blizine, jezičnih karakteristika i različitih ponašanja, kao što su interakcije sa različitim jezičnim sadržajem, putovanja i izbor platformi</b>. Meta u svoju procjenu uključuje samo svoje korisnike, bez obzira jesu li to prekogranični putnici, sezonski radnici ili turisti, dok MUP pokazuje broj osoba prema državljanstvu s dozvolom za rad i boravak unutar države.
+                        <br /><br />Potencijalna objašnjenja trebalo bi dodatno ispitati, primjerice anketiranjem o korištenju društvenih mreža i jezičnim postavkama. Možda je bolje pitanje što nam mogu reći promjene u procjenama i mogu li nas upozoriti kada se nešto mijenja, prije nego što službena statistika to potvrdi.
 
                     </p>
                 </div>
@@ -443,8 +589,7 @@ export default function MetaPage() {
                         <a href="https://www.researchgate.net/figure/Part-of-a-screenshot-of-Facebooks-Adverts-Manager-illustrating-some-of-the-targeting_fig1_324069454"
                             target="_blank" rel="noopener noreferrer"
                             className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
-                            Mejova, Weber i Fernandez-Luque (2018). Online Health Monitoring
-                            using Facebook Advertisement Audience Estimates in the United States: Evaluation Study
+                            Mejova, Weber i Fernandez-Luque (2018). Online Health Monitoring using Facebook Advertisement Audience Estimates in the United States: Evaluation Study
                         </a>
                     </li>
 
@@ -462,6 +607,7 @@ export default function MetaPage() {
                             Meta: About Estimated Audience Size
                         </a>
                     </li>
+
                     <li>
                         <a href="https://transparency.meta.com/reports/government-data-requests/country/HR/"
                             target="_blank" rel="noopener noreferrer"
@@ -469,7 +615,23 @@ export default function MetaPage() {
                             Meta: Government Requests for User Data Croatia
                         </a>
                     </li>
+                    <li>
+                        <a href="https://mup.gov.hr/gradjani-281562/moji-dokumenti-281563/stranci-333/statistika-169019/169019"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            MUP: Statistički podaci izdanih dozvola za boravak i rad od 1. siječnja do 31. prosinca 2025. godine
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://mup.gov.hr/pristup-informacijama-16/statistika-228/statistika-trazitelji-medjunarodne-zastite/283234"
+                            target="_blank" rel="noopener noreferrer"
+                            className="text-[0.8rem] text-[#c51b8a]  decoration-pink-300">
+                            MUP: Statistika: Tražitelji međunarodne zaštite
+                        </a>
+                    </li>
                 </ul>
+
+
 
 
             </div >

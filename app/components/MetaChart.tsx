@@ -8,7 +8,7 @@ export default function MetaChart() {
   const [data, setData] = useState<any[] | null>(null);
   const { ref, inView } = useInView({
     triggerOnce: true,       // fetch data only once
-    rootMargin: '200px',     // fetch slightly before scrolling into view
+    rootMargin: '100px',     // fetch slightly before scrolling into view
   });
 
   useEffect(() => {
