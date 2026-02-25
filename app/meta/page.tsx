@@ -255,7 +255,7 @@ export default function MetaPage() {
                 </div>
 
 
-                <div className="flex justify-end pr-20">
+                <div className="flex justify-center sm:justify-end  sm:pr-20">
 
                     <div ref={flow01Ref} className="w-80 h-auto gap-70 mt-10 mb-250  flex flex-col">
 
@@ -310,7 +310,7 @@ export default function MetaPage() {
                 </div>
 
 
-                <div className="flex justify-end pr-20">
+                <div className="flex justify-center sm:justify-end  sm:pr-20">
 
                     <div ref={flow02Ref} className="w-80 h-auto gap-70 mt-10 mb-100  flex flex-col">
 
@@ -336,7 +336,7 @@ export default function MetaPage() {
 
                 <div className="sticky top-10">
 
-                    <div className="w-full mt-20 mb-5 pt-5 bg-gray-50 flex flex-col justify-center  ">
+                    <div className="w-full mt-20 lg:mb-5 pt-5 bg-gray-50 flex flex-col justify-center  ">
 
                         <div className="w-full max-w-4xl min-w-0 mx-auto px-5">
 
@@ -354,10 +354,9 @@ export default function MetaPage() {
 
                     </div>
 
-
                 </div >
 
-                <div className="flex justify-end pr-20">
+                <div className="flex justify-center sm:justify-end  sm:pr-20">
 
                     <div ref={flow03Ref} className="w-80 h-auto gap-70 mt-10 mb-250  flex flex-col">
 

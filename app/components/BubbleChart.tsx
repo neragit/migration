@@ -276,6 +276,31 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
       .style('pointer-events', 'none')
       .style('font-weight', '600');
 
+
+    const isTouchDevice =
+      typeof window !== "undefined" &&
+      ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+    const zoom = d3.zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 2])
+      .filter((event) => {
+        // ❌ Disable ALL touch interactions completely
+        if (event.type.startsWith("touch")) return false;
+
+        // ❌ Disable wheel zoom too (optional, since you use buttons)
+        if (event.type === "wheel") return false;
+
+        // ❌ Disable drag entirely
+        if (event.type === "mousedown") return false;
+
+        return false;
+      })
+      .on("zoom", (event) => {
+        bubbleGroup.attr("transform", event.transform.toString());
+      });
+
+
+      /*
     const zoom = d3.zoom<SVGSVGElement, unknown>()
 
       .scaleExtent([1, 2])
@@ -289,7 +314,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
         // Apply transform to bubble group
         bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
 
-        /*
+     
         // Legend opacity fades out if zoomed in
         const legendOpacity = k > 1 ? 0 : 1;
         svg.select<SVGGElement>(".legend")
@@ -297,7 +322,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
           .duration(300)
           .ease(d3.easeCubic)
           .style("opacity", legendOpacity);
-          */
+          
 
         bubbleGroup.attr('cursor', 'grabbing');
         svg.attr('cursor', 'grabbing');
@@ -309,6 +334,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
         bubbleGroup.attr('cursor', 'default');
         svg.attr('cursor', 'grab'); // reset after drag
       });
+      */
 
 
     /*
