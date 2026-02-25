@@ -24,11 +24,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="hr">
+
       <head>
+
         <Script
-          src="https://t.contentsquare.net/uxa/28aa38d58a541.js" // Contentsquare / Hotjar script
-          strategy="beforeInteractive" // runs in head before page scripts
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-DHXC4LR9DD" // GA4 library
+          strategy="afterInteractive"
         />
+
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('consent', 'default', {
+          'analytics_storage': 'denied',
+          'ad_storage': 'denied'
+        });
+        gtag('js', new Date());
+        gtag('config', 'G-DHXC4LR9DD', { anonymize_ip: true }); 
+      `}
+        </Script>
       </head>
       <body className={`${mukta.variable} antialiased`}>
 
@@ -59,6 +75,7 @@ export default function RootLayout({
         {children}
 
         <CookieConsent />
+        <Analytics />
 
       </body>
     </html>

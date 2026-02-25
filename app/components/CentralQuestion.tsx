@@ -40,7 +40,7 @@ export default function CentralQuestion() {
         }
       `}</style>
 
-            <div className="wrap">
+            <div className="wrap py-30">
                 <div className="grid">
 
                     <div
