@@ -86,9 +86,9 @@ export default function MetaPage() {
         <br/><br/>Prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja.`,
         `Osim hrvatskih državljana i stranih radnika, Meta broji i druge osobe na teritoriju Hrvatske, npr. državljane drugih zemalja EU, putnike, turiste, studente na razmjeni itd. 
         <br/><br/>U 2025. godini, međunarodna zaštita odobrena je ukupno 25 osoba. Od toga je 24 osoba dobilo azil: 10 dječaka 0-13 godina, 2 mladića 14-17 godina, 2 odrasla muškarca 18-34 godine i 3 muškarca 35-64 godine, 4 djevojčice 0-13 godina i 3 žene 18-34 godine. Jedan muškarac u dobi 14-17 godina dobio je supsidijarnu zaštitu.`,
-        `Ukupno je tijekom 2025. godine podneseno 14.928 zahtjeva za međunarodnu zaštitu. Najviše je zahtjeva državljana Ruske Federacije (3.227), slijede Turska (2.597), Afganistan (1.365), Egipat (1.364) i Sirija (1.253). 
+        `Ukupno je tijekom 2025. godine podneseno 14 928 zahtjeva za međunarodnu zaštitu. Najviše je zahtjeva državljana Ruske Federacije (3 227), slijede Turska (2 597), Afganistan (1 365), Egipat (1 364) i Sirija (1 253). 
         <br/><br/>Među ostalim zemljama podrijetla ističu se Bangladeš (954), Pakistan (670), Palestina (527), Kina (485), Maroko (473) i Irak (282). Ostale zemlje s manjim brojem podnositelja zahtjeva uključuju Indiju (250), Nepal (210), Ganu (147), Iran (118), Šri Lanku (82), Sijeru Leone (78), Azerbajdžan (75), Jordan (69) i Alžir (53), dok su neke zemlje zastupljene s tek nekoliko osoba, poput Mjanmara, Ekvadora, Gruzije, Južnog Sudana, Turkmenistana, Gabona, Norveške, Kosova, Crne Gore, Dominikanske Republike i Nigera (po 1 osoba).
-        <br/><br/>Ukrajinci nisu na listi tražitelja azila jer većina ima pravo na privremenu zaštitu unutar EU, što im omogućava boravak bez pokretanja standardnog azilnog postupka.`
+        <br/><br/>Ukrajinci nisu na listi tražitelja azila jer imaju pravo na privremenu zaštitu unutar EU, što im omogućava boravak bez pokretanja standardnog azilnog postupka.`
     ];
 
     const flowTexts03 = [
