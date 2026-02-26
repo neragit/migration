@@ -1,6 +1,7 @@
 "use client";
 
 import gsap from "gsap";
+import { useEffect, useState } from "react";
 
 const NEWS_IMAGES = Array.from({ length: 24 }, (_, i) => `/news-${i + 1}.png`);
 
@@ -13,7 +14,7 @@ const SCATTERED = [
   { left: "75%", top: "60%", rotation: -7, scale: 0.3 },
   { left: "18%", top: "62%", rotation: -5, scale: 0.3 },
   { left: "80%", top: "20%", rotation: 6, scale: 0.3 },
-  
+
   { left: "55%", top: "15%", rotation: 5, scale: 0.3 },
   { left: "28%", top: "13%", rotation: -3, scale: 0.3 },
 
@@ -27,14 +28,25 @@ const SCATTERED = [
   { left: "62%", top: "30%", rotation: 7, scale: 0.3 },
   { left: "25%", top: "15%", rotation: 3, scale: 0.3 },
   { left: "45%", top: "20%", rotation: -4, scale: 0.3 },
-{ left: "5%", top: "18%", rotation: -8, scale: 0.3 },
-  
+  { left: "5%", top: "18%", rotation: -8, scale: 0.3 },
+
   { left: "15%", top: "50%", rotation: -9, scale: 0.3 },
   { left: "40%", top: "50%", rotation: 5, scale: 0.3 },
   { left: "60%", top: "55%", rotation: -6, scale: 0.3 },
 
-
 ];
+
+const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth < 768); // Tailwind md breakpoint
+  };
+
+  checkMobile();
+  window.addEventListener("resize", checkMobile);
+  return () => window.removeEventListener("resize", checkMobile);
+}, []);
 
 export default function NewsScatter() {
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -63,6 +75,8 @@ export default function NewsScatter() {
         <div className="absolute inset-0">
           {NEWS_IMAGES.map((src, i) => {
             const s = SCATTERED[i];
+            const initialScale = isMobile ? 0.5 : s.scale
+            const isRightSide = parseFloat(s.left) > 50
             return (
               <div
                 key={i}
@@ -70,8 +84,8 @@ export default function NewsScatter() {
                 style={{
                   left: s.left,
                   top: s.top,
-                  transform: `rotate(${s.rotation}deg) scale(${s.scale})`,
-                  transformOrigin: "top left",
+                  transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
+                  transformOrigin: isMobile && isRightSide ? "top center" : "top left",
                   willChange: "transform",
                 }}
                 onMouseEnter={handleMouseEnter}

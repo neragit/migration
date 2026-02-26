@@ -16,7 +16,7 @@ export default function PrivacyPage() {
       </p>
 
       <p className="mb-6">
-        Vaša privatnost nam je važna. Ova stranica koristi podatke o posjetiteljima kako bi poboljšala iskustvo pregledavanja i pružila korisne informacije.
+        Kako bi poboljšali iskustvo pregledavanja, uz Vaš pristanak prikupljamo podatke o korištenju ove stranice.
       </p>
 
       <h3 className="text-xl font-semibold mt-8 mb-4">1. Koje podatke prikupljamo</h3>
