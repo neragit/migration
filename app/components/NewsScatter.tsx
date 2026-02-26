@@ -88,7 +88,7 @@ export default function NewsScatter() {
                   left: s.left,
                   top: s.top,
                   transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
-                  transformOrigin: isMobile && isRightSide ? "top center" : "top left",
+                  transformOrigin: isMobile && isRightSide ? "top right" : "top left",
                   willChange: "transform",
                 }}
                 onMouseEnter={handleMouseEnter}
