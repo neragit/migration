@@ -78,7 +78,7 @@ export default function NewsScatter() {
         <div className="absolute inset-0">
           {NEWS_IMAGES.map((src, i) => {
             const s = SCATTERED[i];
-            const initialScale = isMobile ? 0.5 : s.scale
+            const initialScale = isMobile ? 0.4 : s.scale
             const isRightSide = parseFloat(s.left) > 50
             return (
               <div
