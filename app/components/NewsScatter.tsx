@@ -9,7 +9,7 @@ const SCATTERED = [
   { left: "30%", top: "70%", rotation: 7, scale: 0.3 },
   { left: "50%", top: "55%", rotation: 4, scale: 0.3 },
   { left: "70%", top: "30%", rotation: 8, scale: 0.3 },
-  { left: "75%", top: "80%", rotation: -8, scale: 0.3 },
+  { left: "75%", top: "70%", rotation: -8, scale: 0.3 },
   { left: "40%", top: "65%", rotation: 4, scale: 0.3 },
   { left: "75%", top: "60%", rotation: -7, scale: 0.3 },
   { left: "18%", top: "62%", rotation: -5, scale: 0.3 },
