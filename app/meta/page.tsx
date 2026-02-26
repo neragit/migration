@@ -80,11 +80,12 @@ export default function MetaPage() {
     ];
 
     const flowTexts02 = [
-        `Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". <br/><br/>Nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. <br/><br/>Međutim, ti brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se. `,
-        `Možemo djelomično pretpostaviti koje zemlje objašnjavaju Hrvati.<br/><br/>Prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja.`,
-        `Drugi problem u interpretaciji proizlazi iz činjenice da Meta ne nudi kategorije za sve zemlje.<br/><br/>Npr. nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan...`,
+        `Meta API podaci prikazuju procjene broja osoba koje su živjele u određenoj zemlji, odnosno na engleskom "Lived in ... (Formerly Expats)". 
+        <br/><br/>Međutim, Meta ne nudi kategorije za sve zemlje. Npr. nema dostupne pretrage za npr. Bosnu i Hercegovinu, Makedoniju, Albaniju, Ukrajinu, Egipat, Tursku, Uzbekistan...`,
+        `Također, nije poznato kako točno Meta razlikuje turista od iseljenika, npr. koliko dugo osoba treba boraviti u inozemstvu. <br/><br/>Ovi brojevi mogu uključivati i Hrvate koji su živjeli u inozemstvu i vratili se.
+        <br/><br/>Prema Državnom zavodu za statistiku samo u 2024. je zabilježeno da je najviše Hrvata stiglo iz Njemačke (6336), Bosne i Hercegovine (1625), Austrije (1116) i Švicarske (611) te u manjoj mjeri uglavnom iz drugih europskih zemalja.`,
         `Osim hrvatskih državljana i stranih radnika, Meta broji i druge osobe na teritoriju Hrvatske, npr. državljane drugih zemalja EU, putnike, turiste, studente na razmjeni itd. 
-        <br/><br/>U 2025. godini, međunarodna zaštita odobrena je ukupno 25 osoba. Od toga je 24 osobe dobilo azil: 10 dječaka 0-13 godina, 2 mladića 14-17 godina, 2 odrasla muškarca 18-34 godine i 3 muškarca 35-64 godine, 4 djevojčice 0-13 godina i 3 žene 18-34 godine. Jedan muškarac u dobi 14-17 godina dobio je supsidijarnu zaštitu.`,
+        <br/><br/>U 2025. godini, međunarodna zaštita odobrena je ukupno 25 osoba. Od toga je 24 osoba dobilo azil: 10 dječaka 0-13 godina, 2 mladića 14-17 godina, 2 odrasla muškarca 18-34 godine i 3 muškarca 35-64 godine, 4 djevojčice 0-13 godina i 3 žene 18-34 godine. Jedan muškarac u dobi 14-17 godina dobio je supsidijarnu zaštitu.`,
         `Ukupno je tijekom 2025. godine podneseno 14.928 zahtjeva za međunarodnu zaštitu. Najviše je zahtjeva državljana Ruske Federacije (3.227), slijede Turska (2.597), Afganistan (1.365), Egipat (1.364) i Sirija (1.253). 
         <br/><br/>Među ostalim zemljama podrijetla ističu se Bangladeš (954), Pakistan (670), Palestina (527), Kina (485), Maroko (473) i Irak (282). Ostale zemlje s manjim brojem podnositelja zahtjeva uključuju Indiju (250), Nepal (210), Ganu (147), Iran (118), Šri Lanku (82), Sijeru Leone (78), Azerbajdžan (75), Jordan (69) i Alžir (53), dok su neke zemlje zastupljene s tek nekoliko osoba, poput Mjanmara, Ekvadora, Gruzije, Južnog Sudana, Turkmenistana, Gabona, Norveške, Kosova, Crne Gore, Dominikanske Republike i Nigera (po 1 osoba).`
     ];
@@ -185,7 +186,6 @@ export default function MetaPage() {
                     height="500"
                     className={`max-w-full lg:max-w-300 mx-auto h-auto transition-opacity  duration-1000 ease-in
                         ${vennVisible ? "opacity-100 " : "opacity-0 "}`}
-
                 />
 
             </section>

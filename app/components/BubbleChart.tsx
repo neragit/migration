@@ -5,6 +5,8 @@ import useResizeObserver from "../hooks/useResizeObs";
 import * as d3 from 'd3';
 import { Plus, Minus } from "lucide-react";
 
+
+
 interface DataItem {
   lang: string;
   avg: number;
@@ -130,6 +132,8 @@ interface BubbleChartProps {
 
 const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
+  const [isInView, setIsInView] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
 
@@ -141,8 +145,6 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
   const [bubbles, setBubbles] = useState<DataItem[]>(() =>
     data.map(d => ({ ...d, opacity: 1 }))
   );
-
-
 
   const zoomIn = () => {
     if (!svgRef.current || !zoomRef.current) return;
@@ -164,6 +166,30 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
   const circlesRef = useRef<d3.Selection<SVGCircleElement, DataItem, SVGGElement, unknown> | null>(null);
 
+
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) {
+      return;
+    }
+
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+
+        if (entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
 
 
   useEffect(() => {
@@ -202,37 +228,27 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
     for (let i = 0; i < 300; i++) simulation.tick();
 
-    svg.attr('cursor', 'grab');
+    //svg.attr('cursor', 'grab');
 
     const bubbleGroup = svg.append('g')
       .attr('cursor', 'default');
 
-    const circleSelection = bubbleGroup.selectAll<SVGCircleElement, DataItem>('circle')
-      .data(nodes)
-      .join('circle')  // make sure circles exist
-      .attr('r', d => d.r!)
-      .attr('cx', d => d.x!)
-      .attr('cy', d => d.y!)
-      .attr('fill', d => d.color!)
-      .style('opacity', d => d.opacity ?? 1);
 
 
-
-    circlesRef.current = circleSelection;
-
-    bubbleGroup.selectAll('circle')
+    const circleSelection = bubbleGroup
+      .selectAll<SVGCircleElement, DataItem>('circle')
       .data(nodes)
       .join('circle')
-      .attr('r', d => d.r!)
+      .attr('r', 0)
       .attr('cx', d => d.x!)
       .attr('cy', d => d.y!)
       .attr('fill', d => d.color!)
-      .style('opacity', d => d.opacity ?? 1)
+      .style('opacity', 0)
       .on('mouseover', (event, d) => {
         tooltip
           .html(`<strong>${d.lang}</strong><br/>
-             Procjena između ${d.min.toLocaleString("fr-FR")} i ${d.max.toLocaleString("fr-FR")}<br/>
-             Područje: ${d.country}`)
+         Procjena između ${d.min.toLocaleString("fr-FR")} i ${d.max.toLocaleString("fr-FR")}<br/>
+         Područje: ${d.country}`)
           .style('opacity', 0.9);
       })
       .on('mousemove', (event) => {
@@ -240,41 +256,56 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
         if (!tooltipEl) return;
 
         const offset = 10;
-        const tooltipWidth = tooltipEl.offsetWidth;
-        const tooltipHeight = tooltipEl.offsetHeight;
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-
         let x = event.clientX + offset;
         let y = event.clientY + offset;
 
-        if (x + tooltipWidth > screenWidth) x = event.clientX - tooltipWidth - offset;
-        if (y + tooltipHeight > screenHeight) y = event.clientY - tooltipHeight - offset;
+        if (x + tooltipEl.offsetWidth > window.innerWidth)
+          x = event.clientX - tooltipEl.offsetWidth - offset;
 
-        tooltip
-          .style('left', `${x}px`)
-          .style('top', `${y}px`);
+        if (y + tooltipEl.offsetHeight > window.innerHeight)
+          y = event.clientY - tooltipEl.offsetHeight - offset;
+
+        tooltip.style('left', `${x}px`).style('top', `${y}px`);
       })
-
       .on('mouseout', () => {
-        tooltip
-          .style('opacity', 0)
-
+        tooltip.style('opacity', 0);
       });
 
+    circlesRef.current = circleSelection;
+
+    if (isInView) {
+
+      circleSelection
+        .transition()
+        .delay((_, i) => i * 30)
+        .duration(1000)
+        .ease(d3.easeCubicOut)
+        .attr("r", d => d.r!)
+        .style("opacity", 1);
+    }
 
 
-    bubbleGroup.selectAll('text')
+
+    const textSelection = bubbleGroup
+      .selectAll<SVGTextElement, DataItem>('text')
       .data(nodes)
       .join('text')
       .attr('x', d => d.x!)
       .attr('y', d => d.y! + 4)
       .text(d => d.lang)
-      .attr('font-size', d => Math.min(12, d.r! / 3))
+      .attr('font-size', d => Math.min(12, d.r! / 3)) // final font size
       .attr('fill', 'white')
       .attr('text-anchor', 'middle')
+      .style('opacity', 0)        // start invisible
       .style('pointer-events', 'none')
       .style('font-weight', '600');
+
+    // Animate text in with staggered delay
+    textSelection
+      .transition()
+      .delay(1000)    // stagger like circles
+      .duration(1500)
+      .style('opacity', 1);
 
 
     const isTouchDevice =
@@ -300,41 +331,41 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
       });
 
 
-      /*
-    const zoom = d3.zoom<SVGSVGElement, unknown>()
+    /*
+  const zoom = d3.zoom<SVGSVGElement, unknown>()
 
-      .scaleExtent([1, 2])
-      .filter((event) => {
+    .scaleExtent([1, 2])
+    .filter((event) => {
 
-        return event.type === 'mousedown' || event.type === 'touchstart';
-      })
-      .on('zoom', (event) => {
-        const { x, y, k } = event.transform;
+      return event.type === 'mousedown' || event.type === 'touchstart';
+    })
+    .on('zoom', (event) => {
+      const { x, y, k } = event.transform;
 
-        // Apply transform to bubble group
-        bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
+      // Apply transform to bubble group
+      bubbleGroup.attr('transform', `translate(${x},${y}) scale(${k})`);
 
-     
-        // Legend opacity fades out if zoomed in
-        const legendOpacity = k > 1 ? 0 : 1;
-        svg.select<SVGGElement>(".legend")
-          .transition()
-          .duration(300)
-          .ease(d3.easeCubic)
-          .style("opacity", legendOpacity);
-          
+   
+      // Legend opacity fades out if zoomed in
+      const legendOpacity = k > 1 ? 0 : 1;
+      svg.select<SVGGElement>(".legend")
+        .transition()
+        .duration(300)
+        .ease(d3.easeCubic)
+        .style("opacity", legendOpacity);
+        
 
-        bubbleGroup.attr('cursor', 'grabbing');
-        svg.attr('cursor', 'grabbing');
-        tooltip
-          .style('opacity', 0)
-      })
+      bubbleGroup.attr('cursor', 'grabbing');
+      svg.attr('cursor', 'grabbing');
+      tooltip
+        .style('opacity', 0)
+    })
 
-      .on('end', () => {
-        bubbleGroup.attr('cursor', 'default');
-        svg.attr('cursor', 'grab'); // reset after drag
-      });
-      */
+    .on('end', () => {
+      bubbleGroup.attr('cursor', 'default');
+      svg.attr('cursor', 'grab'); // reset after drag
+    });
+    */
 
 
     /*
@@ -375,7 +406,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
     zoomRef.current = zoom;
     svg.call(zoom as any);
 
-  }, []);
+  }, [isInView]);
 
   useEffect(() => {
     const mup = ['Bosanski', 'Nepalski', 'Srpski', 'Filipinski', 'Cebuano', 'Hindski', 'Makedonski', 'Albanski', 'Uzbečki', 'Arapski', 'Bengalski'];
@@ -393,8 +424,10 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
         return { ...b, opacity: 1 };
       })
     );
-  }, [step]);
 
+
+
+  }, [step]);
 
 
   useEffect(() => {
@@ -405,6 +438,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
       .transition()
       .duration(300)
       .style('opacity', d => d.opacity ?? 1);
+      
   }, [bubbles]);
 
 
@@ -425,7 +459,7 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div ref={containerRef} style={{ position: "relative" }}>
         <svg
           ref={svgRef}
           width="100%"
