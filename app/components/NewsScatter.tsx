@@ -155,7 +155,7 @@ export default function NewsScatter() {
             {/* Question 1 — Awareness */}
             <div className="card">
               <div className="card-inner">
-                <p className="question text-center">Koliko ste u toku s ovom temom?</p>
+                <p className="question text-center">Koliko ste upoznati s ovom temom?</p>
                 <div style={{ marginTop: 16, display: "flex", flexDirection: "column", gap: 12 }}>
                   {[
                     "Ne zanima me uopće",
