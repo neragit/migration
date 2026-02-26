@@ -205,7 +205,8 @@ export default function MetaPage() {
                 <p className="paragraph">
                     U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
                     <br /><br />
-                    Međutim, ako želimo preciznije targetirati koristeći više karakteristika, a ne samo lokaciju, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima neće biti jednak ukupnom broju korisnika u Hrvatskoj.
+                    Međutim, ako želimo preciznije targetirati koristeći više karakteristika, a ne samo lokaciju, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. 
+                    <br /><br />Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima neće biti jednak ukupnom broju korisnika u Hrvatskoj.
 
                     <img
                         src="/ads_manager.png"

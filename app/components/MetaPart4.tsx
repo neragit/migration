@@ -270,8 +270,7 @@ export default function MetaPart4() {
             <div className="card-inner">
               <span className="card-label">Jezik i lokacija</span>
               <p className="card-text">
-                Pri procjeni veličine potencijalne publike može se krenuti od
-                jezika korisnika, pri čemu se klasifikacija provodi
+                Pri procjeni veličine potencijalne publike može se krenuti od lokacije ili jezika korisnika, pri čemu se klasifikacija provodi
                 <b> prvenstveno na temelju postavki jezika korisničkog sučelja (primarni signal), ali i na temelju dodatnih pokazatelja, poput jezika kojim korisnik najčešće komunicira ili jezika sadržaja s
                   kojim je obično u interakciji (sekundarni signali). </b>To ne znači da ta procjena označava
                 nacionalnost, etničku pripadnost, rasu ili porijeklo korisnika.
