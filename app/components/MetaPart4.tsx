@@ -1,17 +1,42 @@
 "use client";
 
+import { useState } from "react";
+
 export default function MetaPart4() {
+
+  type AnswerKey = "usesMeta" | "nativeLanguage" | "metaAccuracy";
+  type AnswerValue = "da" | "ne" | null;
+
+  const [answers, setAnswers] = useState<{
+    usesMeta: AnswerValue;
+    nativeLanguage: AnswerValue;
+    metaAccuracy: AnswerValue;
+    sliderValue?: number;
+  }>({
+    usesMeta: null,
+    nativeLanguage: null,
+    metaAccuracy: null,
+    sliderValue: 0,
+  });
+
+  const handleAnswer = (key: AnswerKey, value: AnswerValue) => {
+    setAnswers((prev) => ({ ...prev, [key]: value }));
+  };
+
+
+
+
   return (
     <>
       <style>{`
-        .p4-wrap {
+        .wrap {
           padding-top: 150px;
           width: 100%;
           position: relative;
         }
 
 
-        .p4-sticky-bg {
+        .sticky-bg {
           position: sticky;
           top: 0;
           width: 100%;
@@ -20,7 +45,7 @@ export default function MetaPart4() {
           overflow: hidden;
         }
 
-        .p4-sticky-bg img {
+        .sticky-bg img {
           width: 100%;
           height: 100%;
           object-fit: cover;
@@ -29,7 +54,7 @@ export default function MetaPart4() {
         }
 
 
-        .p4-sticky-bg::after {
+        .sticky-bg::after {
           content: '';
           position: absolute;
           inset: 0;
@@ -38,7 +63,7 @@ export default function MetaPart4() {
         }
 
 
-        .p4-scroll {
+        .scroll {
           position: relative;
           z-index: 1;
           margin-top: -100vh;
@@ -51,7 +76,7 @@ export default function MetaPart4() {
         }
 
   
-        .p4-card {
+        .card {
           pointer-events: auto;
           width: 100%;
           max-width: 680px;
@@ -60,7 +85,7 @@ export default function MetaPart4() {
 
         }
 
-        .p4-card-inner {
+        .card-inner {
           background: rgba(255, 255, 255, 0.8);
           backdrop-filter: blur(18px) saturate(1.4);
           -webkit-backdrop-filter: blur(18px) saturate(1.4);
@@ -69,7 +94,7 @@ export default function MetaPart4() {
 
         }
 
-        .p4-card-label {
+        .card-label {
           display: block;
           font-size: 1rem;
           letter-spacing: 0.2em;
@@ -80,7 +105,7 @@ export default function MetaPart4() {
           opacity: 0.85;
         }
 
-        .p4-card-text {
+        .card-text {
           font-size: clamp(0.92rem, 1.3vw, 1.02rem);
           line-height: 1.9;
           color: #2a2a2a;
@@ -88,13 +113,13 @@ export default function MetaPart4() {
           text-align: justify;
         }
 
-        .p4-card-text b {
+        .card-text b {
           font-weight: 600;
           color: #111;
         }
 
         /* ── IMAGE ROW CARD ── */
-        .p4-img-row {
+        .img-row {
           pointer-events: auto;
           width: 100%;
           max-width: 780px;
@@ -103,13 +128,13 @@ export default function MetaPart4() {
           box-sizing: border-box;
         }
 
-        .p4-img-row-inner {
+        .img-row-inner {
           display: flex;
           gap: 16px;
           align-items: stretch;
         }
 
-        .p4-img-row-inner img {
+        .img-row-inner img {
           flex: 1;
           width: 0;
           height: auto;
@@ -120,31 +145,61 @@ export default function MetaPart4() {
         }
 
         /* spacer at bottom so last card clears */
-        .p4-end-spacer {
+        .end-spacer {
           height: 800px;
           pointer-events: none;
         }
 
+
+        .question {
+  color: #c51b8a;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+        .card-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(197, 27, 138, 0.5);
+  background: transparent;
+  color: #c51b8a;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  user-select: none;
+}
+
+.card-btn:hover {
+  background-color: rgba(197, 27, 138, 0.15);
+}
+
+.card-btn.active {
+  background-color: #c51b8a;
+  color: white;
+  border-color: #c51b8a;
+}
+
         @media (max-width: 640px) {
-        .p4-sticky-bg img {
+        .sticky-bg img {
           object-position: 80% center;
         }
-          .p4-card-inner {
+          .card-inner {
             padding: 28px 24px;
           }
-          .p4-img-row-inner {
+          .img-row-inner {
             flex-direction: column;
           }
-          .p4-img-row-inner img {
+          .img-row-inner img {
             width: 100%;
           }
         }
       `}</style>
 
-      <div className="p4-wrap">
+      <div className="wrap">
 
         {/* ── STICKY BG ── */}
-        <div className="p4-sticky-bg">
+        <div className="sticky-bg">
           <img
             src="/meta.png"
             alt="Meta apps"
@@ -153,13 +208,13 @@ export default function MetaPart4() {
         </div>
 
         {/* ── SCROLLING CARDS ── */}
-        <div className="p4-scroll">
+        <div className="scroll">
 
           {/* Card 1 — intro paragraph */}
-          <div className="p4-card">
-            <div className="p4-card-inner">
-              <span className="p4-card-label">Meta signali</span>
-              <p className="p4-card-text">
+          <div className="card">
+            <div className="card-inner">
+              <span className="card-label">Meta signali</span>
+              <p className="card-text">
                 Meta Platforms, Inc.{" "}
                 <b>(Facebook, Instagram, WhatsApp, Messenger, Threads)</b> koristi
                 dostupne podatke o korisnicima kao što su demografski podaci,
@@ -181,11 +236,40 @@ export default function MetaPart4() {
             </div>
           </div>
 
+          {/* Question 1 card */}
+          <div className="card">
+            <div className="card-inner">
+              <p className="question">
+                Koliko osoba u Hrvatskoj koristi ove aplikacije?
+              </p>
+
+              <input
+                type="range"
+                min={0}
+                max={4000000}
+                step={10000}
+                value={answers.sliderValue || 0}
+                onChange={(e) =>
+                  setAnswers((prev) => ({ ...prev, sliderValue: Number(e.target.value) }))
+                }
+                style={{ width: "100%", marginTop: 16, accentColor: "#1877F2",  }}
+              />
+
+              <p style={{ marginTop: 12 }}>
+                Vaša procjena:{" "}
+                <span style={{ color: "#c51b8a" }}>
+                  {answers.sliderValue?.toLocaleString("fr-FR") || 0}
+                </span>
+              </p>
+            </div>
+
+          </div>
+
           {/* Card 2 — jezik/lokacija text */}
-          <div className="p4-card">
-            <div className="p4-card-inner">
-              <span className="p4-card-label">Jezik i lokacija</span>
-              <p className="p4-card-text">
+          <div className="card">
+            <div className="card-inner">
+              <span className="card-label">Jezik i lokacija</span>
+              <p className="card-text">
                 Pri procjeni veličine potencijalne publike može se krenuti od
                 jezika korisnika, pri čemu se klasifikacija provodi
                 <b> prvenstveno na temelju postavki jezika korisničkog sučelja (primarni signal), ali i na temelju dodatnih pokazatelja, poput jezika kojim korisnik najčešće komunicira ili jezika sadržaja s
@@ -205,9 +289,70 @@ export default function MetaPart4() {
             </div>
           </div>
 
+          {/* Question 2 card */}
+          <div className="card">
+            <div className="card-inner">
+
+              <p className="question ">
+                Koriste li ljudi na društvenim mrežama uglavnom svoj materinski jezik?
+              </p>
+              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                <button
+                  className={`card-btn ${answers.nativeLanguage === "da" ? "active" : ""}`}
+                  onClick={() => handleAnswer("nativeLanguage", "da")}
+                >
+                  Da
+                </button>
+                <button
+                  className={`card-btn ${answers.nativeLanguage === "ne" ? "active" : ""}`}
+                  onClick={() => handleAnswer("nativeLanguage", "ne")}
+                >
+                  Ne
+                </button>
+              </div>
+
+              <p className="question  mt-15">
+                Mislite li da većina migranata u Hrvatskoj koristi ove aplikacije?
+              </p>
+              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                <button
+                  className={`card-btn ${answers.usesMeta === "da" ? "active" : ""}`}
+                  onClick={() => handleAnswer("usesMeta", "da")}
+                >
+                  Da
+                </button>
+                <button
+                  className={`card-btn ${answers.usesMeta === "ne" ? "active" : ""}`}
+                  onClick={() => handleAnswer("usesMeta", "ne")}
+                >
+                  Ne
+                </button>
+              </div>
+
+              <p className="question mt-15">
+                Mislite li da Meta točno procjenjuje broj korisnika?
+              </p>
+              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                <button
+                  className={`card-btn ${answers.metaAccuracy === "da" ? "active" : ""}`}
+                  onClick={() => handleAnswer("metaAccuracy", "da")}
+                >
+                  Da
+                </button>
+                <button
+                  className={`card-btn ${answers.metaAccuracy === "ne" ? "active" : ""}`}
+                  onClick={() => handleAnswer("metaAccuracy", "ne")}
+                >
+                  Ne
+                </button>
+              </div>
+
+            </div>
+          </div>
+
           {/*
-          <div className="p4-img-row">
-            <div className="p4-img-row-inner">
+          <div className="img-row">
+            <div className="img-row-inner">
               <img src="/meta-jezik.jfif" alt="Meta jezik" loading="lazy" />
               <img src="/meta-lokacija.jfif" alt="Meta lokacija" loading="lazy" />
             </div>
@@ -215,10 +360,10 @@ export default function MetaPart4() {
           */}
 
           {/* Card 3 — privatnost text */}
-          <div className="p4-card">
-            <div className="p4-card-inner">
-              <span className="p4-card-label">Ograničenja i privatnost</span>
-              <p className="p4-card-text">
+          <div className="card">
+            <div className="card-inner">
+              <span className="card-label">Ograničenja i privatnost</span>
+              <p className="card-text">
                 S obzirom na to da su podaci{" "}
                 <b>anonimizirani i agregirani na razini skupine</b>, moguće je
                 koristiti alate poput Meta Ads Managera i Graph API-ja za analizu
@@ -234,15 +379,15 @@ export default function MetaPart4() {
           </div>
 
           {/* 
-          <div className="p4-img-row">
-            <div className="p4-img-row-inner">
+          <div className="img-row">
+            <div className="img-row-inner">
               <img src="/meta-analiza.jfif" alt="Meta analiza" loading="lazy" />
               <img src="/meta-privatnost.jfif" alt="Meta privatnost" loading="lazy" />
             </div>
           </div>
           */}
 
-          <div className="p4-end-spacer" />
+          <div className="end-spacer" />
         </div>
 
       </div>
