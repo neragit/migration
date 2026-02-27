@@ -21,6 +21,7 @@
     "plotly.js": "^3.3.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-gauge-component": "^2.0.26",
     "react-plotly.js": "^2.6.0",
     "react-scrollama": "^2.4.2",
     "topojson-client": "^3.1.0",

@@ -133,6 +133,7 @@ interface BubbleChartProps {
 const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
   const [isInView, setIsInView] = useState(false);
+  const [radiusFull, setRadiusFull] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const size = useResizeObserver(containerRef);
@@ -167,27 +168,31 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
   const circlesRef = useRef<d3.Selection<SVGCircleElement, DataItem, SVGGElement, unknown> | null>(null);
 
 
-
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) {
-      return;
-    }
-
+    if (!el) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-
         if (entry.isIntersecting) {
           setIsInView(true);
-          observer.disconnect();
+        } else {
+          // Reset animation when leaving view
+          setIsInView(false);
+          setRadiusFull(false);
+
+          // Reset circles to initial state
+          if (circlesRef.current) {
+            circlesRef.current
+              .attr("r", 0)
+              .style("opacity", 0);
+          }
         }
       },
       { threshold: 0.3 }
     );
 
     observer.observe(el);
-
     return () => observer.disconnect();
   }, []);
 
@@ -305,7 +310,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
       .transition()
       .delay(1000)    // stagger like circles
       .duration(1500)
-      .style('opacity', 1);
+      .style('opacity', 1)
+      .on('end', (_, i, nodes) => {
+        if (i === nodes.length - 1) setRadiusFull(true); // mark completion
+      });
+
 
 
     const isTouchDevice =
@@ -408,6 +417,8 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
   }, [isInView]);
 
+
+
   useEffect(() => {
     const mup = ['Bosanski', 'Nepalski', 'Srpski', 'Filipinski', 'Cebuano', 'Hindski', 'Makedonski', 'Albanski', 'Uzbečki', 'Arapski', 'Bengalski'];
     setBubbles(prev =>
@@ -435,11 +446,11 @@ const BubbleChart: React.FC<BubbleChartProps> = ({ step }) => {
 
     circlesRef.current
       .data(bubbles)
-      .transition()
-      .duration(300)
       .style('opacity', d => d.opacity ?? 1);
-      
+
   }, [bubbles]);
+
+
 
 
   const zoomButtonStyle: React.CSSProperties = {

@@ -1,30 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import type { AnswersState } from "@/types/answers";
 
-export default function MetaPart4() {
+interface MetaPart4Props {
+  answers: AnswersState;
+  handleAnswer: <K extends keyof AnswersState>(
+    key: K,
+    value: AnswersState[K]
+  ) => void;
+}
 
-  type AnswerKey = "usesMeta" | "nativeLanguage" | "metaAccuracy";
-  type AnswerValue = "da" | "ne" | null;
-
-  const [answers, setAnswers] = useState<{
-    usesMeta: AnswerValue;
-    nativeLanguage: AnswerValue;
-    metaAccuracy: AnswerValue;
-    sliderValue?: number;
-  }>({
-    usesMeta: null,
-    nativeLanguage: null,
-    metaAccuracy: null,
-    sliderValue: 0,
-  });
-
-  const handleAnswer = (key: AnswerKey, value: AnswerValue) => {
-    setAnswers((prev) => ({ ...prev, [key]: value }));
-  };
-
-
-
+export default function MetaPart4({ answers, handleAnswer }: MetaPart4Props) {
 
   return (
     <>
@@ -249,10 +236,8 @@ export default function MetaPart4() {
                 max={4000000}
                 step={10000}
                 value={answers.sliderValue || 0}
-                onChange={(e) =>
-                  setAnswers((prev) => ({ ...prev, sliderValue: Number(e.target.value) }))
-                }
-                style={{ width: "100%", marginTop: 16, accentColor: "#1877F2",  }}
+                onChange={(e) => handleAnswer("sliderValue", Number(e.target.value))}
+                style={{ width: "100%", marginTop: 16, accentColor: "#1877F2", }}
               />
 
               <p style={{ marginTop: 12 }}>

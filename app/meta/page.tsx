@@ -2,6 +2,9 @@
 
 "use client";
 
+import { supabase } from "../lib/supabase";
+import type { AnswersState } from "@/types/answers";
+
 import NewsScatter from "../components/NewsScatter";
 import HoverHighlight from "../components/HoverHighlight";
 import CentralQuestion from "../components/CentralQuestion";
@@ -15,6 +18,8 @@ import MetaChart from "../components/MetaChart";
 import Rezultati from "../components/Rezultati";
 import Objasnjenja from "../components/Objasnjenja";
 
+import SeeSummary from "../components/SeeSummary";
+
 import Details from "../components/Details";
 
 import { useState, useRef, useEffect } from "react";
@@ -27,6 +32,88 @@ export default function MetaPage() {
     const [vennVisible, setVennVisible] = useState(false);
 
     const ref = useRef<HTMLImageElement>(null);
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [hasSubmitted, setHasSubmitted] = useState(false);
+
+    useEffect(() => {
+        if (!sessionId) {
+            setSessionId(crypto.randomUUID()); // generate a unique session ID for this user/session
+            console.log("Generated sessionId:", sessionId);
+        }
+    }, []);
+
+    const handleSeeSummary = async () => {
+        console.log("Button clicked. Current state:", {
+            sessionId,
+            isLoading
+        });
+
+        if (!sessionId) {
+            console.warn("Cannot submit: sessionId is null");
+            return;
+        }
+
+        setIsLoading(true);
+
+        try {
+            // save or update
+            const { error: upsertError } = await supabase
+                .from("odg_migranti")
+                .upsert(
+                    {
+                        session_id: sessionId,
+                        expect_more: answers.expectMore,
+                        consider_meta: answers.considerMeta,
+                        uses_meta: answers.usesMeta,
+                        native_language: answers.nativeLanguage,
+                        meta_accuracy: answers.metaAccuracy,
+                        slider_value: answers.sliderValue,
+                        awareness: answers.awareness,
+                        foreign_workers: answers.foreignWorkers,
+                        foreign_workers_percent: answers.foreignWorkersPercent,
+                        top_nationalities: answers.topNationalities,
+                        nationality_search: answers.nationalitySearch,
+                    },
+                    { onConflict: "session_id" }
+                );
+
+            if (upsertError) throw upsertError;
+
+            // fetch
+            const { data, error: fetchError } = await supabase
+                .from("odg_migranti")
+                .select("*")
+                .eq("session_id", sessionId)
+                .single();
+
+            if (fetchError) throw fetchError;
+
+            // update
+            setAnswers({
+                expectMore: data.expect_more,
+                considerMeta: data.consider_meta,
+                usesMeta: data.uses_meta,
+                nativeLanguage: data.native_language,
+                metaAccuracy: data.meta_accuracy,
+                sliderValue: data.slider_value,
+                // keep other fields if needed
+                awareness: answers.awareness,
+                foreignWorkers: answers.foreignWorkers,
+                foreignWorkersPercent: answers.foreignWorkersPercent,
+                topNationalities: answers.topNationalities,
+                nationalitySearch: answers.nationalitySearch,
+            });
+
+            setHasSubmitted(true);
+        } catch (err) {
+            console.error("Error saving or fetching answers:", err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -72,6 +159,34 @@ export default function MetaPage() {
     const [activeStep02, setActiveStep02] = useState(0);
     const [activeStep03, setActiveStep03] = useState(0);
 
+
+    const [answers, setAnswers] = useState<AnswersState>({
+        // General questions
+        expectMore: null,
+        considerMeta: null,
+
+        // MetaPart4 questions
+        usesMeta: null,
+        nativeLanguage: null,
+        metaAccuracy: null,
+        sliderValue: 0,
+
+        // NewsScatter questions
+        awareness: "",
+        foreignWorkers: "",
+        foreignWorkersPercent: 0,
+        topNationalities: [],
+        nationalitySearch: "",
+    });
+
+    const handleAnswer = <K extends keyof AnswersState>(
+        key: K,
+        value: AnswersState[K]
+    ) => {
+        setAnswers(prev => ({ ...prev, [key]: value }));
+    };
+
+
     const flowTexts01 = [
         `Procjena potencijalne publike na temelju Meta Ads Managera uzeta je kao <b>prosjek</b> raspona minimalne i maksimalne vrijednosti. <br/><br/>Pri odabiru lokacije, Meta procjenjuje korisnike koji provode vrijeme u Hrvatskoj, kao što su ljudi koji tu žive ili su nedavno tu bili.`,
         `Polazni kriterij za odabir jezika je MUP-ova lista top 10 stranih državljanstava.`,
@@ -87,9 +202,31 @@ export default function MetaPage() {
         `Osim hrvatskih državljana i stranih radnika, Meta broji i druge osobe na teritoriju Hrvatske, npr. državljane drugih zemalja EU, putnike, turiste, studente na razmjeni itd. 
         <br/><br/>U 2025. godini, međunarodna zaštita odobrena je ukupno 25 osoba. Od toga je 24 osoba dobilo azil: 10 dječaka 0-13 godina, 2 mladića 14-17 godina, 2 odrasla muškarca 18-34 godine i 3 muškarca 35-64 godine, 4 djevojčice 0-13 godina i 3 žene 18-34 godine. Jedan muškarac u dobi 14-17 godina dobio je supsidijarnu zaštitu.`,
         `Ukupno je tijekom 2025. godine podneseno 14 928 zahtjeva za međunarodnu zaštitu. Najviše je zahtjeva državljana Ruske Federacije (3 227), slijede Turska (2 597), Afganistan (1 365), Egipat (1 364) i Sirija (1 253). 
-        <br/><br/>Među ostalim zemljama podrijetla ističu se Bangladeš (954), Pakistan (670), Palestina (527), Kina (485), Maroko (473) i Irak (282). Ostale zemlje s manjim brojem podnositelja zahtjeva uključuju Indiju (250), Nepal (210), Ganu (147), Iran (118), Šri Lanku (82), Sijeru Leone (78), Azerbajdžan (75), Jordan (69) i Alžir (53), dok su neke zemlje zastupljene s tek nekoliko osoba, poput Mjanmara, Ekvadora, Gruzije, Južnog Sudana, Turkmenistana, Gabona, Norveške, Kosova, Crne Gore, Dominikanske Republike i Nigera (po 1 osoba).
-        <br/><br/>Ukrajinci nisu na listi tražitelja azila jer imaju pravo na privremenu zaštitu unutar EU, što im omogućava boravak bez pokretanja standardnog azilnog postupka.`
+        <br/><br/>Među ostalim zemljama podrijetla ističu se Bangladeš (954), Pakistan (670), Palestina (527), Kina (485), Maroko (473) i Irak (282). Ostale zemlje s manjim brojem podnositelja zahtjeva uključuju Indiju (250), Nepal (210), Ganu (147), Iran (118), Šri Lanku (82), Sijeru Leone (78), Azerbajdžan (75), Jordan (69) i Alžir (53), dok su neke zemlje zastupljene s tek nekoliko osoba, poput Mjanmara, Ekvadora, Gruzije, Južnog Sudana, Turkmenistana, Gabona, Norveške, Kosova, Crne Gore, Dominikanske Republike i Nigera (po 1 osoba).`,
+        `Ukrajinci nisu na listi tražitelja azila jer imaju pravo na privremenu zaštitu unutar EU, što im omogućava boravak bez pokretanja standardnog azilnog postupka.`,
+        () => (
+            <div className="">
+                <p className="question">
+                    Mislite li da su ove procjene korisnika društvenih mreža u Hrvatskoj više od službenih dozvola za rad i boravak?
+                </p>
+                <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                    <button
+                        className={`card-btn ${answers.expectMore === "Meta" ? "active" : ""}`}
+                        onClick={() => handleAnswer("expectMore", "Meta")}
+                    >
+                        Da, više je korisnika
+                    </button>
+                    <button
+                        className={`card-btn ${answers.expectMore === "MUP" ? "active" : ""}`}
+                        onClick={() => handleAnswer("expectMore", "MUP")}
+                    >
+                        Ne, više je dozvola
+                    </button>
+                </div>
+            </div>
+        )
     ];
+
 
     const flowTexts03 = [
         `Službene statistike obuhvaćaju dvije vrste evidencija: podatke Ministarstva unutarnjih poslova o izdanim dozvolama za boravak i rad strance koji nisu državljani EU, te podatke Državnog zavoda za statistiku o nacionalnim manjinama u Hrvatskoj. <br/><br/>S druge strane, prikazane su dvije vrste Meta procjena.`,
@@ -165,7 +302,8 @@ export default function MetaPage() {
     return (
 
         <>
-            <NewsScatter />
+            <NewsScatter answers={answers}
+                handleAnswer={handleAnswer} />
 
             <HoverHighlight />
 
@@ -193,7 +331,10 @@ export default function MetaPage() {
 
             <CentralQuestion />
 
-            <MetaPart4 />
+            <MetaPart4
+                answers={answers}
+                handleAnswer={handleAnswer}
+            />
 
             <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-20 mb-30 text-gray-700   ">
 
@@ -206,7 +347,7 @@ export default function MetaPage() {
                 <p className="paragraph">
                     U svibnju 2025. u Hrvatskoj je procjenjeno <b>2 496 900 aktivnih korisnika Facebooka</b>, što je otprilike 65% ukupne populacije. To je u skladu s rasponom publike kojeg Meta Ads Manager daje u veljači 2026. (između 2 400 000 i 2 800 000 korisnika).
                     <br /><br />
-                    Međutim, ako želimo preciznije targetirati koristeći više karakteristika, a ne samo lokaciju, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive. 
+                    Međutim, ako želimo preciznije targetirati koristeći više karakteristika, a ne samo lokaciju, stvari brzo postanu zamršene i važno je naglasiti da Meta procjene nisu nužno međusobno isključive.
                     <br /><br />Primjerice, jedna osoba istovremeno može biti uključena u procjene za više jezika, osobito ako govori više jezika ili ima postavke sučelja na jednom jeziku a komunicira na drugome. To znači da zbroj procjena po jezicima neće biti jednak ukupnom broju korisnika u Hrvatskoj.
 
                     <img
@@ -316,16 +457,21 @@ export default function MetaPage() {
 
                     <div ref={flow02Ref} className="w-80 h-auto gap-70 mt-10 mb-100  flex flex-col">
 
-                        {flowTexts02.map((text, index) => {
+                        {flowTexts02.map((item, index) => {
                             const isActive = index === activeStep02;
                             return (
                                 <div
                                     key={index}
                                     data-step={index}
                                     className={`step-02 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
-                          ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
-                                    dangerouslySetInnerHTML={{ __html: text }}
-                                ></div>
+        ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
+                                >
+                                    {typeof item === "string" ? (
+                                        <div dangerouslySetInnerHTML={{ __html: item }} />
+                                    ) : (
+                                        <>{item()}</> // properly call the JSX function
+                                    )}
+                                </div>
                             );
                         })}
 
@@ -358,24 +504,22 @@ export default function MetaPage() {
 
                 </div >
 
-                <div className="flex justify-center sm:justify-end  sm:pr-20">
-
-                    <div ref={flow03Ref} className="w-80 h-auto gap-70 mt-10 mb-250  flex flex-col">
-
+                <div className="flex justify-center sm:justify-end sm:pr-20">
+                    <div ref={flow03Ref} className="w-80 h-auto gap-70 mt-10 mb-250 flex flex-col">
                         {flowTexts03.map((text, index) => {
-                            const isActive = index === activeStep03;
+                            const isActive = index === activeStep01;
                             return (
                                 <div
                                     key={index}
                                     data-step={index}
-                                    className={`step-03 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
+                                    className={`step-01 bg-gray-100 p-6 rounded-xl shadow-md transition-all duration-1000 ease-out z-999
                           ${isActive ? "opacity-90 translate-x-0" : "opacity-0 translate-x-12"}`}
                                     dangerouslySetInnerHTML={{ __html: text }}
                                 ></div>
                             );
                         })}
                     </div>
-                </div >
+                </div>
 
             </div >
 
@@ -516,6 +660,45 @@ export default function MetaPage() {
 
                         </div>
                     </div>
+                </div>
+
+                <div className="my-50">
+                    <div>
+                        <p className="question">
+                            Ako Meta pokaže rast neke skupine, mislite li da je to dobar indikator stvarnih promjena u društvu?
+                        </p>
+                        <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
+                            <button
+                                className={`card-btn ${answers.considerMeta === "Da" ? "active" : ""}`}
+                                onClick={() => handleAnswer("considerMeta", "Da")}
+                            >
+                                Da, svakako
+                            </button>
+                            <button
+                                className={`card-btn ${answers.considerMeta === "Oprezno" ? "active" : ""}`}
+                                onClick={() => handleAnswer("considerMeta", "Oprezno")}
+                            >
+                                Da, ali uz oprez
+                            </button>
+                            <button
+                                className={`card-btn ${answers.considerMeta === "Ne" ? "active" : ""}`}
+                                onClick={() => handleAnswer("considerMeta", "Ne")}
+                            >
+                                Ne, nikako
+                            </button>
+                        </div>
+                    </div>
+
+
+                    <SeeSummary
+                        answers={answers}
+                        sessionId={sessionId}
+                        isLoading={isLoading}
+                        hasSubmitted={hasSubmitted}
+                        onSubmit={handleSeeSummary} // triggers upsert + fetch
+                    />
+
+
                 </div>
 
 

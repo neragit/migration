@@ -2,6 +2,7 @@
 
 import gsap from "gsap";
 import { useEffect, useState } from "react";
+import type { AnswersState } from "@/types/answers";
 
 const NEWS_IMAGES = Array.from({ length: 24 }, (_, i) => `/news-${i + 1}.png`);
 
@@ -33,7 +34,6 @@ const SCATTERED = [
   { left: "15%", top: "50%", rotation: -9, scale: 0.3 },
   { left: "40%", top: "50%", rotation: 5, scale: 0.3 },
   { left: "60%", top: "55%", rotation: -6, scale: 0.3 },
-
 ];
 
 const NATIONALITIES = [
@@ -60,24 +60,17 @@ const NATIONALITIES = [
 ];
 
 
-export default function NewsScatter() {
+interface NewsScatterProps {
+  answers: AnswersState;
+  handleAnswer: <K extends keyof AnswersState>(
+    key: K,
+    value: AnswersState[K]
+  ) => void;
+}
+
+export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps) {
 
   const [isMobile, setIsMobile] = useState(false);
-
-  const [answers, setAnswers] = useState<{
-    awareness?: string;
-    foreignWorkers?: string;
-
-    foreignWorkersPercent?: number;
-    topNationalities?: string[];
-    nationalitySearch?: string; 
-  }>({
-    awareness: undefined,
-    foreignWorkers: undefined,
-    foreignWorkersPercent: undefined,
-    topNationalities: [],
-  });
-
 
   useEffect(() => {
     const checkMobile = () => {
@@ -115,7 +108,7 @@ export default function NewsScatter() {
         {/* Sticky Scatter */}
         <div className="sticky top-0 h-screen z-0">
           {/* SECTION 1 — Scattered Images */}
-          <section className="relative w-full h-screen bg-white overflow-visible">
+          <section className="relative w-full h-screen bg-white overflow-clip">
             <div className="absolute inset-0">
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
@@ -166,7 +159,7 @@ export default function NewsScatter() {
                     <button
                       key={index}
                       className={`card-btn ${answers.awareness === option ? "active" : ""}`}
-                      onClick={() => setAnswers(prev => ({ ...prev, awareness: option }))}
+                      onClick={() => handleAnswer("awareness", option)}
                     >
                       {option}
                     </button>
@@ -189,7 +182,7 @@ export default function NewsScatter() {
                     <button
                       key={index}
                       className={`card-btn ${answers.foreignWorkers === option ? "active" : ""}`}
-                      onClick={() => setAnswers(prev => ({ ...prev, foreignWorkers: option }))}
+                      onClick={() => handleAnswer("foreignWorkers", option)}
                     >
                       {option}
                     </button>
@@ -210,9 +203,7 @@ export default function NewsScatter() {
                   type="text"
                   placeholder="Pretraži"
                   value={answers.nationalitySearch || ""}
-                  onChange={(e) =>
-                    setAnswers(prev => ({ ...prev, nationalitySearch: e.target.value }))
-                  }
+                  onChange={(e) => handleAnswer("nationalitySearch", e.target.value)}
                   className="border border-stone-200 text-stone-500 p-2 rounded w-full mb-3"
                 />
 
@@ -235,19 +226,13 @@ export default function NewsScatter() {
                           value={n}
                           checked={isSelected}
                           disabled={disabled}
-                          onChange={(e) => {
-                            setAnswers(prev => {
-                              const selected = prev.topNationalities || [];
-                              if (selected.includes(n)) {
-                                return {
-                                  ...prev,
-                                  topNationalities: selected.filter(x => x !== n),
-                                };
-                              } else if (selected.length < 10) {
-                                return { ...prev, topNationalities: [...selected, n] };
-                              }
-                              return prev;
-                            });
+                          onChange={() => {
+                            const selected = answers.topNationalities || [];
+                            if (selected.includes(n)) {
+                              handleAnswer("topNationalities", selected.filter(x => x !== n));
+                            } else if (selected.length < 10) {
+                              handleAnswer("topNationalities", [...selected, n]);
+                            }
                           }}
                           className="form-checkbox "
                         />
@@ -280,12 +265,7 @@ export default function NewsScatter() {
                   max={100}
                   step={1}
                   value={answers.foreignWorkersPercent || 0}
-                  onChange={(e) =>
-                    setAnswers(prev => ({
-                      ...prev,
-                      foreignWorkersPercent: Number(e.target.value),
-                    }))
-                  }
+                  onChange={(e) => handleAnswer("foreignWorkersPercent", Number(e.target.value))}
                   style={{
                     width: "100%",
                     marginTop: 16,
