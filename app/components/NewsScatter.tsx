@@ -114,8 +114,8 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                 const s = SCATTERED[i];
                 const initialScale = isMobile ? 0.3 : s.scale
                 const leftPercent = parseFloat(s.left);
-                const isRightSide = leftPercent > 40
-                const left = isMobile && leftPercent > 40 ? `${leftPercent + 30}%` : s.left;
+                const isRightSide = leftPercent > 50
+                const left = isMobile && leftPercent > 40 ? `40%` : s.left;
                 return (
                   <div
                     key={i}
