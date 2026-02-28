@@ -4,7 +4,7 @@ import gsap from "gsap";
 import { useEffect, useState } from "react";
 import type { AnswersState } from "@/types/answers";
 
-const NEWS_IMAGES = Array.from({ length: 24 }, (_, i) => `/news-${i + 1}.png`);
+const NEWS_IMAGES = Array.from({ length: 28 }, (_, i) => `/news-${i + 1}.png`);
 
 const SCATTERED = [
   { left: "30%", top: "70%", rotation: 7, scale: 0.3 },
@@ -24,16 +24,20 @@ const SCATTERED = [
   { left: "70%", top: "45%", rotation: 10, scale: 0.3 },
   { left: "68%", top: "65%", rotation: -7, scale: 0.3 },
   { left: "25%", top: "40%", rotation: 4, scale: 0.3 },
-  { left: "2%", top: "55%", rotation: -12, scale: 0.3 },
-  { left: "12%", top: "30%", rotation: -6, scale: 0.3 },
+  { left: "0%", top: "55%", rotation: -12, scale: 0.3 },
+  { left: "0%", top: "30%", rotation: -6, scale: 0.3 },
   { left: "62%", top: "30%", rotation: 7, scale: 0.3 },
   { left: "25%", top: "15%", rotation: 3, scale: 0.3 },
   { left: "45%", top: "20%", rotation: -4, scale: 0.3 },
   { left: "5%", top: "18%", rotation: -8, scale: 0.3 },
 
-  { left: "15%", top: "50%", rotation: -9, scale: 0.3 },
+  { left: "10%", top: "50%", rotation: -9, scale: 0.3 },
   { left: "40%", top: "50%", rotation: 5, scale: 0.3 },
   { left: "60%", top: "55%", rotation: -6, scale: 0.3 },
+    { left: "3%", top: "17%", rotation: 7, scale: 0.3 },
+  { left: "15%", top: "25%", rotation: 4, scale: 0.3 },
+  { left: "27%", top: "33%", rotation: 8, scale: 0.3 },
+  { left: "50%", top: "37%", rotation: -8, scale: 0.3 },
 ];
 
 const NATIONALITIES = [
@@ -112,7 +116,6 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
             <div className="absolute inset-0">
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
-                const initialScale = isMobile ? 0.4 : s.scale
                 const isRightSide = parseFloat(s.left) > 50
                 let left = isMobile ?  `calc(${s.left} - 30%)`: s.left ;
                 return (
@@ -122,7 +125,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                     style={{
                       left,
                       top: s.top,
-                      transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
+                      transform: `rotate(${s.rotation}deg) scale(${s.scale})`,
                       transformOrigin: "top center",
                       willChange: "transform",
                     }}
