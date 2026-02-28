@@ -114,12 +114,13 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                 const s = SCATTERED[i];
                 const initialScale = isMobile ? 0.4 : s.scale
                 const isRightSide = parseFloat(s.left) > 50
+                let left = isMobile ?  `calc(${s.left} - 30%)`: s.left ;
                 return (
                   <div
                     key={i}
                     className="absolute"
                     style={{
-                      left: s.left,
+                      left,
                       top: s.top,
                       transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
                       transformOrigin: "top center",
