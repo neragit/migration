@@ -195,7 +195,7 @@ export default function BiggerPicture() {
                 pointerEvents: dorlingOpacity > 0.5 ? 'auto' : 'none',
               }}
             >
-              <DorlingWorld sidebarVisible={false} scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 5, 50), 180) : 180} noMargin />
+              <DorlingWorld sidebarVisible={false} scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 5, 30), 180) : 180} noMargin />
             </div>
 
             {/* Steps 1–5: Intro text blocks */}
