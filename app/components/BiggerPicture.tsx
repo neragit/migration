@@ -97,6 +97,8 @@ export default function BiggerPicture() {
   const dorlingOpacity = dorlingOpacityCalc();
   const vennOpacity = vennOpacityCalc();
 
+  const isShortScreen = size?.height && size.height < 500;
+
   return (
     <>
       <div
@@ -105,7 +107,12 @@ export default function BiggerPicture() {
         style={{ minHeight: `${INTRO_STEPS * 120}vh` }}
       >
         {/* Sticky frame */}
-        <div className="sticky top-25 mx-auto px-5" style={{ maxWidth: '1200px' }}>
+        <div className="sticky mx-auto px-5"
+          style={{
+            maxWidth: 1200,
+            top: isShortScreen ? "10px" : "6.25rem", // Tailwind top-25 = 6.25rem
+          }}
+        >
           <div
             className="relative w-full rounded-sm"
             style={{

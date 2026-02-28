@@ -442,7 +442,7 @@ export default function DorlingWorld({ sidebarVisible, scaleOverride, metaPage }
 
       <div ref={containerRef} className={`relative w-[80vw] xl:w-[90vw]  flex justify-center
       ${sidebarVisible ? "ml-[-90] w-[80vw] " : "ml-0 w-screen"} xl:ml-[-90] portrait:ml-0 portrait:w-screen
-      mt-20 ${metaPage  ? "  mt-30 md:mt-20  lg:mt-10 xl:mt-5  !w-full  lg:!ml-20": " md:mt-10"} 
+      mt-20 ${metaPage  ? "  mt-30 md:mt-20  lg:mt-10 xl:mt-5  !w-full  md:!ml-20": " md:mt-10"} 
       mb-10 md:mb-0`} >
 
 
