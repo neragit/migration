@@ -82,25 +82,30 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
-    gsap.to(e.currentTarget, {
-      rotation: 0,
-      scale: 1,
-      zIndex: 20,
-      duration: 1,
-      ease: "power2.out",
-    });
-  };
+const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+  const el = e.currentTarget as HTMLDivElement;
+  const leftPercent = parseFloat(el.style.left);
+  const isRightSide = leftPercent > 50;
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
-    gsap.to(e.currentTarget, {
-      scale: 0.5,
-      zIndex: 1,
-      duration: 1,
-      ease: "power2.inOut",
-    });
-  };
+  gsap.to(el, {
+    rotation: 0,
+    scale: 1,
+    zIndex: 20,
+    duration: 1,
+    ease: "power2.out",
+    transformOrigin: isMobile && isRightSide ? "top right" : "top left",
+  });
+};
 
+const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+  gsap.to(e.currentTarget, {
+    scale: 0.5,
+    zIndex: 1,
+    duration: 1,
+    ease: "power2.inOut",
+    transformOrigin: "center", // reset after hover
+  });
+};
 
   return (
     <>
@@ -111,35 +116,38 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
           <section className="relative w-full h-screen bg-white overflow-clip">
             <div className="absolute inset-0">
               {NEWS_IMAGES.map((src, i) => {
-                const s = SCATTERED[i];
-                const initialScale = isMobile ? 0.3 : s.scale
-                const leftPercent = parseFloat(s.left);
-                const isRightSide = leftPercent > 50
-                const left = isMobile && leftPercent > 40 ? `40%` : s.left;
-                return (
-                  <div
-                    key={i}
-                    className="absolute"
-                    style={{
-                      left,
-                      top: s.top,
-                      transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
-                      transformOrigin: isMobile && isRightSide ? "top right" : "top left",
-                      willChange: "transform",
-                    }}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <img
-                      src={src}
-                      alt={`News article ${i + 1}`}
-                      loading={i < 6 ? "eager" : "lazy"}
-                      className="w-125 h-auto shadow-md"
-                      draggable={false}
-                    />
-                  </div>
-                );
-              })}
+  const s = SCATTERED[i];
+  const initialScale = isMobile ? 0.3 : s.scale;
+  const leftPercent = parseFloat(s.left);
+  const isRightSide = leftPercent > 50;
+
+  // On mobile, prevent far-right images from going off screen
+  const left = isMobile && leftPercent > 50 ? "50%" : s.left;
+
+  return (
+    <div
+      key={i}
+      className="absolute"
+      style={{
+        left,
+        top: s.top,
+        transform: `translateX(-50%) rotate(${s.rotation}deg) scale(${initialScale})`,
+        transformOrigin: "center", // initial origin, stable on load
+        willChange: "transform",
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <img
+        src={src}
+        alt={`News article ${i + 1}`}
+        loading={i < 6 ? "eager" : "lazy"}
+        className="w-125 h-auto shadow-md"
+        draggable={false}
+      />
+    </div>
+  );
+})}
 
             </div>
           </section>
