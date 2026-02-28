@@ -119,7 +119,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                     key={i}
                     className="absolute"
                     style={{
-                      left: isMobile && isRightSide ? `calc(${s.left} - 60%)` : s.left,
+                      left: isMobile && isRightSide ? `calc(${s.left} - 40%)` : s.left,
                       top: s.top,
                       transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
                       transformOrigin: isMobile && isRightSide ? "top right" : "top left",
