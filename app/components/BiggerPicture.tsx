@@ -195,7 +195,7 @@ export default function BiggerPicture() {
                 pointerEvents: dorlingOpacity > 0.5 ? 'auto' : 'none',
               }}
             >
-              <DorlingWorld sidebarVisible={false} scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 6, 30), 180) : 180} noMargin />
+              <DorlingWorld scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 6, 20), 180) : 180} metaPage />
             </div>
 
             {/* Steps 1–5: Intro text blocks */}
@@ -273,7 +273,7 @@ export default function BiggerPicture() {
                   src="/venn.png"
                   alt="Migranti venn"
                   loading="lazy"
-                  style={{ maxWidth: '100%', height: 'auto', maxHeight: 'calc(80vh - 140px)', objectFit: 'contain' }}
+                  style={{ maxWidth: '100%', height: 'auto', maxHeight: 'calc(80vh - 140px)', objectFit: 'contain', textAlign: 'center' }}
                 />
               </div>
             </div>
