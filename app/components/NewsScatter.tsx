@@ -72,19 +72,10 @@ interface NewsScatterProps {
   ) => void;
 }
 
+
+
 export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps) {
 
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768); // Tailwind md breakpoint
-    };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     gsap.to(e.currentTarget, {
@@ -117,13 +108,12 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
                 const isRightSide = parseFloat(s.left) > 50
-                let left = isMobile ?  `calc(${s.left} - 30%)`: s.left ;
                 return (
                   <div
                     key={i}
                     className="absolute"
                     style={{
-                      left,
+                      left: s.left,
                       top: s.top,
                       transform: `rotate(${s.rotation}deg) scale(${s.scale})`,
                       transformOrigin: "top center",
