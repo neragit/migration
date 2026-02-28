@@ -513,7 +513,7 @@ export default function MetaPage() {
                     >
                         <div className=" p-5 pb-15">
 
-                            <div className="flex flex-col md:flex-row w-full md:max-h-[500px] gap-3 mb-10 pr-5">
+                            <div className="flex flex-col md:flex-row w-full md:max-h-125 gap-3 mb-10 pr-5">
 
                                 <p className="paragraph  md:pr-10">
                                     Iako je <b>WhatsApp</b> u Meta vlasništvu, vjerojatno nije uključen u procjene ako korisnik ne koristi druge aplikacije jer Meta u Hrvatskoj zasad ne može prikazivati oglase na WhatsApp-u, što će se uskoro promijeniti.
