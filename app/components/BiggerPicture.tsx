@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import DorlingWorld from "../components/DorlingWorld";
 import CentralQuestion from "../components/CentralQuestion";
+import useResizeObserver from "../hooks/useResizeObs";
 
-// ── INTRO text blocks (shown in sticky scrollytelling frame) ──
+
 const introBlocks = [
   {
     id: "intro-europe-us",
@@ -39,9 +40,12 @@ const DORLING_STEP = 0; // first step index
 const VENN_STEP = 6;    // last step index
 const FADE_RANGE = 0.12;
 
-// ── Intro scrollytelling section ──
-function IntroScrolly() {
+
+export default function BiggerPicture() {
+
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const size = useResizeObserver(containerRef);
+
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -94,233 +98,228 @@ function IntroScrolly() {
   const vennOpacity = vennOpacityCalc();
 
   return (
-    <div
-      ref={containerRef}
-      className="relative"
-      style={{ minHeight: `${INTRO_STEPS * 120}vh` }}
-    >
-      {/* Sticky frame */}
-      <div className="sticky top-25 mx-auto px-5" style={{ maxWidth: '1200px' }}>
-        <div
-          className="relative w-full rounded-sm"
-          style={{
-            height: '80vh',
-            border: '1px solid #e5e7eb',
-            boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06), 0 4px 24px 0 rgba(0,0,0,0.04)',
-            background: '#fff',
-            overflow: 'visible',
-          }}
-        >
-          {/* Corner marks */}
-          {(['tl','tr','bl','br'] as const).map((pos) => (
-            <div
-              key={pos}
-              style={{
-                position: 'absolute',
-                width: 14,
-                height: 14,
-                borderColor: '#c51b8a',
-                borderStyle: 'solid',
-                opacity: 0.5,
-                zIndex: 10,
-                ...(pos === 'tl' ? { top: 10, left: 10, borderWidth: '2px 0 0 2px' } :
-                    pos === 'tr' ? { top: 10, right: 10, borderWidth: '2px 2px 0 0' } :
-                    pos === 'bl' ? { bottom: 10, left: 10, borderWidth: '0 0 2px 2px' } :
-                                   { bottom: 10, right: 10, borderWidth: '0 2px 2px 0' }),
-              }}
-            />
-          ))}
-
-          {/* Progress dots */}
+    <>
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ minHeight: `${INTRO_STEPS * 120}vh` }}
+      >
+        {/* Sticky frame */}
+        <div className="sticky top-25 mx-auto px-5" style={{ maxWidth: '1200px' }}>
           <div
+            className="relative w-full rounded-sm"
             style={{
-              position: 'absolute',
-              right: 18,
-              top: '50%',
-              transform: 'translateY(-50%)',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 6,
-              zIndex: 20,
+              height: '80vh',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px 0 rgba(0,0,0,0.06), 0 4px 24px 0 rgba(0,0,0,0.04)',
+              background: '#fff',
+              overflow: 'visible',
             }}
           >
-            {Array.from({ length: INTRO_STEPS }).map((_, i) => (
+            {/* Corner marks */}
+            {(['tl', 'tr', 'bl', 'br'] as const).map((pos) => (
               <div
-                key={i}
+                key={pos}
                 style={{
-                  width: 4,
-                  height: 4,
-                  borderRadius: '50%',
-                  background: activeStep === i ? '#c51b8a' : '#e5e7eb',
-                  transform: activeStep === i ? 'scale(1.5)' : 'scale(1)',
-                  transition: 'all 0.3s ease',
+                  position: 'absolute',
+                  width: 14,
+                  height: 14,
+                  borderColor: '#c51b8a',
+                  borderStyle: 'solid',
+                  opacity: 0.5,
+                  zIndex: 10,
+                  ...(pos === 'tl' ? { top: 10, left: 10, borderWidth: '2px 0 0 2px' } :
+                    pos === 'tr' ? { top: 10, right: 10, borderWidth: '2px 2px 0 0' } :
+                      pos === 'bl' ? { bottom: 10, left: 10, borderWidth: '0 0 2px 2px' } :
+                        { bottom: 10, right: 10, borderWidth: '0 2px 2px 0' }),
                 }}
               />
             ))}
-          </div>
 
-          {/* Step counter */}
-          <div
-            style={{
-              position: 'absolute',
-              top: 16,
-              left: 20,
-              fontSize: '0.6rem',
-              letterSpacing: '0.3em',
-              textTransform: 'uppercase',
-              color: '#9ca3af',
-              fontFamily: 'Mukta, sans-serif',
-              fontWeight: 600,
-              zIndex: 20,
-            }}
-          >
-            {String(activeStep + 1).padStart(2, '0')} / {String(INTRO_STEPS).padStart(2, '0')}
-          </div>
-
-          {/* Step 0: Dorling World */}
-          <div
-            style={{
-              position: 'absolute',
-              overflow: 'visible',
-              inset: 0,
-              paddingTop: '30px',
-              paddingInline: '50px',
-              opacity: dorlingOpacity,
-              transition: 'none',
-              pointerEvents: dorlingOpacity > 0.5 ? 'auto' : 'none',
-            }}
-          >
-            <DorlingWorld sidebarVisible={true} scaleOverride={180} noMargin />
-          </div>
-
-          {/* Steps 1–5: Intro text blocks */}
-          {introBlocks.map((block, i) => (
+            {/* Progress dots */}
             <div
-              key={block.id}
+              style={{
+                position: 'absolute',
+                right: 18,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 6,
+                zIndex: 20,
+              }}
+            >
+              {Array.from({ length: INTRO_STEPS }).map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 4,
+                    height: 4,
+                    borderRadius: '50%',
+                    background: activeStep === i ? '#c51b8a' : '#e5e7eb',
+                    transform: activeStep === i ? 'scale(1.5)' : 'scale(1)',
+                    transition: 'all 0.3s ease',
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Step counter */}
+            <div
+              style={{
+                position: 'absolute',
+                top: 16,
+                left: 20,
+                fontSize: '0.6rem',
+                letterSpacing: '0.3em',
+                textTransform: 'uppercase',
+                color: '#9ca3af',
+                fontFamily: 'Mukta, sans-serif',
+                fontWeight: 600,
+                zIndex: 20,
+              }}
+            >
+              {String(activeStep + 1).padStart(2, '0')} / {String(INTRO_STEPS).padStart(2, '0')}
+            </div>
+
+            {/* Step 0: Dorling World */}
+            <div
+              style={{
+                position: 'absolute',
+                overflow: 'visible',
+                inset: 0,
+                paddingTop: '30px',
+                paddingInline: '50px',
+                opacity: dorlingOpacity,
+                transition: 'none',
+                pointerEvents: dorlingOpacity > 0.5 ? 'auto' : 'none',
+              }}
+            >
+              <DorlingWorld sidebarVisible={true} scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 6, 120), 180) : 180} noMargin />
+            </div>
+
+            {/* Steps 1–5: Intro text blocks */}
+            {introBlocks.map((block, i) => (
+              <div
+                key={block.id}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '48px clamp(24px, 8vw, 120px)',
+                  opacity: stepOpacity(i + 1),
+                  transition: 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
+                  pointerEvents: 'none',
+                }}
+              >
+                <div style={{ maxWidth: 620, textAlign: 'center' }}>
+                  <p
+                    style={{
+                      color: '#c51b8a', fontFamily: 'Mukta, sans-serif', margin: '0 0 1.25rem 0',
+                      fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase'
+                    }}
+                  >
+                    {block.label}
+                  </p>
+                  <div style={{ width: 32, height: 1, background: '#e5e7eb', margin: '0 auto 1.5rem' }} />
+                  <p
+                    style={{
+                      fontSize: 'clamp(0.95rem, 1.4vw, 1.15rem)',
+                      lineHeight: 1.85,
+                      color: '#374151',
+                      fontFamily: 'Mukta, sans-serif',
+                      fontWeight: 400,
+                      margin: 0,
+                    }}
+                  >
+                    {block.content}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+            {/* Step 6: Venn diagram */}
+            <div
               style={{
                 position: 'absolute',
                 inset: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '48px clamp(24px, 8vw, 120px)',
-                opacity: stepOpacity(i + 1),
-                transition: 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
-                pointerEvents: 'none',
+                padding: '40px clamp(24px, 6vw, 80px)',
+                opacity: vennOpacity,
+                transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
+                pointerEvents: vennOpacity > 0.5 ? 'auto' : 'none',
               }}
             >
-              <div style={{ maxWidth: 620, textAlign: 'center' }}>
-                <p
-                  style={{ color: '#c51b8a', fontFamily: 'Mukta, sans-serif', margin: '0 0 1.25rem 0',
-                    fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase' }}
-                >
-                  {block.label}
-                </p>
-                <div style={{ width: 32, height: 1, background: '#e5e7eb', margin: '0 auto 1.5rem' }} />
+              <div style={{ width: '100%', maxWidth: 820, textAlign: 'center' }}>
                 <p
                   style={{
-                    fontSize: 'clamp(0.95rem, 1.4vw, 1.15rem)',
-                    lineHeight: 1.85,
-                    color: '#374151',
+                    color: '#c51b8a',
                     fontFamily: 'Mukta, sans-serif',
-                    fontWeight: 400,
-                    margin: 0,
+                    margin: '0 0 1.25rem 0',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    letterSpacing: '0.18em',
+                    textTransform: 'uppercase',
                   }}
                 >
-                  {block.content}
+                  Terminološki okvir
                 </p>
+                <div style={{ width: 32, height: 1, background: '#e5e7eb', margin: '0 auto 1.5rem' }} />
+                <img
+                  src="/venn.png"
+                  alt="Migranti venn"
+                  loading="lazy"
+                  style={{ maxWidth: '100%', height: 'auto', maxHeight: 'calc(80vh - 140px)', objectFit: 'contain' }}
+                />
               </div>
             </div>
-          ))}
 
-          {/* Step 6: Venn diagram */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '40px clamp(24px, 6vw, 80px)',
-              opacity: vennOpacity,
-              transition: 'opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1)',
-              pointerEvents: vennOpacity > 0.5 ? 'auto' : 'none',
-            }}
-          >
-            <div style={{ width: '100%', maxWidth: 820, textAlign: 'center' }}>
-              <p
+            {/* Scroll hint */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: 20,
+                left: '50%',
+                transform: 'translateX(-50%)',
+                opacity: Math.max(0, 1 - progress * 20),
+                transition: 'opacity 0.4s',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 6,
+                pointerEvents: 'none',
+                zIndex: 20,
+              }}
+            >
+              <span
                 style={{
-                  color: '#c51b8a',
-                  fontFamily: 'Mukta, sans-serif',
-                  margin: '0 0 1.25rem 0',
-                  fontSize: '0.75rem',
-                  fontWeight: 600,
-                  letterSpacing: '0.18em',
+                  fontSize: '0.58rem',
+                  letterSpacing: '0.35em',
                   textTransform: 'uppercase',
+                  color: '#9ca3af',
+                  fontFamily: 'Mukta, sans-serif',
+                  fontWeight: 600,
                 }}
               >
-                Terminološki okvir
-              </p>
-              <div style={{ width: 32, height: 1, background: '#e5e7eb', margin: '0 auto 1.5rem' }} />
-              <img
-                src="/venn.png"
-                alt="Migranti venn"
-                loading="lazy"
-                style={{ maxWidth: '100%', height: 'auto', maxHeight: 'calc(80vh - 140px)', objectFit: 'contain' }}
+                Skrolaj dalje
+              </span>
+              <div
+                style={{
+                  width: 1,
+                  height: 22,
+                  background: 'linear-gradient(180deg, #c51b8a 0%, transparent 100%)',
+                  opacity: 0.4,
+                  animation: 'bbPulse 1.8s ease-in-out infinite',
+                }}
               />
             </div>
           </div>
-
-          {/* Scroll hint */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: 20,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              opacity: Math.max(0, 1 - progress * 20),
-              transition: 'opacity 0.4s',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 6,
-              pointerEvents: 'none',
-              zIndex: 20,
-            }}
-          >
-            <span
-              style={{
-                fontSize: '0.58rem',
-                letterSpacing: '0.35em',
-                textTransform: 'uppercase',
-                color: '#9ca3af',
-                fontFamily: 'Mukta, sans-serif',
-                fontWeight: 600,
-              }}
-            >
-              Skrolaj dalje
-            </span>
-            <div
-              style={{
-                width: 1,
-                height: 22,
-                background: 'linear-gradient(180deg, #c51b8a 0%, transparent 100%)',
-                opacity: 0.4,
-                animation: 'bbPulse 1.8s ease-in-out infinite',
-              }}
-            />
-          </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-// ── Main export ──
-export default function BiggerPicture() {
-  return (
-    <div>
-      <IntroScrolly />
 
       <style>{`
         @keyframes bbPulse {
@@ -328,6 +327,6 @@ export default function BiggerPicture() {
           50% { opacity: 0.8; transform: scaleY(1.25); }
         }
       `}</style>
-    </div>
+    </>
   );
 }
