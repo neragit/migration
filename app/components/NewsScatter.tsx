@@ -112,7 +112,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
             <div className="absolute inset-0">
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
-                const initialScale = isMobile ? 0.35 : s.scale
+                const initialScale = isMobile ? 0.3 : s.scale
                 const isRightSide = parseFloat(s.left) > 50
                 return (
                   <div
@@ -132,7 +132,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                       src={src}
                       alt={`News article ${i + 1}`}
                       loading={i < 6 ? "eager" : "lazy"}
-                      className="w-[500px] h-auto shadow-md"
+                      className="w-125 h-auto shadow-md"
                       draggable={false}
                     />
                   </div>
