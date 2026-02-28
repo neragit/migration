@@ -1,8 +1,9 @@
 "use client";
 
 import gsap from "gsap";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import type { AnswersState } from "@/types/answers";
+import useResizeObserver from "../hooks/useResizeObs";
 
 const NEWS_IMAGES = Array.from({ length: 28 }, (_, i) => `/news-${i + 1}.png`);
 
@@ -96,6 +97,8 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
     });
   };
 
+    const containerRef = useRef<HTMLDivElement | null>(null);
+    const size = useResizeObserver(containerRef);
 
   return (
     <>
@@ -108,14 +111,16 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
                 const isRightSide = parseFloat(s.left) > 50
+                
                 return (
                   <div
                     key={i}
+                    ref={containerRef} 
                     className="absolute"
                     style={{
                       left: s.left,
                       top: s.top,
-                      transform: `rotate(${s.rotation}deg) scale(${s.scale})`,
+                      transform:  size && size.width < 500 ? `translateX(-20%) rotate(${s.rotation}deg) scale(${s.scale})`: `rotate(${s.rotation}deg) scale(${s.scale})`,
                       transformOrigin: "top center",
                       willChange: "transform",
                     }}
