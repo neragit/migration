@@ -113,13 +113,13 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
               {NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
                 const initialScale = isMobile ? 0.3 : s.scale
-                const isRightSide = parseFloat(s.left) > 50
+                const isRightSide = parseFloat(s.left) > 40
                 return (
                   <div
                     key={i}
                     className="absolute"
                     style={{
-                      left: isMobile && isRightSide ? `calc(${s.left} - 70%)` : s.left,
+                      left: isMobile && isRightSide ? `calc(${s.left} - 60%)` : s.left,
                       top: s.top,
                       transform: `rotate(${s.rotation}deg) scale(${initialScale})`,
                       transformOrigin: isMobile && isRightSide ? "top right" : "top left",
