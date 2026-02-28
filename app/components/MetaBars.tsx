@@ -129,6 +129,39 @@ const apiExpats = [
     }
 ];
 
+
+const dzs_imigranti_2024 = [
+  { drzavaRegija: "Azija", broj: 26601, lang: "Razno" },
+  { drzavaRegija: "Hrvatska", broj: 13290, lang: "Hrvatski" },
+  { drzavaRegija: "Bosna i Hercegovina", broj: 6510, lang: "Bosanski" },
+  { drzavaRegija: "Srbija", broj: 5071, lang: "Srpski" },
+  { drzavaRegija: "Ukrajina", broj: 3530, lang: "Ukrajinski" },
+  { drzavaRegija: "Afrika", broj: 2567, lang: "Razno" },
+  { drzavaRegija: "Sjeverna Makedonija", broj: 2084, lang: "Makedonski" },
+  { drzavaRegija: "Kosovo", broj: 1885, lang: "Albanski" },
+  { drzavaRegija: "Njemačka", broj: 1207, lang: "Njemački" },
+  { drzavaRegija: "Slovenija", broj: 995, lang: "Slovenski" },
+  { drzavaRegija: "Albanija", broj: 939, lang: "Albanski" },
+  { drzavaRegija: "Južna Amerika", broj: 537, lang: "Razno" },
+  { drzavaRegija: "Ruska Federacija", broj: 452, lang: "Ruski" },
+  { drzavaRegija: "Sjeverna i Srednja Amerika", broj: 426, lang: "Razno" },
+  { drzavaRegija: "Italija", broj: 410, lang: "Talijanski" },
+  { drzavaRegija: "Austrija", broj: 276, lang: "Njemački" },
+  { drzavaRegija: "Mađarska", broj: 266, lang: "Mađarski" },
+  { drzavaRegija: "Crna Gora", broj: 253, lang: "Crnogorski" },
+  { drzavaRegija: "Bugarska", broj: 227, lang: "Bugarski" },
+  { drzavaRegija: "Poljska", broj: 220, lang: "Poljski" },
+  { drzavaRegija: "Francuska", broj: 191, lang: "Francuski" },
+  { drzavaRegija: "Rumunjska", broj: 154, lang: "Rumunjski" },
+  { drzavaRegija: "Slovačka", broj: 145, lang: "Slovački" },
+  { drzavaRegija: "Češka", broj: 141, lang: "Češki" },
+  { drzavaRegija: "Ujedinjeno Kraljevstvo", broj: 137, lang: "Engleski" },
+  { drzavaRegija: "Švedska", broj: 128, lang: "Švedski" },
+  { drzavaRegija: "Nizozemska", broj: 126, lang: "Nizozemski" },
+  { drzavaRegija: "Oceanija", broj: 87, lang: "Razno" },
+  { drzavaRegija: "Nepoznato", broj: 8, lang: "Nepoznato" }
+];
+
 //2025 mup data
 type Stranci = { Državljanstvo: string; lang: string; dozvola: number };
 

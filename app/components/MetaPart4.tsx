@@ -17,7 +17,7 @@ export default function MetaPart4({ answers, handleAnswer }: MetaPart4Props) {
     <>
       <style>{`
         .wrap {
-          padding-top: 150px;
+          padding-top: 30px;
           width: 100%;
           position: relative;
         }
@@ -208,9 +208,8 @@ export default function MetaPart4({ answers, handleAnswer }: MetaPart4Props) {
                 interesi i aktivnosti kako bi omogućila procjenu potencijalne
                 publike za oglašavanje i bolje ciljanje oglasa.
                 Ako analiziramo
-                ove podatke možemo dobiti uvid u to koje su skupine aktivne na
-                internetu, kako se jezik i lokacija preklapaju, pa čak i kako se
-                trendovi mijenjaju tijekom vremena. <br /><br />
+                ove podatke možemo dobiti uvid u skupine koje koriste ove aplikacije.
+                 <br /><br />
                 Iako ovi brojevi ne odražavaju
                 savršeno službene podatke o stanovništvu, oni nude
                 <b> dinamičan uvid u društvo u stvarnom vremenu</b> koji može pomoći
@@ -313,23 +312,7 @@ export default function MetaPart4({ answers, handleAnswer }: MetaPart4Props) {
                 </button>
               </div>
 
-              <p className="question mt-15">
-                Mislite li da Meta točno procjenjuje broj korisnika?
-              </p>
-              <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
-                <button
-                  className={`card-btn ${answers.metaAccuracy === "da" ? "active" : ""}`}
-                  onClick={() => handleAnswer("metaAccuracy", "da")}
-                >
-                  Da
-                </button>
-                <button
-                  className={`card-btn ${answers.metaAccuracy === "ne" ? "active" : ""}`}
-                  onClick={() => handleAnswer("metaAccuracy", "ne")}
-                >
-                  Ne
-                </button>
-              </div>
+
 
             </div>
           </div>

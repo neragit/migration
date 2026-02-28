@@ -5,6 +5,8 @@
 import { supabase } from "../lib/supabase";
 import type { AnswersState } from "@/types/answers";
 
+import BiggerPicture from "../components/BiggerPicture";
+
 import NewsScatter from "../components/NewsScatter";
 import HoverHighlight from "../components/HoverHighlight";
 import CentralQuestion from "../components/CentralQuestion";
@@ -29,7 +31,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function MetaPage() {
 
-    const [vennVisible, setVennVisible] = useState(false);
+    
 
     const ref = useRef<HTMLImageElement>(null);
 
@@ -115,21 +117,6 @@ export default function MetaPage() {
     };
 
 
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setVennVisible(true);
-                    observer.disconnect(); // only trigger once
-                }
-            },
-            { threshold: 0.9 }
-        );
-
-        if (ref.current) observer.observe(ref.current);
-
-        return () => observer.disconnect();
-    }, []);
 
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -302,39 +289,13 @@ export default function MetaPage() {
     return (
 
         <>
-            <NewsScatter answers={answers}
-                handleAnswer={handleAnswer} />
+            <NewsScatter answers={answers} handleAnswer={handleAnswer} />
+
+            <BiggerPicture />
 
             <HoverHighlight />
 
-            <section className=" mt-30 mb-20 " >
-                <div className="w-full mb-20  flex items-center gap-3">
-                    <div className="h-px flex-1 border-t border-dashed border-gray-300" />
-                    <span className="text-md tracking-[0.25em] px-5 uppercase text-gray-400 font-light">
-                        Terminološki okvir
-                    </span>
-                    <div className="h-px flex-1 border-t border-dashed border-gray-300" />
-                </div>
-
-                <img
-                    ref={ref}
-                    src="/venn.png"
-                    alt="Migranti venn"
-                    loading="lazy"
-                    width="900"
-                    height="500"
-                    className={`max-w-full lg:max-w-300 mx-auto h-auto transition-opacity  duration-1000 ease-in
-                        ${vennVisible ? "opacity-100 " : "opacity-0 "}`}
-                />
-
-            </section>
-
-            <CentralQuestion />
-
-            <MetaPart4
-                answers={answers}
-                handleAnswer={handleAnswer}
-            />
+            <MetaPart4 answers={answers} handleAnswer={handleAnswer} />
 
             <div className="w-full max-w-4xl min-w-0 mx-auto px-5 mt-20 mb-30 text-gray-700   ">
 
@@ -665,7 +626,7 @@ export default function MetaPage() {
                 <div className="my-50">
                     <div>
                         <p className="question">
-                            Ako Meta pokaže rast neke skupine, mislite li da je to dobar indikator stvarnih promjena u društvu?
+                            Ako Meta pokaže rast ili smanjenje neke skupine, mislite li da je to dobar indikator stvarnih promjena u društvu?
                         </p>
                         <div style={{ marginTop: 16, display: "flex", gap: 12 }}>
                             <button
@@ -737,7 +698,7 @@ export default function MetaPage() {
                 <div className="w-full max-w-4xl min-w-0 mx-auto px-5">
 
                     <p className="text-xs tracking-[0.18em] uppercase text-[#c51b8a] font-semibold mt-5 ">
-                        Zaključak
+                        Potencijali i ograničenja
                     </p>
                     <h2 className="relative mt-5 ">Digitalni trag daje širu sliku i može signalizirati promjene</h2>
 

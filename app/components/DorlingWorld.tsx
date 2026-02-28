@@ -71,9 +71,11 @@ interface AggregatedCountry {
 
 type Props = {
   sidebarVisible: boolean;
+  scaleOverride?: number;
+  noMargin?: boolean; 
 };
 
-export default function DorlingWorld({ sidebarVisible }: Props) {
+export default function DorlingWorld({ sidebarVisible, scaleOverride, noMargin }: Props) {
 
 
   type CountryFeatureCollection = GeoJSON.FeatureCollection<GeoJSON.Geometry, CountryFeatureProperties>;
@@ -161,12 +163,13 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
       }
 
       let width = size.width * (size.width < 500 ? 0.8 : 0.9);
+      let baseScale = scaleOverride ?? Math.max(60, Math.min(260, width / 5));
 
 
       return {
         width,
         height: width * 0.5,
-        baseScale: Math.max(60, Math.min(260, width / 5)),
+        baseScale,
         sizeRange: [5, Math.max(10, Math.min(65, width / 8))],
       };
     })();
@@ -399,7 +402,7 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
     }
 
 
-  }, [data, worldData, size, mode, animateOnScroll]);
+  }, [data, worldData, size, mode, animateOnScroll, scaleOverride, noMargin]);
 
 
 
@@ -438,7 +441,7 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
 
 
       <div ref={containerRef} className={`relative w-[80vw] xl:w-[90vw]  flex justify-center
-      mt-20 md:mt-10
+    ${noMargin ? " mt-[-30] ": "mt-20 md:mt-10"}
       mb-10 md:mb-0
       ${sidebarVisible ? "ml-[-90] w-[80vw] " : "ml-0 w-[100vw]"} xl:ml-[-90] portrait:ml-0 portrait:w-[100vw]`} >
         
@@ -450,7 +453,7 @@ export default function DorlingWorld({ sidebarVisible }: Props) {
             style={{
               position: "absolute",
               left: Math.min(tooltip.x, (containerRef.current?.clientWidth ?? window.innerWidth) - (window.innerWidth > 1000 ? 300 : 240)),
-              top: Math.min(tooltip.y, (containerRef.current?.clientHeight ?? 0) - 100),
+              top: Math.min(tooltip.y, (containerRef.current?.clientHeight ?? 0) - 200),
               opacity: tooltip.opacity,
               transition: "opacity 0.2s ease",
             }}

@@ -144,7 +144,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
         </div>
 
         <div className="wrap mt-200"  >
-          <div className="scroll !gap-50 " style={{ padding: 20 }}>
+          <div className="scroll !gap-50 p-20  " >
             {/* Question 1 — Awareness */}
             <div className="card">
               <div className="card-inner">
@@ -191,9 +191,38 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
               </div>
             </div>
 
+            <div className="card" style={{ marginTop: 32 }}>
+              <div className="card-inner">
+                <p className="question text-center">
+                  Koliko bi rekli da ima stranih radnika u odnosu na ukupno stanovništvo?
+                </p>
+
+                <input
+                  type="range"
+                  min={0}
+                  max={100}
+                  step={1}
+                  value={answers.foreignWorkersPercent || 0}
+                  onChange={(e) => handleAnswer("foreignWorkersPercent", Number(e.target.value))}
+                  style={{
+                    width: "100%",
+                    marginTop: 16,
+                    accentColor: "#c51b8a", // optional styling
+                  }}
+                />
+
+                <p style={{ marginTop: 12, textAlign: "center" }}>
+                  Vaša procjena:{" "}
+                  <span style={{ color: "#c51b8a" }}>
+                    {answers.foreignWorkersPercent ?? 0}%
+                  </span>
+                </p>
+              </div>
+            </div>
 
 
-            <div className="card mt-8">
+
+            <div className="card mt-8 !mb-200">
               <div className="card-inner">
                 <p className="question text-center mb-4">
                   Koje su 10 najčešćih državljanstava stranih radnika? (maks. 10)
@@ -253,34 +282,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
 
 
 
-            <div className="card" style={{ marginTop: 32, marginBottom: 1000 }}>
-              <div className="card-inner">
-                <p className="question text-center">
-                  Koliko bi rekli da ima stranih radnika u odnosu na ukupno stanovništvo?
-                </p>
-
-                <input
-                  type="range"
-                  min={0}
-                  max={100}
-                  step={1}
-                  value={answers.foreignWorkersPercent || 0}
-                  onChange={(e) => handleAnswer("foreignWorkersPercent", Number(e.target.value))}
-                  style={{
-                    width: "100%",
-                    marginTop: 16,
-                    accentColor: "#c51b8a", // optional styling
-                  }}
-                />
-
-                <p style={{ marginTop: 12, textAlign: "center" }}>
-                  Vaša procjena:{" "}
-                  <span style={{ color: "#c51b8a" }}>
-                    {answers.foreignWorkersPercent ?? 0}%
-                  </span>
-                </p>
-              </div>
-            </div>
+            
           </div>
 
         </div>

@@ -17,7 +17,7 @@ export default async function handler(
 
     const { data, error } = await supabase
       .from("odg_migranti")
-      .select("slider_value, uses_meta");
+      .select("slider_value, uses_meta, expect_more, native_language");
 
     console.log("[API] Supabase response:", { error, length: data?.length });
 
@@ -29,7 +29,10 @@ export default async function handler(
         sliderPercent: 0,
         yesPercent: 0,
         noPercent: 0,
+        expectMoreCounts: 0,
+        nativeLanguageCounts: 0,
       });
+
     }
 
     const sliderValues = data
@@ -44,8 +47,8 @@ export default async function handler(
 
     const sliderPercent = sliderTotal
       ? (sliderValues.filter((val) => val <= userSlider).length /
-          sliderTotal) *
-        100
+        sliderTotal) *
+      100
       : 0;
 
     const usesMetaData = data
@@ -56,14 +59,14 @@ export default async function handler(
 
     const yesPercent = usesMetaTotal
       ? (usesMetaData.filter((r) => r === "da").length /
-          usesMetaTotal) *
-        100
+        usesMetaTotal) *
+      100
       : 0;
 
     const noPercent = usesMetaTotal
       ? (usesMetaData.filter((r) => r === "ne").length /
-          usesMetaTotal) *
-        100
+        usesMetaTotal) *
+      100
       : 0;
 
     const result = {
@@ -72,6 +75,19 @@ export default async function handler(
       yesPercent,
       noPercent,
     };
+
+    const expectMoreData = data.map((r) => r.expect_more).filter(Boolean);
+    const nativeLanguageData = data.map((r) => r.native_language).filter(Boolean);
+
+    const expectMoreCounts = expectMoreData.reduce((acc: Record<string, number>, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
+
+    const nativeLanguageCounts = nativeLanguageData.reduce((acc: Record<string, number>, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
 
     console.log("[API] returning:", result);
 
