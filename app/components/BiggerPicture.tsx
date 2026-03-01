@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import DorlingWorld from "../components/DorlingWorld";
 import CentralQuestion from "../components/CentralQuestion";
+import ESS from "../components/ESS";
 import useResizeObserver from "../hooks/useResizeObs";
 
 
@@ -34,11 +35,23 @@ const introBlocks = [
   },
 ];
 
-// INTRO STEPS: 1 Dorling + 5 text blocks + 1 Venn = 7
-const INTRO_STEPS = 7;
-const DORLING_STEP = 0; // first step index
-const VENN_STEP = 6;    // last step index
-const FADE_RANGE = 0.12;
+// Step layout:
+// 0 → Dorling World
+// 1 → introBlocks[0] — Šira slika
+// 2 → introBlocks[1] — Hrvatska
+// 3 → ESS  ← inserted here
+// 4 → introBlocks[2] — Složenost podataka
+// 5 → introBlocks[3] — core-question
+// 6 → introBlocks[4] — Digitalni tragovi
+// 7 → introBlocks[5] (if exists, otherwise skip)
+// 8 → Venn diagram
+
+const BLOCKS_BEFORE_ESS = introBlocks.slice(0, 2);   // steps 1–2
+const BLOCKS_AFTER_ESS = introBlocks.slice(2);        // steps 4–6
+const ESS_STEP = 3;
+const VENN_STEP = BLOCKS_BEFORE_ESS.length + 1 + BLOCKS_AFTER_ESS.length + 1; // = 8
+const INTRO_STEPS = VENN_STEP + 1; // = 9
+const FADE_RANGE = 0.05;
 
 
 export default function BiggerPicture() {
@@ -96,6 +109,8 @@ export default function BiggerPicture() {
   const activeStep = Math.floor(progress * INTRO_STEPS);
   const dorlingOpacity = dorlingOpacityCalc();
   const vennOpacity = vennOpacityCalc();
+  const essOpacity = stepOpacity(ESS_STEP);
+  const essActive = essOpacity > 0.5;
 
   const isShortScreen = size?.height && size.height < 500;
 
@@ -110,7 +125,7 @@ export default function BiggerPicture() {
         <div className="sticky mx-auto px-5"
           style={{
             maxWidth: 1200,
-            top: isShortScreen ? "10px" : "6.25rem", // Tailwind top-25 = 6.25rem
+            top: isShortScreen ? "10px" : "6.25rem",
           }}
         >
           <div
@@ -181,7 +196,6 @@ export default function BiggerPicture() {
                 letterSpacing: '0.3em',
                 textTransform: 'uppercase',
                 color: '#9ca3af',
-                fontFamily: 'Mukta, sans-serif',
                 fontWeight: 600,
                 zIndex: 20,
               }}
@@ -205,8 +219,8 @@ export default function BiggerPicture() {
               <DorlingWorld scaleOverride={size && size?.width ? Math.min(Math.max(size.width / 6, 20), 180) : 180} metaPage />
             </div>
 
-            {/* Steps 1–5: Intro text blocks */}
-            {introBlocks.map((block, i) => (
+            {/* Steps 1–2: introBlocks BEFORE ESS (Šira slika, Hrvatska) */}
+            {BLOCKS_BEFORE_ESS.map((block, i) => (
               <div
                 key={block.id}
                 style={{
@@ -216,7 +230,7 @@ export default function BiggerPicture() {
                   alignItems: 'center',
                   justifyContent: 'center',
                   padding: '48px clamp(24px, 8vw, 120px)',
-                  opacity: stepOpacity(i + 1),
+                  opacity: stepOpacity(i + 1), // steps 1, 2
                   transition: 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
                   pointerEvents: 'none',
                 }}
@@ -224,7 +238,7 @@ export default function BiggerPicture() {
                 <div style={{ maxWidth: 620, textAlign: 'center' }}>
                   <p
                     style={{
-                      color: '#c51b8a', fontFamily: 'Mukta, sans-serif', margin: '0 0 1.25rem 0',
+                      color: '#c51b8a', margin: '0 0 1.25rem 0',
                       fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase'
                     }}
                   >
@@ -247,7 +261,64 @@ export default function BiggerPicture() {
               </div>
             ))}
 
-            {/* Step 6: Venn diagram */}
+            {/* Step 3: ESS — after Hrvatska */}
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                overflowY: 'clip',
+                opacity: essOpacity,
+                transition: 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
+                pointerEvents: essActive ? 'auto' : 'none',
+              }}
+            >
+              <ESS active={essActive} />
+            </div>
+
+            {/* Steps 4–6: introBlocks AFTER ESS (Složenost, core-question, Digitalni tragovi) */}
+            {BLOCKS_AFTER_ESS.map((block, i) => (
+              <div
+                key={block.id}
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '48px clamp(24px, 8vw, 120px)',
+                  opacity: stepOpacity(i + ESS_STEP + 1), // steps 4, 5, 6
+                  transition: 'opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1)',
+                  pointerEvents: 'none',
+                }}
+              >
+                <div style={{ maxWidth: 620, textAlign: 'center' }}>
+                  <p
+                    style={{
+                      color: '#c51b8a', margin: '0 0 1.25rem 0',
+                      fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.18em', textTransform: 'uppercase'
+                    }}
+                  >
+                    {block.label}
+                  </p>
+                  {block.id !== 'core-question' && (
+                    <div style={{ width: 32, height: 1, background: '#e5e7eb', margin: '0 auto 1.5rem' }} />
+                  )}
+                  <p
+                    style={{
+                      lineHeight: 1.85,
+                      color: block.id === 'core-question' ? '#c51b8a' : '#374151',
+                      fontWeight: block.id === 'core-question' ? 700 : 400,
+                      fontSize: block.id === 'core-question' ? 'clamp(1.2rem, 2vw, 1.6rem)' : 'clamp(0.95rem, 1.4vw, 1.15rem)',
+                      margin: 0,
+                    }}
+                  >
+                    {block.content}
+                  </p>
+                </div>
+              </div>
+            ))}
+
+            {/* Step 8: Venn diagram */}
             <div
               style={{
                 position: 'absolute',
@@ -265,7 +336,6 @@ export default function BiggerPicture() {
                 <p
                   style={{
                     color: '#c51b8a',
-                    fontFamily: 'Mukta, sans-serif',
                     margin: '0 0 1.25rem 0',
                     fontSize: '0.75rem',
                     fontWeight: 600,
@@ -302,27 +372,6 @@ export default function BiggerPicture() {
                 zIndex: 20,
               }}
             >
-              <span
-                style={{
-                  fontSize: '0.58rem',
-                  letterSpacing: '0.35em',
-                  textTransform: 'uppercase',
-                  color: '#9ca3af',
-                  fontFamily: 'Mukta, sans-serif',
-                  fontWeight: 600,
-                }}
-              >
-                Skrolaj dalje
-              </span>
-              <div
-                style={{
-                  width: 1,
-                  height: 22,
-                  background: 'linear-gradient(180deg, #c51b8a 0%, transparent 100%)',
-                  opacity: 0.4,
-                  animation: 'bbPulse 1.8s ease-in-out infinite',
-                }}
-              />
             </div>
           </div>
         </div>

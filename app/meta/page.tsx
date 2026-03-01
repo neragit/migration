@@ -20,6 +20,8 @@ import MetaChart from "../components/MetaChart";
 import Rezultati from "../components/Rezultati";
 import Objasnjenja from "../components/Objasnjenja";
 
+import ESS from "../components/ESS";
+
 import SeeSummary from "../components/SeeSummary";
 
 import Details from "../components/Details";
@@ -31,7 +33,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function MetaPage() {
 
-    
+
 
     const ref = useRef<HTMLImageElement>(null);
 
@@ -317,7 +319,7 @@ export default function MetaPage() {
                         loading="lazy"
                         width="1200"
                         height="800"
-                        className="w-full h-auto my-10"
+                        className="w-full h-auto my-10 rounded-md "
 
                     />
 
@@ -623,7 +625,7 @@ export default function MetaPage() {
                     </div>
                 </div>
 
-                <div className="my-50">
+                <div className="my-20">
                     <div>
                         <p className="question">
                             Ako Meta pokaže rast ili smanjenje neke skupine, mislite li da je to dobar indikator stvarnih promjena u društvu?
@@ -649,16 +651,6 @@ export default function MetaPage() {
                             </button>
                         </div>
                     </div>
-
-
-                    <SeeSummary
-                        answers={answers}
-                        sessionId={sessionId}
-                        isLoading={isLoading}
-                        hasSubmitted={hasSubmitted}
-                        onSubmit={handleSeeSummary} // triggers upsert + fetch
-                    />
-
 
                 </div>
 
@@ -691,6 +683,16 @@ export default function MetaPage() {
 
 */}
             </div>
+
+            <ESS />
+
+            <SeeSummary
+                answers={answers}
+                sessionId={sessionId}
+                isLoading={isLoading}
+                hasSubmitted={hasSubmitted}
+                onSubmit={handleSeeSummary} // triggers upsert + fetch
+            />
 
 
             <div className="w-full bg-gray-50 flex flex-col justify-center py-10 my-20">

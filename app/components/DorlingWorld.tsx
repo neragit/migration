@@ -339,8 +339,8 @@ export default function DorlingWorld({ sidebarVisible, scaleOverride, metaPage }
             Math.round(d.major2_perc * 100) + "%" : ""}`;
         function formatMoney(value?: number | null) {
           if (!value) return "";
-          if (value >= 1e9) return (value / 1e9).toFixed(1) + " mlrd.";
-          if (value >= 1e6) return (value / 1e6).toFixed(1) + " mil.";
+          if (value >= 1e9) return (value / 1e9).toFixed(2) + " mlrd.";
+          if (value >= 1e6) return (value / 1e6).toFixed(2) + " mil.";
           return value.toString();
         }
         setTooltip({
@@ -351,7 +351,7 @@ export default function DorlingWorld({ sidebarVisible, scaleOverride, metaPage }
               <strong>{d.country_hr}</strong><br />
               Ukupno stanovnika: {formatMoney(d.total_pop)} (2024)<br />
               {migLabel}: {formatMoney(d.total_mig)}<br />
-              {d.gni != null && <>GNI per capita: {Math.round(d.gni)} USD<br /></>}
+              {d.gni != null && <>GNI per capita: {new Intl.NumberFormat('fr-FR').format(Math.round(d.gni))} USD<br /></>}
               {d.remit != null && <>Doznake: {formatMoney(d.remit)} USD<br /></>}
               {d.life != null && <>Očekivana dob: {Math.round(d.life)} godina<br /></>}
 

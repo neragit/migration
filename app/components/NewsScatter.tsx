@@ -5,40 +5,39 @@ import { useEffect, useState, useRef } from "react";
 import type { AnswersState } from "@/types/answers";
 import useResizeObserver from "../hooks/useResizeObs";
 
-const NEWS_IMAGES = Array.from({ length: 28 }, (_, i) => `/news-${i + 1}.png`);
+const NEWS_IMAGES = Array.from({ length: 24 }, (_, i) => `/news-${i + 1}.png`);
 
 const SCATTERED = [
-  { left: "30%", top: "70%", rotation: 7, scale: 0.3 },
-  { left: "50%", top: "55%", rotation: 4, scale: 0.3 },
-  { left: "70%", top: "30%", rotation: 8, scale: 0.3 },
-  { left: "75%", top: "70%", rotation: -8, scale: 0.3 },
-  { left: "40%", top: "65%", rotation: 4, scale: 0.3 },
-  { left: "75%", top: "60%", rotation: -7, scale: 0.3 },
-  { left: "18%", top: "62%", rotation: -5, scale: 0.3 },
-  { left: "80%", top: "20%", rotation: 6, scale: 0.3 },
+  { left: "30%", top: "70%", rotation: 7 },
+  { left: "50%", top: "45%", rotation: 4 },
+  { left: "70%", top: "30%", rotation: 8 },
+  { left: "40%", top: "70%", rotation: -8 },
+  { left: "30%", top: "50%", rotation: -3 },
+  { left: "75%", top: "60%", rotation: -7 },
+  { left: "18%", top: "32%", rotation: -5 },
+  { left: "80%", top: "20%", rotation: 6 },
+  { left: "55%", top: "15%", rotation: 5 },
+  { left: "28%", top: "13%", rotation: -3 },
 
-  { left: "55%", top: "15%", rotation: 5, scale: 0.3 },
-  { left: "28%", top: "13%", rotation: -3, scale: 0.3 },
+  { left: "68%", top: "10%", rotation: 9 },
+  { left: "42%", top: "30%", rotation: 6 },
+  { left: "10%", top: "65%", rotation: 10 },
+  { left: "68%", top: "65%", rotation: -7 },
+  { left: "25%", top: "40%", rotation: 4 },
+  { left: "0%", top: "55%", rotation: -12 },
+  { left: "0%", top: "30%", rotation: -6 },
+  { left: "62%", top: "30%", rotation: 7 },
+  { left: "25%", top: "15%", rotation: 3 },
+  { left: "45%", top: "20%", rotation: -4 },
 
-  { left: "68%", top: "10%", rotation: 9, scale: 0.3 },
-  { left: "42%", top: "30%", rotation: 6, scale: 0.3 },
-  { left: "70%", top: "45%", rotation: 10, scale: 0.3 },
-  { left: "68%", top: "65%", rotation: -7, scale: 0.3 },
-  { left: "25%", top: "40%", rotation: 4, scale: 0.3 },
-  { left: "0%", top: "55%", rotation: -12, scale: 0.3 },
-  { left: "0%", top: "30%", rotation: -6, scale: 0.3 },
-  { left: "62%", top: "30%", rotation: 7, scale: 0.3 },
-  { left: "25%", top: "15%", rotation: 3, scale: 0.3 },
-  { left: "45%", top: "20%", rotation: -4, scale: 0.3 },
-  { left: "5%", top: "18%", rotation: -8, scale: 0.3 },
-
-  { left: "10%", top: "50%", rotation: -9, scale: 0.3 },
-  { left: "40%", top: "50%", rotation: 5, scale: 0.3 },
-  { left: "60%", top: "55%", rotation: -6, scale: 0.3 },
-    { left: "3%", top: "17%", rotation: 7, scale: 0.3 },
-  { left: "15%", top: "25%", rotation: 4, scale: 0.3 },
-  { left: "27%", top: "33%", rotation: 8, scale: 0.3 },
-  { left: "50%", top: "37%", rotation: -8, scale: 0.3 },
+  { left: "5%", top: "18%", rotation: -8 },
+  { left: "10%", top: "50%", rotation: -9 },
+  { left: "40%", top: "50%", rotation: 5 },
+  { left: "60%", top: "50%", rotation: -6 },
+  { left: "3%", top: "17%", rotation: 7 },
+  { left: "15%", top: "25%", rotation: 4 },
+  { left: "27%", top: "33%", rotation: 8 },
+  { left: "50%", top: "37%", rotation: -8 },
 ];
 
 const NATIONALITIES = [
@@ -73,15 +72,55 @@ interface NewsScatterProps {
   ) => void;
 }
 
-
-
 export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps) {
 
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const size = useResizeObserver(containerRef);
+
+
+  const hasAnimated = useRef(false); // ADD THIS
+
+  // ADD THIS BLOCK
+  useEffect(() => {
+    if (!size || hasAnimated.current) return;
+    hasAnimated.current = true;
+
+    const items = containerRef.current?.querySelectorAll<HTMLDivElement>(":scope > div");
+    if (!items?.length) return;
+
+    gsap.fromTo(
+      items,
+      { opacity: 0 },
+      {
+        opacity: 1,
+        duration: 0.5,
+        stagger: {
+          each: 0.1,
+          from: "random",
+        },
+        ease: "power1.inOut",
+      }
+    );
+
+     gsap.fromTo(
+    labelRef.current,
+    { opacity: 0 },
+    {
+      opacity: 1,
+      duration: 5,
+      delay: 7,
+      ease: "power1.inOut",
+    }
+  );
+
+  }, [size]);
+
+  let maxScale = size && size.vw < 750 ? 0.9 : 1;
 
   const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
     gsap.to(e.currentTarget, {
       rotation: 0,
-      scale: 1,
+      scale: maxScale,
       zIndex: 20,
       duration: 1,
       ease: "power2.out",
@@ -97,8 +136,22 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
     });
   };
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const size = useResizeObserver(containerRef);
+  const labelRef = useRef<HTMLSpanElement>(null);
+
+useEffect(() => {
+  const onScroll = () => {
+    if (!labelRef.current) return;
+    gsap.to(labelRef.current, {
+      opacity: scrollY > 30 ? 0 : 1,
+      duration: 0.4,
+      ease: "power1.out",
+    });
+  };
+
+  window.addEventListener("scroll", onScroll);
+  return () => window.removeEventListener("scroll", onScroll);
+}, []);
+
 
   return (
     <>
@@ -107,21 +160,21 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
         <div className="sticky top-0 h-screen z-0">
           {/* SECTION 1 — Scattered Images */}
           <section className="relative w-full h-screen bg-white overflow-clip">
-            <div className="absolute inset-0">
-              {NEWS_IMAGES.map((src, i) => {
+            <div ref={containerRef} className="absolute inset-0">
+              {size && NEWS_IMAGES.map((src, i) => {
                 const s = SCATTERED[i];
+
                 const isRightSide = parseFloat(s.left) > 50
-                
                 return (
                   <div
                     key={i}
-                    ref={containerRef} 
                     className="absolute"
                     style={{
-                      left: s.left,
+                      opacity: 0,
+                      left: size && size.vw < 750 && isRightSide ? `calc(${s.left} - 70%)` : s.left,
                       top: s.top,
-                      transform:  size && size.width < 500 ? `translateX(-20%) rotate(${s.rotation}deg) scale(${s.scale})`: `rotate(${s.rotation}deg) scale(${s.scale})`,
-                      transformOrigin: "top center",
+                      transform: `rotate(${s.rotation}deg) scale(0.3)`,
+                      transformOrigin: size && size.vw < 750 ? isRightSide ? "top right" : "top left" : "top center",
                       willChange: "transform",
                     }}
                     onMouseEnter={handleMouseEnter}
@@ -130,20 +183,26 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
                     <img
                       src={src}
                       alt={`News article ${i + 1}`}
-                      loading={i < 6 ? "eager" : "lazy"}
-                      className="w-125 h-auto shadow-md"
+                      loading="eager"
+                      className="w-[500px] h-auto shadow-md"
                       draggable={false}
                     />
                   </div>
                 );
               })}
-
             </div>
+
+            <span ref={labelRef}
+              className="absolute opacity-0 bottom-6 left-1/2 -translate-x-1/2 z-0 text-center text-[0.58rem] tracking-[0.35em] uppercase text-gray-400 font-semibold pointer-events-none">
+              Listaj dalje
+            </span>
           </section>
         </div>
 
-        <div className="wrap mt-200"  >
-          <div className="scroll !gap-50 p-20  " >
+        <div className="wrap "  >
+          <div className="scroll !gap-50 px-20  " >
+
+
             {/* Question 1 — Awareness */}
             <div className="card">
               <div className="card-inner">
@@ -281,7 +340,7 @@ export default function NewsScatter({ answers, handleAnswer }: NewsScatterProps)
 
 
 
-            
+
           </div>
 
         </div>

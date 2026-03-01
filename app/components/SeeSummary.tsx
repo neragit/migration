@@ -8,8 +8,15 @@ import type { AnswersState } from "@/types/answers";
 interface AllResponsesStats {
   sliderAverage: number;
   sliderPercent: number;
-  yesPercent: number;
-  noPercent: number;
+  foreignWorkersPercentAverage: number;
+  foreignWorkersCounts: Record<string, number>;
+  topNationalities: string[];
+  nativeLanguageYesPercent: number;
+  nativeLanguageNoPercent: number;
+  usesMetaYesPercent: number;
+  usesMetaNoPercent: number;
+  metaAccuracyYesPercent: number;
+  metaAccuracyNoPercent: number;
   expectMoreCounts: Record<string, number>;
   nativeLanguageCounts: Record<string, number>;
 }
@@ -22,29 +29,58 @@ interface SeeSummaryProps {
   onSubmit: () => Promise<void>;
 }
 
+const MUP_TOP_10 = [
+  "Bosna i Hercegovina",
+  "Nepal",
+  "Srbija",
+  "Filipini",
+  "Indija",
+  "Sj. Makedonija",
+  "Kosovo",
+  "Uzbekistan",
+  "Egipat",
+  "Bangladeš",
+];
+
+const SECTION_LABEL: React.CSSProperties = {
+  fontSize: "0.8rem",
+  fontWeight: 600,
+  letterSpacing: "0.1em",
+  textTransform: "uppercase",
+  color: "#9ca3af",
+  margin: "0 0 1.25rem",
+  padding: "20px 0",
+  textAlign: "center",
+
+};
+
+const DIVIDER = <div style={{ width: "100%", height: 1, background: "#f3f4f6", margin: "2rem 0 1.5rem" }} />;
+
 // ── Animated gauge (half-circle) ──
 function Gauge({
   percent,
   color,
   label,
   sublabel,
-  size = 160,
+  displayValue,
+  size = 150,
   delay = 0,
+  isAbsolute = false,
 }: {
   percent: number;
   color: string;
   label: string;
   sublabel?: string;
+  displayValue?: string;
   size?: number;
   delay?: number;
+  isAbsolute?: boolean;
 }) {
   const [animated, setAnimated] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setAnimated(percent);
-    }, delay);
+    const timeout = setTimeout(() => setAnimated(percent), delay);
     return () => clearTimeout(timeout);
   }, [percent, delay]);
 
@@ -52,114 +88,37 @@ function Gauge({
   const r = (size - strokeWidth) / 2;
   const cx = size / 2;
   const cy = size / 2;
-  const circumference = Math.PI * r; // half circle
+  const circumference = Math.PI * r;
   const offset = circumference - (circumference * Math.min(animated, 100)) / 100;
 
   return (
-    <div
-      ref={ref}
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: 8,
-      }}
-    >
+    <div ref={ref} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
       <div style={{ position: "relative", width: size, height: size / 2 + strokeWidth / 2 }}>
-        <svg
-          width={size}
-          height={size / 2 + strokeWidth}
-          viewBox={`0 0 ${size} ${size / 2 + strokeWidth}`}
-          style={{ overflow: "visible" }}
-        >
-          {/* Track */}
-          <path
-            d={`M ${strokeWidth / 2} ${size / 2} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`}
-            fill="none"
-            stroke="#f3f4f6"
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-          />
-          {/* Fill */}
-          <path
-            d={`M ${strokeWidth / 2} ${size / 2} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`}
-            fill="none"
-            stroke={color}
-            strokeWidth={strokeWidth}
-            strokeLinecap="round"
-            strokeDasharray={circumference}
-            strokeDashoffset={offset}
-            style={{
-              transition: `stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}ms`,
-            }}
-          />
-          {/* Tick marks */}
+        <svg width={size} height={size / 2 + strokeWidth} viewBox={`0 0 ${size} ${size / 2 + strokeWidth}`} style={{ overflow: "visible" }}>
+          <path d={`M ${strokeWidth / 2} ${size / 2} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`} fill="none" stroke="#f3f4f6" strokeWidth={strokeWidth} strokeLinecap="round" />
+          <path d={`M ${strokeWidth / 2} ${size / 2} A ${r} ${r} 0 0 1 ${size - strokeWidth / 2} ${size / 2}`} fill="none" stroke={color} strokeWidth={strokeWidth} strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset} style={{ transition: `stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1) ${delay}ms` }} />
           {[0, 25, 50, 75, 100].map((tick) => {
             const angle = -180 + (tick / 100) * 180;
             const rad = (angle * Math.PI) / 180;
-            const x1 = cx + (r - strokeWidth / 2 - 4) * Math.cos(rad);
-            const y1 = cy + (r - strokeWidth / 2 - 4) * Math.sin(rad);
-            const x2 = cx + (r + strokeWidth / 2 + 4) * Math.cos(rad);
-            const y2 = cy + (r + strokeWidth / 2 + 4) * Math.sin(rad);
-            return (
-              <line
-                key={tick}
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-                stroke="#e5e7eb"
-                strokeWidth={1}
-              />
-            );
+            const x1 = cx + (r - strokeWidth / 2 - 1) * Math.cos(rad);
+            const y1 = cy + (r - strokeWidth / 2 - 1) * Math.sin(rad);
+            const x2 = cx + (r + strokeWidth / 2 + 1) * Math.cos(rad);
+            const y2 = cy + (r + strokeWidth / 2 + 1) * Math.sin(rad);
+            return <line key={tick} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#e5e7eb" strokeWidth={1} />;
           })}
         </svg>
-        {/* Value */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 4,
-            left: "50%",
-            transform: "translateX(-50%)",
-            textAlign: "center",
-          }}
-        >
-          <span
-            style={{
-              fontSize: "1.6rem",
-              fontWeight: 700,
-              fontFamily: "Mukta, sans-serif",
-              color: color,
-              lineHeight: 1,
-            }}
-          >
-            {animated.toFixed(0)}%
+        <div style={{ position: "absolute", bottom: 4, left: "50%", transform: "translateX(-50%)", textAlign: "center", whiteSpace: "nowrap" }}>
+          <span style={{ fontSize: isAbsolute ? "0.9rem" : "1.6rem", fontWeight: 700, color, lineHeight: 1 }}>
+            {displayValue ?? `${animated.toFixed(0)}%`}
           </span>
         </div>
       </div>
       <div style={{ textAlign: "center" }}>
-        <p
-          style={{
-            fontSize: "0.6rem",
-            fontFamily: "Mukta, sans-serif",
-            fontWeight: 600,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#9ca3af",
-            margin: 0,
-          }}
-        >
+        <p style={{ fontSize: "0.6rem", fontWeight: 600, letterSpacing: "0.2em", textTransform: "uppercase", color: "#9ca3af", margin: 0 }}>
           {label}
         </p>
         {sublabel && (
-          <p
-            style={{
-              fontSize: "0.72rem",
-              fontFamily: "Mukta, sans-serif",
-              color: "#6b7280",
-              margin: "2px 0 0",
-            }}
-          >
+          <p style={{ fontSize: "0.68rem", color: "#6b7280", margin: "2px 0 0" }}>
             {sublabel}
           </p>
         )}
@@ -168,451 +127,363 @@ function Gauge({
   );
 }
 
-// ── Yes/No bar ──
-function YesNoBar({
+// ── Opinion horizontal bar ──
+function OpinionBar({ label, count, total, delay, userAnswer }: { label: string; count: number; total: number; delay: number; userAnswer?: string }) {
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setAnimated(true), delay);
+    return () => clearTimeout(t);
+  }, [delay]);
+
+  const pct = total > 0 ? (count / total) * 100 : 0;
+  const isChosen = userAnswer === label;
+
+  return (
+    <div style={{ marginBottom: "0.92rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <span style={{ fontSize: "0.75rem", color: isChosen ? "#c51b8a" : "#374151", fontWeight: isChosen ? 700 : 400 }}>
+          {label}
+        </span>
+        <span style={{ fontSize: "0.72rem", fontWeight: 600, color: isChosen ? "#c51b8a" : "#9ca3af" }}>
+          {pct.toFixed(0)}%
+        </span>
+      </div>
+      <div style={{ width: "100%", height: 6, background: "#f3f4f6", borderRadius: 4, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: animated ? `${pct}%` : "0%", background: isChosen ? "linear-gradient(90deg, #c51b8a, #e879b0)" : "#d1d5db", borderRadius: 4, transition: "width 1.1s cubic-bezier(0.4, 0, 0.2, 1)" }} />
+      </div>
+    </div>
+  );
+}
+// ── Yes/No question with centered question + highlighted bar ──
+function YesNoQuestion({
+  question,
+  userAnswer,
   yesPercent,
   noPercent,
+  index,
 }: {
+  question: string;
+  userAnswer: string | null | undefined;
   yesPercent: number;
   noPercent: number;
+  index: number;
 }) {
   const [animated, setAnimated] = useState(false);
   useEffect(() => {
-    const t = setTimeout(() => setAnimated(true), 400);
+    const t = setTimeout(() => setAnimated(true), 300 + index * 150);
     return () => clearTimeout(t);
-  }, []);
+  }, [index]);
 
-  return (
-    <div style={{ width: "100%" }}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginBottom: 6,
-        }}
-      >
-        <span
-          style={{
-            fontSize: "0.6rem",
-            fontFamily: "Mukta, sans-serif",
-            fontWeight: 600,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#9ca3af",
-          }}
-        >
-          Da — {yesPercent.toFixed(0)}%
-        </span>
-        <span
-          style={{
-            fontSize: "0.6rem",
-            fontFamily: "Mukta, sans-serif",
-            fontWeight: 600,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#9ca3af",
-          }}
-        >
-          {noPercent.toFixed(0)}% — Ne
-        </span>
-      </div>
-      <div
-        style={{
-          width: "100%",
-          height: 8,
-          background: "#f3f4f6",
-          borderRadius: 4,
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            height: "100%",
-            width: animated ? `${yesPercent}%` : "0%",
-            background: "linear-gradient(90deg, #c51b8a, #e879b0)",
-            borderRadius: 4,
-            transition: "width 1.2s cubic-bezier(0.4, 0, 0.2, 1) 600ms",
-          }}
-        />
-      </div>
-    </div>
-  );
-}
+  const norm = (userAnswer ?? "").toLowerCase();
+  const userSaidYes = norm === "da";
+  const userSaidNo = norm === "ne";
 
-// ── Answer pill ──
-function AnswerRow({
-  question,
-  answer,
-  index,
-  context,
-  options,
-}: {
-  question: string;
-  answer: string | number | null | undefined;
-  index: number;
-  context?: string | null;
-  options?: string[];
-}) {
+  const daWidth = animated ? `${yesPercent}%` : "0%";
+  const neWidth = animated ? `${noPercent}%` : "0%";
+
+  const pinkGradient = "linear-gradient(90deg, #c51b8a, #e879b0)";
+  const grayBg = "#eee";
+
   return (
     <div
       style={{
-        padding: "12px 0",
-        borderBottom: "1px solid #f3f4f6",
+        marginBottom: "1.75rem",
         animation: `fadeSlideIn 0.4s ease both`,
-        animationDelay: `${index * 80}ms`,
+        animationDelay: `${index * 100}ms`,
       }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
-        <div style={{ flex: 1 }}>
-          <span style={{
-            fontSize: "0.6rem",
-            fontWeight: 600,
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#9ca3af",
-            margin: "2rem 0 0.25rem",
-          }}>
-            {question}
-          </span>
-          {context && (
-            <p style={{ fontSize: "0.68rem", fontFamily: "Mukta, sans-serif", color: "#c51b8a", margin: "2px 0 0" }}>
-              {context}
-            </p>
-          )}
-        </div>
+      {/* Centered question */}
+      <p style={{ ...SECTION_LABEL, textAlign: "center", margin: "0" }}>
+        {question}
+      </p>
 
-        {options ? (
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            {options.map((opt) => {
-              const chosen = String(answer) === opt;
-              return (
-                <span
-                  key={opt}
-                  style={{
-                    fontSize: "0.72rem",
-                    fontFamily: "Mukta, sans-serif",
-                    fontWeight: chosen ? 700 : 400,
-                    color: chosen ? "#c51b8a" : "#9ca3af",
-                    background: chosen ? "#fdf2f8" : "transparent",
-                    border: `1px solid ${chosen ? "#c51b8a" : "#e5e7eb"}`,
-                    borderRadius: 4,
-                    padding: "2px 10px",
-                    whiteSpace: "nowrap",
-                    transition: "all 0.2s",
-                  }}
-                >
-                  {opt}
-                </span>
-              );
-            })}
-          </div>
-        ) : (
-          <span
-            style={{
-              fontSize: "0.78rem",
-              fontFamily: "Mukta, sans-serif",
-              fontWeight: 600,
-              color: "#374151",
-              background: "#f9fafb",
-              border: "1px solid #e5e7eb",
-              borderRadius: 4,
-              padding: "2px 10px",
-              whiteSpace: "nowrap",
-            }}
-          >
-            {answer != null ? String(answer) : "—"}
-          </span>
-        )}
+      {/* Labels row — positioned above each segment */}
+      <div style={{ position: "relative", height: "1rem", marginBottom: 4 }}>
+        {/* Da label — left side */}
+        <span
+          style={{
+            position: "absolute",
+            left: 0,
+            fontSize: "0.58rem",
+
+            fontWeight: 600,
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: userSaidYes ? "#c51b8a" : "#9ca3af",
+          }}
+        >
+          Da
+        </span>
+        {/* Ne label — right side */}
+        <span
+          style={{
+            position: "absolute",
+            right: 0,
+            fontSize: "0.58rem",
+
+            fontWeight: 600,
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            color: userSaidNo ? "#c51b8a" : "#9ca3af",
+          }}
+        >
+          Ne
+        </span>
+      </div>
+
+      {/* Bar */}
+      <div style={{ position: "relative", width: "100%", height: 18, background: "#e5e7eb", borderRadius: 4, overflow: "hidden" }}>
+
+        {/* Da segment — grows from the left */}
+        <div style={{
+          position: "absolute", left: 0, top: 0, height: "100%",
+          width: daWidth,
+          background: userSaidYes ? pinkGradient : grayBg,
+          borderRadius: "4px 0 0 4px",
+          transition: "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        }} />
+
+        {/* Ne segment — grows from the right */}
+        <div style={{
+          position: "absolute", right: 0, top: 0, height: "100%",
+          width: neWidth,
+          background: userSaidNo ? "linear-gradient(270deg, #c51b8a, #e879b0)" : grayBg,
+          borderRadius: "0 4px 4px 0",
+          transition: "width 1.2s cubic-bezier(0.4, 0, 0.2, 1)",
+        }} />
+
+        {/* Da % — pinned to left edge, always visible */}
+        <span style={{
+          position: "absolute", left: 6, top: "50%", transform: "translateY(-50%)",
+          fontSize: "0.55rem", fontWeight: 700,
+          color: userSaidYes ? "#fff" : "#6b7280",
+          whiteSpace: "nowrap", zIndex: 1,
+        }}>
+          {yesPercent.toFixed(0)}%
+        </span>
+
+        {/* Ne % — pinned to right edge, always visible */}
+        <span style={{
+          position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)",
+          fontSize: "0.55rem", fontWeight: 700,
+          color: userSaidNo ? "#fff" : "#6b7280",
+          whiteSpace: "nowrap", zIndex: 1,
+        }}>
+          {noPercent.toFixed(0)}%
+        </span>
+
       </div>
     </div>
+
   );
 }
 
-// ── Corner decoration (from BiggerPicture) ──
+// ── Corner decoration ──
 function CornerMarks() {
   return (
     <>
       {(["tl", "tr", "bl", "br"] as const).map((pos) => (
-        <div
-          key={pos}
-          style={{
-            position: "absolute",
-            width: 12,
-            height: 12,
-            borderColor: "#c51b8a",
-            borderStyle: "solid",
-            opacity: 0.4,
-            zIndex: 10,
-            ...(pos === "tl"
-              ? { top: 10, left: 10, borderWidth: "2px 0 0 2px" }
-              : pos === "tr"
-                ? { top: 10, right: 10, borderWidth: "2px 2px 0 0" }
-                : pos === "bl"
-                  ? { bottom: 10, left: 10, borderWidth: "0 0 2px 2px" }
-                  : { bottom: 10, right: 10, borderWidth: "0 2px 2px 0" }),
-          }}
-        />
+        <div key={pos} style={{ position: "absolute", width: 12, height: 12, borderColor: "#c51b8a", borderStyle: "solid", opacity: 0.4, zIndex: 10, ...(pos === "tl" ? { top: 10, left: 10, borderWidth: "2px 0 0 2px" } : pos === "tr" ? { top: 10, right: 10, borderWidth: "2px 2px 0 0" } : pos === "bl" ? { bottom: 10, left: 10, borderWidth: "0 0 2px 2px" } : { bottom: 10, right: 10, borderWidth: "0 2px 2px 0" }) }} />
       ))}
     </>
   );
 }
 
-export default function SeeSummary({
-  answers,
-  sessionId,
-  isLoading,
-  hasSubmitted,
-  onSubmit,
-}: SeeSummaryProps) {
-  const [allResponsesStats, setAllResponsesStats] =
-    useState<AllResponsesStats | null>(null);
+function Card({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ position: "relative", background: "#fff", border: "1px solid #e5e7eb", borderRadius: 2, boxShadow: "0 1px 3px 0 rgba(0,0,0,0.06), 0 4px 24px 0 rgba(0,0,0,0.04)", padding: "2rem 2.5rem 2.5rem", marginBottom: "1.5rem", flex: "1" }}>
+      <CornerMarks />
+      {children}
+    </div>
+  );
+}
+
+export default function SeeSummary({ answers, sessionId, isLoading, hasSubmitted, onSubmit }: SeeSummaryProps) {
+  const [stats, setStats] = useState<AllResponsesStats | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
 
-  const fixedOuterPercent = 4.4;
+  const FIXED_FW_PERCENT = 4.4;
+  const META_MIN = 2_400_000;
+  const META_MAX = 2_800_000;
+  const SLIDER_MAX = 4_000_000;
 
   useEffect(() => {
-    if (hasSubmitted && answers.sliderValue != null) {
+    if (hasSubmitted) {
       setLoadingStats(true);
-      fetch(`/api/summary?userSlider=${answers.sliderValue}`)
-        .then((res) => {
-          if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-          return res.json();
-        })
-        .then((data) => setAllResponsesStats(data))
+      fetch(`/api/summary?userSlider=${answers.sliderValue ?? 0}&userForeignWorkersPercent=${answers.foreignWorkersPercent ?? 0}`)
+        .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+        .then(setStats)
         .catch(console.error)
         .finally(() => setLoadingStats(false));
     }
-  }, [hasSubmitted, answers.sliderValue]);
+  }, [hasSubmitted, answers.sliderValue, answers.foreignWorkersPercent]);
 
-  const clamp = (val: number) => Math.max(0, Math.min(100, val));
+  const clamp = (v: number) => Math.max(0, Math.min(100, v));
+  const clampSlider = (v: number) => clamp((v / SLIDER_MAX) * 100);
+  const fmt = (n: number) => n.toLocaleString("fr-FR");
 
-  // ── Pre-submit CTA ──
   if (!hasSubmitted) {
     return (
       <div className="mt-20 text-center">
-        <button
-          onClick={onSubmit}
-          disabled={!sessionId || isLoading}
-          className="card-btn active"
-        >
-          {isLoading ? "Spremanje..." : "Usporedi odgovore"}
+        <button onClick={onSubmit} disabled={!sessionId || isLoading} className="card-btn active">
+          {isLoading ? "Učitavanje..." : "Usporedi odgovore"}
         </button>
       </div>
     );
   }
 
-  const userPercent = answers.sliderValue != null ? clamp(answers.sliderValue) : 0;
-  const avgPercent = allResponsesStats ? clamp(allResponsesStats.sliderAverage) : 0;
+  const userFWP = clamp(answers.foreignWorkersPercent ?? 0);
+  const avgFWP = stats ? clamp(stats.foreignWorkersPercentAverage) : 0;
+  const userSlider = answers.sliderValue ?? 0;
+  const avgSlider = stats?.sliderAverage ?? 0;
+  const metaMid = (META_MIN + META_MAX) / 2;
 
-  const topAnswer = (counts: Record<string, number>) => {
-    if (!counts || Object.keys(counts).length === 0) return null;
-    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
-  };
-
-  const answerRows = [
-    {
-      question: "Ljudi koriste uglavnom materinski jezik na društvenim mrežama",
-      answer: answers.nativeLanguage,
-      options: ["Da", "Ne", "Ovisi"],  // match your actual button values
-      context: allResponsesStats
-        ? `Većina: ${topAnswer(allResponsesStats.nativeLanguageCounts)}`
-        : null,
-    },
-    {
-      question: "Migranti koriste Meta platforme",
-      answer: answers.usesMeta,
-      options: ["Da", "Ne", "Ne znam"],
-      context: null,
-    },
-    {
-      question: "Očekivali ste višu procjenu za",
-      answer: answers.expectMore,
-      options: ["EU migrante", "Ne-EU migrante", "Podjednako"],
-      context: allResponsesStats
-        ? `Većina: ${topAnswer(allResponsesStats.expectMoreCounts)}`
-        : null,
-    },
-    {
-      question: "Digitalni tragovi su važan izvor podataka",
-      answer: answers.considerMeta,
-      options: ["Da, svakako", "Da, ali uz oprez", "Ne, nikako"],
-      context: null,
-    },
+  const opinionOptions = [
+    "Previše, ne trebamo ih toliko",
+    "Dovoljno, ne treba više",
+    "Dosta, vjerojatno trebamo još",
+    "Malo, trebamo još stranih radnika",
   ];
+  const opinionTotal = stats ? Object.values(stats.foreignWorkersCounts ?? {}).reduce((a, b) => a + b, 0) : 0;
+  const userNats: string[] = Array.isArray(answers.topNationalities) ? answers.topNationalities : [];
 
   return (
-    <div
-      style={{
-        marginTop: "5rem",
-        fontFamily: "Mukta, sans-serif",
-      }}
-    >
+    <div style={{ marginTop: "5rem" }}>
       <style>{`
-        @keyframes fadeSlideIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to   { opacity: 1; }
-        }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
 
-      {/* Section header */}
       <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-        <p
-          style={{
-            color: "#c51b8a",
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            letterSpacing: "0.18em",
-            textTransform: "uppercase",
-            margin: "0 0 0.75rem",
-          }}
-        >
+        <p style={{ color: "#c51b8a", fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", margin: 0 }}>
           Usporedba odgovora
         </p>
-
-
       </div>
 
-      {/* Loading */}
       {loadingStats && (
         <div style={{ textAlign: "center", padding: "3rem 0" }}>
-          <div
-            style={{
-              display: "inline-block",
-              width: 28,
-              height: 28,
-              border: "3px solid #f3f4f6",
-              borderTopColor: "#c51b8a",
-              borderRadius: "50%",
-              animation: "spin 0.8s linear infinite",
-            }}
-          />
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <div style={{ display: "inline-block", width: 28, height: 28, border: "3px solid #f3f4f6", borderTopColor: "#c51b8a", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
         </div>
       )}
 
-      {allResponsesStats && (
-        <div
-          style={{
-            animation: "fadeIn 0.6s ease both",
-            maxWidth: 820,
-            margin: "0 auto",
-          }}
-        >
-          {/* ── Gauges card ── */}
-          <div
-            style={{
-              position: "relative",
-              background: "#fff",
-              border: "1px solid #e5e7eb",
-              borderRadius: 2,
-              boxShadow:
-                "0 1px 3px 0 rgba(0,0,0,0.06), 0 4px 24px 0 rgba(0,0,0,0.04)",
-              padding: "2rem 2.5rem 2.5rem",
-              marginBottom: "1.5rem",
-            }}
-          >
-            <CornerMarks />
+      {stats && (
+        <div style={{ animation: "fadeIn 0.6s ease both", maxWidth: 1400, margin: "0 auto" }}>
 
-            <p
-              style={{
-                fontSize: "0.6rem",
-                fontWeight: 600,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "#9ca3af",
-                margin: "0 0 1.75rem",
-                textAlign: "center",
-              }}
-            >
-              Udio stranih radnika u Hrvatskoj
-            </p>
+          <style>{`
+    @media (max-width: 768px) {
+      .cards-row { flex-direction: column !important; }
+    }
+  `}</style>
 
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(3, 1fr)",
-                gap: "2rem",
-                justifyItems: "center",
-              }}
-            >
-              <Gauge
-                percent={fixedOuterPercent}
-                color="#f59e0b"
-                label="Službeni podatak"
-                sublabel="MUP"
-                size={150}
-                delay={0}
-              />
-              <Gauge
-                percent={avgPercent}
-                color="#93c5fd"
-                label="Prosjek posjetitelja"
-                sublabel="Svi odgovori"
-                size={150}
-                delay={200}
-              />
-              <Gauge
-                percent={userPercent}
-                color="#c51b8a"
-                label="Vaša procjena"
-                sublabel="Vaš unos"
-                size={150}
-                delay={400}
-              />
+          <div className="cards-row" style={{ display: "flex", gap: "1.5rem", alignItems: "flex-start" }}>
+
+            {/* ── CARD 1: Foreign workers % + opinion ── */}
+            <Card>
+              <p style={SECTION_LABEL}>Udio stranih radnika u ukupnom stanovništvu Hrvatske</p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem", justifyItems: "center" }}>
+                <Gauge percent={FIXED_FW_PERCENT} color="#f59e0b" label="Službeni podatak" sublabel="MUP" delay={0} />
+                <Gauge percent={avgFWP} color="#93c5fd" label="Prosjek posjetitelja" sublabel="Svi odgovori" delay={200} />
+                <Gauge percent={userFWP} color="#c51b8a" label="Vaša procjena" sublabel="Vaš unos" delay={400} />
+              </div>
+
+              {DIVIDER}
+
+              <p style={SECTION_LABEL}>Vaše mišljenje</p>
+              {opinionOptions.map((opt, i) => (
+                <OpinionBar key={opt} label={opt} count={stats.foreignWorkersCounts?.[opt] ?? 0} total={opinionTotal} delay={300 + i * 120} userAnswer={answers.foreignWorkers} />
+              ))}
+            </Card>
+
+
+            {/* ── CARD 2: Nationalities ── 
+          <Card>
+            <p style={SECTION_LABEL} >Top 10 državljanstava stranih radnika</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem 3rem" }}>
+              <div>
+                <p style={{ ...SECTION_LABEL, marginBottom: "0.75rem" }}>MUP 2025</p>
+                <div style={{ maxWidth: 150, margin: "0 auto" }}>
+                {MUP_TOP_10.map((nat, i) => (
+                  <div key={nat} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: "1px solid #f9fafb", animation: `fadeSlideIn 0.3s ease both`, animationDelay: `${i * 50}ms` }}>
+                    <span style={{ fontSize: "0.6rem", fontWeight: 700, color: "#f59e0b", minWidth: 18 }}>{i + 1}.</span>
+                    <span style={{ fontSize: "0.78rem", color: "#374151" }}>{nat}</span>
+                  </div>
+                ))}
+                </div>
+              </div>
+              
+
+              <div>
+                <p style={{ ...SECTION_LABEL, marginBottom: "0.75rem" }}>Vaša procjena</p>
+                <div style={{ maxWidth: 150, margin: "0 auto" }}>
+                {userNats.length === 0 ? (
+                  <p style={{ fontSize: "0.75rem", color: "#9ca3af" }}>—</p>
+                ) : (
+                  userNats.slice(0, 10).map((nat, i) => (
+                    <div key={nat} style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 0", borderBottom: "1px solid #f9fafb", animation: `fadeSlideIn 0.3s ease both`, animationDelay: `${i * 50}ms` }}>
+                      <span style={{ fontSize: "0.6rem", fontWeight: 700, color: "#c51b8a", minWidth: 20 }}>{i + 1}.</span>
+                      <span style={{ fontSize: "0.78rem", color: "#374151" }}>{nat}</span>
+                    </div>
+                  ))
+                )}
+                </div>
+              </div>
+              
             </div>
+          </Card> 
+        */}
 
-            {/* Divider */}
-            <div
-              style={{
-                width: "100%",
-                height: 1,
-                background: "#f3f4f6",
-                margin: "2rem 0 1.5rem",
-              }}
-            />
+            {/* ── CARD 3: App users slider gauges ── */}
+            <Card>
+              <p style={SECTION_LABEL}>Koliko osoba u Hrvatskoj koristi Meta aplikacije?</p>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem", justifyItems: "center" }}>
+                <Gauge
+                  percent={clampSlider(metaMid)}
+                  color="#1877F2"
+                  label="Meta procjena"
+                  sublabel={`${fmt(META_MIN)} – ${fmt(META_MAX)}`}
+                  displayValue={`~${fmt(metaMid)}`}
+                  isAbsolute
+                  delay={0}
+                />
+                <Gauge
+                  percent={clampSlider(avgSlider)}
+                  color="#93c5fd"
+                  label="Prosjek posjetitelja"
+                  sublabel="Svi odgovori"
+                  displayValue={`${fmt(Math.round(avgSlider / 10000) * 10000)}`}
+                  isAbsolute
+                  delay={200}
+                />
+                <Gauge
+                  percent={clampSlider(userSlider)}
+                  color="#c51b8a"
+                  label="Vaša procjena"
+                  sublabel="Vaš unos"
+                  displayValue={fmt(userSlider)}
+                  isAbsolute
+                  delay={400}
+                />
+              </div>
 
-            {/* Yes/No bar */}
-            <p
-              style={{
-                fontSize: "0.6rem",
-                fontWeight: 600,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "#9ca3af",
-                margin: "0 0 1rem",
-                textAlign: "center",
-              }}
-            >
-              Koriste li migranti Meta platforme?
-            </p>
-            <YesNoBar
-              yesPercent={allResponsesStats.yesPercent}
-              noPercent={allResponsesStats.noPercent}
-            />
+              {DIVIDER}
 
-            <div
-              style={{
-                width: "100%",
-                height: 1,
-                background: "#f3f4f6",
-                margin: "2rem 0 1.5rem",
-              }}
-            />
-
-            {answerRows.map((row, i) => (
-              <AnswerRow
-                key={row.question}
-                question={row.question}
-                answer={row.answer}
-                index={i}
-                context={row.context}
+              <YesNoQuestion
+                question="Koriste li ljudi na društvenim mrežama uglavnom svoj materinski jezik?"
+                userAnswer={answers.nativeLanguage}
+                yesPercent={stats.nativeLanguageYesPercent}
+                noPercent={stats.nativeLanguageNoPercent}
+                index={0}
               />
-            ))}
-
+              <YesNoQuestion
+                question="Mislite li da većina migranata u Hrvatskoj koristi ove aplikacije?"
+                userAnswer={answers.usesMeta}
+                yesPercent={stats.usesMetaYesPercent}
+                noPercent={stats.usesMetaNoPercent}
+                index={1}
+              />
+     
+            </Card>
           </div>
         </div>
       )}
